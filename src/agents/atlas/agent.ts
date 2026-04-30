@@ -120,7 +120,7 @@ createAtlasAgent.mode = MODE
 export const atlasPromptMetadata: AgentPromptMetadata = {
   category: "advisor",
   cost: "EXPENSIVE",
-  promptAlias: "Atlas",
+  promptAlias: "Foreman",
   triggers: [
     {
       domain: "Todo list orchestration",

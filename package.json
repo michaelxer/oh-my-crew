@@ -1,13 +1,12 @@
 {
-  "name": "oh-my-opencode",
+  "name": "oh-my-crew",
   "version": "3.17.12",
-  "description": "The Best AI Agent Harness - Batteries-Included OpenCode Plugin with Multi-Model Orchestration, Parallel Background Agents, and Crafted LSP/AST Tools",
+  "description": "Role-based agent fork of oh-my-opencode - Clean crew names with content-filter-safe system prompts",
   "main": "./dist/index.js",
   "types": "dist/index.d.ts",
   "type": "module",
   "bin": {
-    "oh-my-opencode": "bin/oh-my-opencode.js",
-    "oh-my-openagent": "bin/oh-my-opencode.js"
+    "oh-my-crew": "bin/oh-my-opencode.js"
   },
   "files": [
     "dist",
@@ -44,16 +43,16 @@
     "ai",
     "llm"
   ],
-  "author": "YeonGyu-Kim",
+  "author": "michaelxer (fork of oh-my-openagent by YeonGyu-Kim)",
   "license": "SUL-1.0",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/code-yeongyu/oh-my-openagent.git"
+    "url": "git+https://github.com/michaelxer/oh-my-crew.git"
   },
   "bugs": {
-    "url": "https://github.com/code-yeongyu/oh-my-openagent/issues"
+    "url": "https://github.com/michaelxer/oh-my-crew/issues"
   },
-  "homepage": "https://github.com/code-yeongyu/oh-my-openagent#readme",
+  "homepage": "https://github.com/michaelxer/oh-my-crew#readme",
   "dependencies": {
     "@ast-grep/cli": "^0.41.1",
     "@ast-grep/napi": "^0.41.1",

@@ -318,7 +318,7 @@ createMomusAgent.mode = MODE;
 export const momusPromptMetadata: AgentPromptMetadata = {
   category: "advisor",
   cost: "EXPENSIVE",
-  promptAlias: "Momus",
+  promptAlias: "Auditor",
   triggers: [
     {
       domain: "Plan review",

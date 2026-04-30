@@ -7,7 +7,7 @@ const MODE: AgentMode = "subagent"
 export const EXPLORE_PROMPT_METADATA: AgentPromptMetadata = {
   category: "exploration",
   cost: "FREE",
-  promptAlias: "Explore",
+  promptAlias: "Scout",
   keyTrigger: "2+ modules involved → fire `explore` background",
   triggers: [
     { domain: "Explore", trigger: "Find existing codebase structure, patterns and styles" },

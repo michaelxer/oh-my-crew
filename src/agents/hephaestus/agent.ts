@@ -151,7 +151,7 @@ createHephaestusAgent.mode = MODE;
 export const hephaestusPromptMetadata: AgentPromptMetadata = {
   category: "specialist",
   cost: "EXPENSIVE",
-  promptAlias: "Hephaestus",
+  promptAlias: "Strategist",
   triggers: [
     {
       domain: "Autonomous deep work",

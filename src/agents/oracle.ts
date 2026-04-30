@@ -8,7 +8,7 @@ const MODE: AgentMode = "subagent";
 export const ORACLE_PROMPT_METADATA: AgentPromptMetadata = {
   category: "advisor",
   cost: "EXPENSIVE",
-  promptAlias: "Oracle",
+  promptAlias: "Sage",
   triggers: [
     {
       domain: "Architecture decisions",
