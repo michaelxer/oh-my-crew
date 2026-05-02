@@ -1,15 +1,15 @@
 # CLI Reference
 
-Complete reference for the published `oh-my-opencode` CLI. During the rename transition, OpenCode plugin registration now prefers `oh-my-openagent` inside `opencode.json`.
+Complete reference for the published `oh-my-crew` CLI. OpenCode plugin registration should use `oh-my-crew` inside `opencode.json`.
 
 ## Basic Usage
 
 ```bash
 # Display help
-bunx oh-my-opencode
+bunx oh-my-crew
 
 # Or with npx
-npx oh-my-opencode
+npx oh-my-crew
 ```
 
 ## Commands
@@ -28,21 +28,21 @@ npx oh-my-opencode
 
 ## install
 
-Interactive installation tool for initial Oh My OpenCode setup. Provides a TUI based on `@clack/prompts`.
+Interactive installation tool for initial Oh My Crew setup. Provides a TUI based on `@clack/prompts`.
 
 ### Usage
 
 ```bash
-bunx oh-my-opencode install
+bunx oh-my-crew install
 ```
 
 ### Installation Process
 
 1. **Subscription Selection**: Choose which providers and subscriptions you actually have
-2. **Plugin Registration**: Registers `oh-my-openagent` in OpenCode settings, or upgrades a legacy `oh-my-opencode` entry during the compatibility window
-3. **Configuration File Creation**: Writes the generated OmO config to `oh-my-opencode.json` in the active OpenCode config directory
+2. **Plugin Registration**: Registers `oh-my-crew` in OpenCode settings and removes conflicting legacy entries such as `oh-my-opencode`, `oh-my-openagent`, and `oh-my-china`
+3. **Configuration File Creation**: Writes the generated OMC config to `oh-my-crew.json` in the active OpenCode config directory
 4. **Authentication Hints**: Shows the `opencode auth login` steps for the providers you selected, unless `--skip-auth` is set
-5. **Telemetry Defaults**: Anonymous telemetry remains enabled unless you opt out through environment variables
+5. **Telemetry Defaults**: Anonymous telemetry remains enabled unless you opt out through the installer or environment variables
 
 ### Options
 
@@ -58,25 +58,37 @@ bunx oh-my-opencode install
 | `--kimi-for-coding <no\|yes>` | Kimi for Coding subscription |
 | `--opencode-go <no\|yes>` | OpenCode Go subscription |
 | `--vercel-ai-gateway <no\|yes>` | Vercel AI Gateway: no, yes (default: no) |
+| `--custom-provider <no\|yes>` | Custom OpenAI-compatible provider |
+| `--custom-provider-id <id>` | Custom provider id |
+| `--custom-base-url <url>` | Custom provider base URL |
+| `--captain-model <provider/model>` | Captain - Ultraworker model override |
+| `--strategist-model <provider/model>` | Strategist - Deep Agent model override |
+| `--foreman-model <provider/model>` | Foreman - Plan Executor model override |
+| `--architect-model <provider/model>` | Architect - Plan Builder model override |
+| `--reviewer-model <provider/model>` | Sage, Auditor, and Advisor model override |
+| `--utility-model <provider/model>` | Scout and Scribe model override |
+| `--enable-mcp <comma-list>` | Built-in MCPs to enable: `websearch`, `context7`, `grep_app` |
+| `--session-guardian <no\|yes>` | Enable or disable Session Guardian |
+| `--disable-telemetry` | Persistently disable anonymous telemetry in config |
 | `--skip-auth` | Skip authentication setup hints |
 
-Anonymous telemetry uses PostHog with a hashed installation identifier. Disable it with `OMO_SEND_ANONYMOUS_TELEMETRY=0` or `OMO_DISABLE_POSTHOG=1`. See [Privacy Policy](../legal/privacy-policy.md).
+Anonymous telemetry uses PostHog with a hashed installation identifier. Disable it with `--disable-telemetry`, `OMO_SEND_ANONYMOUS_TELEMETRY=0`, or `OMO_DISABLE_POSTHOG=1`. See [Privacy Policy](../legal/privacy-policy.md).
 
 ---
 
 ## doctor
 
-Diagnoses your environment to ensure Oh My OpenCode is functioning correctly. The current checks are grouped into system, config, tools, and models.
+Diagnoses your environment to ensure Oh My Crew is functioning correctly. The current checks are grouped into system, config, tools, and models.
 
 The doctor command detects common issues including:
-- Legacy plugin entry references in `opencode.json` (warns when `oh-my-opencode` is still used instead of `oh-my-openagent`)
+- Legacy or conflicting plugin entry references in `opencode.json`
 - Configuration file validity and JSONC parsing errors
 - Model resolution and fallback chain verification
 - Missing or misconfigured MCP servers
 ### Usage
 
 ```bash
-bunx oh-my-opencode doctor
+bunx oh-my-crew doctor
 ```
 
 ### Diagnostic Categories
@@ -99,10 +111,10 @@ bunx oh-my-opencode doctor
 ### Example Output
 
 ```
-oh-my-opencode doctor
+oh-my-crew doctor
 
 ┌──────────────────────────────────────────────────┐
-│  Oh-My-OpenAgent Doctor                           │
+│  Oh-My-Crew Doctor                                │
 └──────────────────────────────────────────────────┘
 
 System
@@ -110,7 +122,7 @@ System
   ✓ Plugin registered in opencode.json
 
 Config
-  ✓ oh-my-opencode.jsonc is valid
+  ✓ oh-my-crew.jsonc is valid
   ✓ Model resolution: all agents have valid fallback chains
   ⚠ categories.visual-engineering: using default model
 
@@ -133,7 +145,7 @@ Run opencode with todo/background task completion enforcement. Unlike 'opencode 
 ### Usage
 
 ```bash
-bunx oh-my-opencode run <message>
+bunx oh-my-crew run <message>
 ```
 
 ### Options
@@ -160,7 +172,7 @@ Show current installed version and check for updates.
 ### Usage
 
 ```bash
-bunx oh-my-opencode get-local-version
+bunx oh-my-crew get-local-version
 ```
 
 ### Options
@@ -187,7 +199,7 @@ Show version information.
 ### Usage
 
 ```bash
-bunx oh-my-opencode version
+bunx oh-my-crew version
 ```
 
 `--on-complete` runs through your current shell when possible: `sh` on Unix shells, `pwsh` for PowerShell on non-Windows, `powershell.exe` for PowerShell on Windows, and `cmd.exe` as the Windows fallback.
@@ -202,16 +214,16 @@ Manages OAuth 2.1 authentication for remote MCP servers.
 
 ```bash
 # Login to an OAuth-protected MCP server
-bunx oh-my-opencode mcp oauth login <server-name> --server-url https://api.example.com
+bunx oh-my-crew mcp oauth login <server-name> --server-url https://api.example.com
 
 # Login with explicit client ID and scopes
-bunx oh-my-opencode mcp oauth login my-api --server-url https://api.example.com --client-id my-client --scopes read write
+bunx oh-my-crew mcp oauth login my-api --server-url https://api.example.com --client-id my-client --scopes read write
 
 # Remove stored OAuth tokens
-bunx oh-my-opencode mcp oauth logout <server-name> --server-url https://api.example.com
+bunx oh-my-crew mcp oauth logout <server-name> --server-url https://api.example.com
 
 # Check OAuth token status
-bunx oh-my-opencode mcp oauth status [server-name]
+bunx oh-my-crew mcp oauth status [server-name]
 ```
 
 ### Options
@@ -232,10 +244,10 @@ Tokens are stored in `~/.config/opencode/mcp-oauth.json` with `0600` permissions
 
 The runtime loads user config as the base config, then merges project config on top:
 
-1. **Project Level**: `.opencode/oh-my-openagent.jsonc`, `.opencode/oh-my-openagent.json`, `.opencode/oh-my-opencode.jsonc`, or `.opencode/oh-my-opencode.json`
-2. **User Level**: `~/.config/opencode/oh-my-openagent.jsonc`, `~/.config/opencode/oh-my-openagent.json`, `~/.config/opencode/oh-my-opencode.jsonc`, or `~/.config/opencode/oh-my-opencode.json`
+1. **Project Level**: `.opencode/oh-my-crew.jsonc` or `.opencode/oh-my-crew.json`
+2. **User Level**: `~/.config/opencode/oh-my-crew.jsonc` or `~/.config/opencode/oh-my-crew.json`
 
-**Naming Note**: The published package and binary are still `oh-my-opencode`. Inside `opencode.json`, the compatibility layer now prefers the plugin entry `oh-my-openagent`. Plugin config loading recognizes both `oh-my-openagent.*` and legacy `oh-my-opencode.*` basenames. If both basenames exist in the same directory, the legacy `oh-my-opencode.*` file currently wins.
+**Naming Note**: The published package, CLI binary, and canonical OpenCode plugin entry are `oh-my-crew`. Config loading also recognizes legacy `oh-my-openagent.*` and `oh-my-opencode.*` basenames so existing installs keep working while you migrate.
 
 ### Filename Compatibility
 
@@ -283,29 +295,29 @@ bun install -g opencode@latest
 
 ```bash
 # Reinstall plugin
-bunx oh-my-opencode install
+bunx oh-my-crew install
 ```
 
 ### Doctor Check Failures
 
 ```bash
 # Diagnose with detailed information
-bunx oh-my-opencode doctor --verbose
+bunx oh-my-crew doctor --verbose
 
 # Show compact system dashboard
-bunx oh-my-opencode doctor --status
+bunx oh-my-crew doctor --status
 
 # JSON output for scripting
-bunx oh-my-opencode doctor --json
+bunx oh-my-crew doctor --json
 ```
 
 ### "Using legacy package name" Warning
 
-The doctor warns if it finds the legacy plugin entry `oh-my-opencode` in `opencode.json`. Update the plugin array to the canonical `oh-my-openagent` entry:
+The doctor warns if it finds legacy plugin entries such as `oh-my-opencode`, `oh-my-openagent`, or `oh-my-china` in `opencode.json`. Re-run the installer or update the plugin array to the canonical `oh-my-crew` entry:
 
 ```bash
-# Replace the legacy plugin entry in user config
-jq '.plugin = (.plugin // [] | map(if . == "oh-my-opencode" then "oh-my-openagent" else . end))' \
+# Replace legacy plugin entries in user config
+jq '.plugin = (.plugin // [] | map(if . == "oh-my-opencode" or . == "oh-my-openagent" or . == "oh-my-china" then "oh-my-crew" else . end))' \
   ~/.config/opencode/opencode.json > /tmp/opencode.json && mv /tmp/opencode.json ~/.config/opencode/opencode.json
 ```
 ---
@@ -317,14 +329,14 @@ Refreshes the cached model capabilities snapshot from models.dev. This updates t
 ### Usage
 
 ```bash
-bunx oh-my-opencode refresh-model-capabilities
+bunx oh-my-crew refresh-model-capabilities
 ```
 
 ### Options
 
 | Option            | Description                                         |
 | ----------------- | --------------------------------------------------- |
-| `-d, --directory` | Working directory to read oh-my-opencode config from |
+| `-d, --directory` | Working directory to read oh-my-crew config from |
 | `--source-url <url>` | Override the models.dev source URL               |
 | `--json`          | Output refresh summary as JSON                      |
 
@@ -351,10 +363,10 @@ Use JSON output for CI or scripted diagnostics.
 
 ```bash
 # Run doctor in CI environment
-bunx oh-my-opencode doctor --json
+bunx oh-my-crew doctor --json
 
 # Save results to file
-bunx oh-my-opencode doctor --json > doctor-report.json
+bunx oh-my-crew doctor --json > doctor-report.json
 ```
 
 ---

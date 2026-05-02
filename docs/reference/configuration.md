@@ -1,6 +1,6 @@
 # Configuration Reference
 
-Complete reference for Oh My OpenCode plugin configuration. During the rename transition, the runtime recognizes both `oh-my-openagent.json[c]` and legacy `oh-my-opencode.json[c]` files.
+Complete reference for Oh My Crew plugin configuration. The runtime prefers `oh-my-crew.json[c]` and still recognizes legacy `oh-my-openagent.json[c]` and `oh-my-opencode.json[c]` files.
 
 ---
 
@@ -43,28 +43,28 @@ Complete reference for Oh My OpenCode plugin configuration. During the rename tr
 
 ### File Locations
 
-User config is loaded first, then project config overrides it. In each directory, the compatibility layer recognizes both the renamed and legacy basenames.
+User config is loaded first, then project config overrides it. In each directory, the compatibility layer recognizes the current basename plus legacy basenames.
 
-1. Project config: `.opencode/oh-my-openagent.json[c]` or `.opencode/oh-my-opencode.json[c]`
+1. Project config: `.opencode/oh-my-crew.json[c]`
 2. User config (`.jsonc` preferred over `.json`):
 
 | Platform    | Path candidates |
 | ----------- | --------------- |
-| macOS/Linux | `~/.config/opencode/oh-my-openagent.json[c]`, `~/.config/opencode/oh-my-opencode.json[c]` |
-| Windows     | `%APPDATA%\opencode\oh-my-openagent.json[c]`, `%APPDATA%\opencode\oh-my-opencode.json[c]` |
+| macOS/Linux | `~/.config/opencode/oh-my-crew.json[c]` |
+| Windows     | `%APPDATA%\opencode\oh-my-crew.json[c]` |
 
-**Rename compatibility:** The published package and CLI binary remain `oh-my-opencode`. OpenCode plugin registration prefers `oh-my-openagent`, while legacy `oh-my-opencode` entries and config basenames still load during the transition. Config detection checks `oh-my-opencode` before `oh-my-openagent`, so if both plugin config basenames exist in the same directory, the legacy `oh-my-opencode.*` file currently wins.
+**Rename compatibility:** The published package, CLI binary, and canonical OpenCode plugin entry are `oh-my-crew`. Legacy plugin entries (`oh-my-openagent`, `oh-my-opencode`, and `oh-my-china`) and config basenames still load, and the installer removes duplicate legacy plugin entries when it updates `opencode.json`.
 JSONC supports `// line comments`, `/* block comments */`, and trailing commas.
 
 Enable schema autocomplete:
 
 ```json
 {
-  "$schema": "https://raw.githubusercontent.com/code-yeongyu/oh-my-openagent/dev/assets/oh-my-opencode.schema.json"
+  "$schema": "https://raw.githubusercontent.com/michaelxer/oh-my-crew/oh-my-crew/assets/oh-my-opencode.schema.json"
 }
 ```
 
-Run `bunx oh-my-opencode install` for guided setup. Run `opencode models` to list available models.
+Run `bunx oh-my-crew install` for guided setup. Run `opencode models` to list available models.
 
 ### Quick Start Example
 
@@ -72,7 +72,7 @@ Here's a practical starting configuration:
 
 ```jsonc
 {
-  "$schema": "https://raw.githubusercontent.com/code-yeongyu/oh-my-openagent/dev/assets/oh-my-opencode.schema.json",
+  "$schema": "https://raw.githubusercontent.com/michaelxer/oh-my-crew/oh-my-crew/assets/oh-my-opencode.schema.json",
 
   "agents": {
     // Main orchestrator: Claude Opus or Kimi K2.5 work best
@@ -277,7 +277,7 @@ Both `prompt` and `prompt_append` support loading content from files via `file:/
 }
 ```
 
-Paths can be absolute (`file:///abs/path`), relative to project root (`file://./rel/path`), or home-relative (`file://~/home/path`). If a file URI cannot be decoded, resolved, or read, OmO inserts a warning placeholder into the prompt instead of failing hard.
+Paths can be absolute (`file:///abs/path`), relative to project root (`file://./rel/path`), or home-relative (`file://~/home/path`). If a file URI cannot be decoded, resolved, or read, Oh My Crew inserts a warning placeholder into the prompt instead of failing hard.
 
 ### Categories
 
@@ -326,7 +326,7 @@ Runtime priority:
 2. **User override** - model set in config → used exactly as-is. Even on cold cache, explicit user configuration takes precedence over hardcoded fallback chains
 3. **Category default** - model inherited from the assigned category config
 4. **User `fallback_models`** - user-configured fallback list is tried before built-in fallback chains
-5. **Provider fallback chain** - built-in provider/model chain from OmO source
+5. **Provider fallback chain** - built-in provider/model chain from Oh My Crew source
 6. **System default** - OpenCode's configured default model
 
 #### Model Settings Compatibility
@@ -348,7 +348,7 @@ Examples:
 - o-series models support `none` through `high` - `xhigh` is downgraded to `high`
 - GPT-5 supports `none`, `minimal`, `low`, `medium`, `high`, `xhigh` - all pass through
 
-Capability data comes from provider runtime metadata first. OmO also ships bundled models.dev-backed capability data, supports a refreshable local models.dev cache, and falls back to heuristic family detection plus alias rules when exact metadata is unavailable. `bunx oh-my-opencode doctor` surfaces capability diagnostics and warns when a configured model relies on compatibility fallback.
+Capability data comes from provider runtime metadata first. Oh My Crew also ships bundled models.dev-backed capability data, supports a refreshable local models.dev cache, and falls back to heuristic family detection plus alias rules when exact metadata is unavailable. `bunx oh-my-crew doctor` surfaces capability diagnostics and warns when a configured model relies on compatibility fallback.
 
 
 #### Agent Provider Chains
@@ -379,7 +379,7 @@ Capability data comes from provider runtime metadata first. OmO also ships bundl
 | **unspecified-high**   | `claude-opus-4-7`   | `anthropic\|github-copilot\|opencode/claude-opus-4-7 (max)` → `openai\|github-copilot\|opencode/gpt-5.4 (high)` → `zai-coding-plan\|opencode/glm-5` → `kimi-for-coding/k2p5` → `opencode-go/glm-5` → `opencode/kimi-k2.5` → `opencode\|moonshotai\|moonshotai-cn\|firmware\|ollama-cloud\|aihubmix/kimi-k2.5` |
 | **writing**            | `gemini-3-flash`    | `google\|github-copilot\|opencode/gemini-3-flash` → `opencode-go/kimi-k2.5` → `anthropic\|github-copilot\|opencode/claude-sonnet-4-6` → `opencode-go/minimax-m2.7` |
 
-Run `bunx oh-my-opencode doctor --verbose` to see effective model resolution for your config.
+Run `bunx oh-my-crew doctor --verbose` to see effective model resolution for your config.
 
 ---
 
@@ -726,7 +726,7 @@ Object entries use the following shape:
 
 | Field | Type | Description |
 | ----- | ---- | ----------- |
-| `model` | string | Fallback model ID. Provider prefix is optional when OmO can inherit the current/default provider. |
+| `model` | string | Fallback model ID. Provider prefix is optional when Oh My Crew can inherit the current/default provider. |
 | `variant` | string | Explicit variant override for this fallback entry. |
 | `reasoningEffort` | string | OpenAI reasoning effort override for this fallback entry. |
 | `temperature` | number | Temperature applied if this fallback model becomes active. |
@@ -743,7 +743,7 @@ Per-model settings are **fallback-only**. They are promoted only when that speci
 | `type` | string | `enabled` or `disabled` |
 | `budgetTokens` | number | Optional Anthropic thinking budget |
 
-Object entries can also omit the provider prefix when OmO can infer it from the current/default provider. If you provide both inline variant syntax in `model` and an explicit `variant` field, the explicit `variant` field wins.
+Object entries can also omit the provider prefix when Oh My Crew can infer it from the current/default provider. If you provide both inline variant syntax in `model` and an explicit `variant` field, the explicit `variant` field wins.
 
 #### Full examples
 
@@ -788,7 +788,7 @@ If the primary model already establishes the provider, fallback entries can omit
 }
 ```
 
-In this example OmO treats `gpt-5.4-mini` and `gpt-5.3-codex` as OpenAI fallback entries because the current/default provider is already `openai`.
+In this example Oh My Crew treats `gpt-5.4-mini` and `gpt-5.3-codex` as OpenAI fallback entries because the current/default provider is already `openai`.
 
 **3. Mixed cross-provider chain**
 
@@ -880,7 +880,7 @@ This final example is a **complete shape reference**. In real configs, prefer pr
 
 ### Model Capabilities
 
-OmO can refresh a local models.dev capability snapshot on startup. This cache is controlled by `model_capabilities`.
+Oh My Crew can refresh a local models.dev capability snapshot on startup. This cache is controlled by `model_capabilities`.
 
 ```jsonc
 {
@@ -903,8 +903,8 @@ OmO can refresh a local models.dev capability snapshot on startup. This cache is
 Notes:
 
 - Startup refresh runs through the auto-update checker hook.
-- Manual refresh is available via `bunx oh-my-opencode refresh-model-capabilities`.
-- Provider runtime metadata still takes priority when OmO resolves capabilities for compatibility checks.
+- Manual refresh is available via `bunx oh-my-crew refresh-model-capabilities`.
+- Provider runtime metadata still takes priority when Oh My Crew resolves capabilities for compatibility checks.
 
 ### Hashline Edit
 

@@ -80,6 +80,22 @@ Session Guardian **dimuat otomatis** untuk Captain dan Strategist -- tidak perlu
 
 ### Langkah 1: Tambahkan ke konfigurasi plugin
 
+Wizard yang direkomendasikan:
+
+```bash
+npx oh-my-crew install
+```
+
+atau:
+
+```bash
+bunx oh-my-crew install
+```
+
+Untuk setup non-interaktif/scripted, lihat [docs/guide/installation.md](docs/guide/installation.md).
+
+Konfigurasi manual juga tetap didukung.
+
 Edit `~/.config/opencode/opencode.json` (atau `opencode.jsonc`) dan tambahkan `"oh-my-crew"` ke array plugin:
 
 ```json
@@ -98,7 +114,7 @@ OpenCode akan otomatis menginstal plugin dari npm saat startup. Jika agen kru ti
 
 ```bash
 cd ~/.config/opencode
-npm install oh-my-crew
+npm install oh-my-crew --save
 ```
 
 Kemudian restart OpenCode lagi.
@@ -107,7 +123,8 @@ Kemudian restart OpenCode lagi.
 
 ```bash
 opencode
-# Anda seharusnya melihat Captain, Strategist, Sage, dll. di dropdown agen
+opencode agent list
+# Anda seharusnya melihat Captain, Strategist, Foreman, Sage, dll. di dropdown/list agen
 # Ketik "ultrawork" untuk mengaktifkan semua agen
 ```
 
