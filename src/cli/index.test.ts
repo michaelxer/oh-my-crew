@@ -14,4 +14,9 @@ describe("CLI version", () => {
     expect(typeof version).toBe("string")
     expect(version.length).toBeGreaterThan(0)
   })
+
+  it("ships zod as a runtime dependency because dist imports it", () => {
+    expect(packageJson.dependencies?.zod).toBeDefined()
+    expect(packageJson.devDependencies?.zod).toBeUndefined()
+  })
 })

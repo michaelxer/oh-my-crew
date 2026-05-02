@@ -15,7 +15,7 @@ import { promptInstallConfig } from "./tui-install-prompts"
 
 export async function runTuiInstaller(args: InstallArgs, version: string): Promise<number> {
   if (!process.stdin.isTTY || !process.stdout.isTTY) {
-    console.error("Error: Interactive installer requires a TTY. Use --non-interactive or set environment variables directly.")
+    console.error("Error: Interactive installer requires a TTY. Use --no-tui or set environment variables directly.")
     return 1
   }
 
@@ -85,22 +85,26 @@ export async function runTuiInstaller(args: InstallArgs, version: string): Promi
 
   p.log.success(color.bold(isUpdate ? "Configuration updated!" : "Installation complete!"))
   p.log.message(`Run ${color.cyan("opencode")} to start!`)
-  p.log.info("Anonymous telemetry is enabled by default. Disable it with OMO_SEND_ANONYMOUS_TELEMETRY=0 or OMO_DISABLE_POSTHOG=1.")
+  p.log.info(
+    config.telemetryEnabled === false
+      ? "Anonymous telemetry disabled in oh-my-crew config."
+      : "Anonymous telemetry is enabled by default. Disable it with --disable-telemetry, OMO_SEND_ANONYMOUS_TELEMETRY=0, or OMO_DISABLE_POSTHOG=1."
+  )
   p.log.info("Docs: docs/legal/privacy-policy.md and docs/legal/terms-of-service.md")
 
   p.note(
     `Include ${color.cyan("ultrawork")} (or ${color.cyan("ulw")}) in your prompt.\n` +
-      `All features work like magic-parallel agents, background tasks,\n` +
+      `The crew will coordinate parallel agents, background tasks,\n` +
       `deep exploration, and relentless execution until completion.`,
     "The Magic Word",
   )
 
   p.log.message(`${color.yellow("★")} If you found this helpful, consider starring the repo!`)
   p.log.message(
-    `  ${color.dim("gh api --silent --method PUT /user/starred/code-yeongyu/oh-my-openagent >/dev/null 2>&1 || true")}`,
+    `  ${color.dim("gh api --silent --method PUT /user/starred/michaelxer/oh-my-crew >/dev/null 2>&1 || true")}`,
   )
 
-  p.outro(color.green("oMoMoMoMo... Enjoy!"))
+  p.outro(color.green("oMoMoMoMo... Crew is ready."))
 
   if ((config.hasClaude || config.hasGemini || config.hasCopilot) && !args.skipAuth) {
     const providers: string[] = []

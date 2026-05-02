@@ -9,9 +9,21 @@ export interface InstallArgs {
   copilot?: BooleanArg
   opencodeZen?: BooleanArg
   zaiCodingPlan?: BooleanArg
-kimiForCoding?: BooleanArg
+  kimiForCoding?: BooleanArg
   opencodeGo?: BooleanArg
   vercelAiGateway?: BooleanArg
+  customProvider?: BooleanArg
+  customProviderId?: string
+  customBaseUrl?: string
+  captainModel?: string
+  strategistModel?: string
+  foremanModel?: string
+  architectModel?: string
+  utilityModel?: string
+  reviewerModel?: string
+  enableMcp?: string
+  sessionGuardian?: BooleanArg
+  disableTelemetry?: boolean
   skipAuth?: boolean
 }
 
@@ -26,6 +38,19 @@ export interface InstallConfig {
   hasKimiForCoding: boolean
   hasOpencodeGo: boolean
   hasVercelAiGateway: boolean
+  customProviderId?: string
+  customBaseUrl?: string
+  modelOverrides?: {
+    captain?: string
+    strategist?: string
+    foreman?: string
+    architect?: string
+    utility?: string
+    reviewer?: string
+  }
+  enabledMcps?: string[]
+  sessionGuardianEnabled?: boolean
+  telemetryEnabled?: boolean
 }
 
 export interface ConfigMergeResult {

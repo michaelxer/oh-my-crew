@@ -116,24 +116,26 @@ export async function runCliInstaller(args: InstallArgs, version: string): Promi
   console.log()
 
   printInfo(
-    "Anonymous telemetry is enabled by default. Disable it with OMO_SEND_ANONYMOUS_TELEMETRY=0 or OMO_DISABLE_POSTHOG=1.",
+    config.telemetryEnabled === false
+      ? "Anonymous telemetry disabled in oh-my-crew config."
+      : "Anonymous telemetry is enabled by default. Disable it with --disable-telemetry, OMO_SEND_ANONYMOUS_TELEMETRY=0, or OMO_DISABLE_POSTHOG=1.",
   )
   printInfo("Docs: docs/legal/privacy-policy.md and docs/legal/terms-of-service.md")
   console.log()
 
   printBox(
     `${color.bold("Pro Tip:")} Include ${color.cyan("ultrawork")} (or ${color.cyan("ulw")}) in your prompt.\n` +
-      `All features work like magic-parallel agents, background tasks,\n` +
+      `The crew will coordinate parallel agents, background tasks,\n` +
       `deep exploration, and relentless execution until completion.`,
     "The Magic Word",
   )
 
   console.log(`${SYMBOLS.star} ${color.yellow("If you found this helpful, consider starring the repo!")}`)
   console.log(
-    `  ${color.dim("gh api --silent --method PUT /user/starred/code-yeongyu/oh-my-openagent >/dev/null 2>&1 || true")}`,
+    `  ${color.dim("gh api --silent --method PUT /user/starred/michaelxer/oh-my-crew >/dev/null 2>&1 || true")}`,
   )
   console.log()
-  console.log(color.dim("oMoMoMoMo... Enjoy!"))
+  console.log(color.dim("oMoMoMoMo... Crew is ready."))
   console.log()
 
   if ((config.hasClaude || config.hasGemini || config.hasCopilot) && !args.skipAuth) {

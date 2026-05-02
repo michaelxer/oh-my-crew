@@ -1,6 +1,6 @@
 import { readFileSync, writeFileSync } from "node:fs"
 import type { ConfigMergeResult } from "../types"
-import { PLUGIN_NAME, LEGACY_PLUGIN_NAME } from "../../shared"
+import { CONFLICTING_PLUGIN_NAMES, PLUGIN_NAME } from "../../shared"
 import { backupConfigFile } from "./backup-config"
 import { getConfigDir } from "./config-context"
 import { ensureConfigDirectoryExists } from "./ensure-config-directory-exists"
@@ -43,15 +43,16 @@ export async function addPluginToOpenCodeConfig(currentVersion: string): Promise
     const config = parseResult.config
     const plugins = config.plugin ?? []
 
-    const canonicalEntries = plugins.filter(
-      (plugin) => plugin === PLUGIN_NAME || plugin.startsWith(`${PLUGIN_NAME}@`)
-    )
-    const legacyEntries = plugins.filter(
-      (plugin) => plugin === LEGACY_PLUGIN_NAME || plugin.startsWith(`${LEGACY_PLUGIN_NAME}@`)
-    )
+    const isPluginEntry = (plugin: string, name: string) =>
+      plugin === name || plugin.startsWith(`${name}@`)
+    const isCanonicalEntry = (plugin: string) => isPluginEntry(plugin, PLUGIN_NAME)
+    const isConflictingEntry = (plugin: string) =>
+      CONFLICTING_PLUGIN_NAMES.some((name) => isPluginEntry(plugin, name))
+
+    const canonicalEntries = plugins.filter(isCanonicalEntry)
+    const legacyEntries = plugins.filter(isConflictingEntry)
     const otherPlugins = plugins.filter(
-      (plugin) => !(plugin === PLUGIN_NAME || plugin.startsWith(`${PLUGIN_NAME}@`))
-        && !(plugin === LEGACY_PLUGIN_NAME || plugin.startsWith(`${LEGACY_PLUGIN_NAME}@`))
+      (plugin) => !isCanonicalEntry(plugin) && !isConflictingEntry(plugin)
     )
 
     const existingEntry = canonicalEntries[0] ?? legacyEntries[0]

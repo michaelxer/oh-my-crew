@@ -36,7 +36,7 @@ const serverPlugin: Plugin = async (input, _options): Promise<Hooks> => {
 
   const pluginConfig = loadPluginConfig(input.directory, input)
 
-  const posthog = createPluginPostHog()
+  const posthog = createPluginPostHog({ enabled: pluginConfig.anonymous_telemetry !== false })
   const distinctId = getPostHogDistinctId()
   try {
     posthog.trackActive(distinctId, "plugin_loaded")

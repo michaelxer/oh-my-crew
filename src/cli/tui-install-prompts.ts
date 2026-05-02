@@ -1,6 +1,7 @@
 import * as p from "@clack/prompts"
 import type { Option } from "@clack/prompts"
 import type {
+  BooleanArg,
   ClaudeSubscription,
   DetectedConfig,
   InstallConfig,
@@ -24,6 +25,23 @@ async function selectOrCancel<TValue extends Readonly<string | boolean | number>
     return null
   }
   return value as TValue
+}
+
+async function textOrCancel(params: {
+  message: string
+  placeholder?: string
+}): Promise<string | null> {
+  if (!process.stdin.isTTY || !process.stdout.isTTY) return null
+
+  const value = await p.text({
+    message: params.message,
+    placeholder: params.placeholder,
+  })
+  if (p.isCancel(value)) {
+    p.cancel("Installation cancelled.")
+    return null
+  }
+  return String(value).trim()
 }
 
 export async function promptInstallConfig(detected: DetectedConfig): Promise<InstallConfig | null> {
@@ -120,6 +138,101 @@ export async function promptInstallConfig(detected: DetectedConfig): Promise<Ins
   })
   if (!vercelAiGateway) return null
 
+  const customProvider = await selectOrCancel<BooleanArg>({
+    message: "Do you use a custom OpenAI-compatible provider?",
+    options: [
+      { value: "no", label: "No", hint: "Use only built-in provider ids" },
+      { value: "yes", label: "Yes", hint: "You will enter provider id and base URL guidance" },
+    ],
+    initialValue: "no",
+  })
+  if (!customProvider) return null
+
+  let customProviderId: string | undefined
+  let customBaseUrl: string | undefined
+  if (customProvider === "yes") {
+    customProviderId = await textOrCancel({
+      message: "Custom provider id",
+      placeholder: "openrouter",
+    }) ?? undefined
+    if (!customProviderId) return null
+
+    customBaseUrl = await textOrCancel({
+      message: "Custom provider base URL",
+      placeholder: "https://openrouter.ai/api/v1",
+    }) ?? undefined
+  }
+
+  const captainModel = await textOrCancel({
+    message: "Captain model override (blank for automatic)",
+    placeholder: customProviderId ? `${customProviderId}/model-id` : "anthropic/claude-opus-4-7",
+  })
+  if (captainModel === null) return null
+
+  const strategistModel = await textOrCancel({
+    message: "Strategist model override (blank for automatic)",
+    placeholder: "openai/gpt-5.5",
+  })
+  if (strategistModel === null) return null
+
+  const foremanModel = await textOrCancel({
+    message: "Foreman model override (blank for automatic)",
+    placeholder: "anthropic/claude-sonnet-4-6",
+  })
+  if (foremanModel === null) return null
+
+  const architectModel = await textOrCancel({
+    message: "Architect model override (blank for automatic)",
+    placeholder: "anthropic/claude-opus-4-7",
+  })
+  if (architectModel === null) return null
+
+  const reviewerModel = await textOrCancel({
+    message: "Sage/Auditor/Advisor model override (blank for automatic)",
+    placeholder: "openai/gpt-5.5",
+  })
+  if (reviewerModel === null) return null
+
+  const utilityModel = await textOrCancel({
+    message: "Scout/Scribe fast model override (blank for automatic)",
+    placeholder: "openai/gpt-5.4-mini-fast",
+  })
+  if (utilityModel === null) return null
+
+  const enabledMcpsValue = await p.multiselect({
+    message: "Enable built-in MCPs",
+    options: [
+      { value: "websearch", label: "websearch" },
+      { value: "context7", label: "context7" },
+      { value: "grep_app", label: "grep_app" },
+    ],
+    initialValues: ["websearch", "context7", "grep_app"],
+  })
+  if (p.isCancel(enabledMcpsValue)) {
+    p.cancel("Installation cancelled.")
+    return null
+  }
+
+  const sessionGuardian = await selectOrCancel<BooleanArg>({
+    message: "Enable Session Guardian behavior?",
+    options: [
+      { value: "yes", label: "Yes", hint: "Keep the built-in session lifecycle skill enabled" },
+      { value: "no", label: "No", hint: "Disable the session-guardian skill" },
+    ],
+    initialValue: "yes",
+  })
+  if (!sessionGuardian) return null
+
+  const anonymousTelemetry = await selectOrCancel<BooleanArg>({
+    message: "Enable anonymous telemetry?",
+    options: [
+      { value: "yes", label: "Yes", hint: "Daily active signal only; no prompts or code" },
+      { value: "no", label: "No", hint: "Write anonymous_telemetry=false" },
+    ],
+    initialValue: "yes",
+  })
+  if (!anonymousTelemetry) return null
+
   return {
     hasClaude: claude !== "no",
     isMax20: claude === "max20",
@@ -131,5 +244,18 @@ export async function promptInstallConfig(detected: DetectedConfig): Promise<Ins
     hasKimiForCoding: kimiForCoding === "yes",
     hasOpencodeGo: opencodeGo === "yes",
     hasVercelAiGateway: vercelAiGateway === "yes",
+    customProviderId,
+    customBaseUrl,
+    modelOverrides: {
+      captain: captainModel || undefined,
+      strategist: strategistModel || undefined,
+      foreman: foremanModel || undefined,
+      architect: architectModel || undefined,
+      reviewer: reviewerModel || undefined,
+      utility: utilityModel || undefined,
+    },
+    enabledMcps: enabledMcpsValue as string[],
+    sessionGuardianEnabled: sessionGuardian === "yes",
+    telemetryEnabled: anonymousTelemetry === "yes",
   }
 }

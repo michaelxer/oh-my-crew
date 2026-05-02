@@ -89,6 +89,9 @@
     "model_fallback": {
       "type": "boolean"
     },
+    "anonymous_telemetry": {
+      "type": "boolean"
+    },
     "agents": {
       "type": "object",
       "properties": {

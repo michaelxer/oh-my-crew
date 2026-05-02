@@ -16,14 +16,14 @@ const VERSION = packageJson.version
 const program = new Command()
 
 program
-  .name("oh-my-opencode")
-  .description("The ultimate OpenCode plugin - multi-model orchestration, LSP tools, and more")
+  .name("oh-my-crew")
+  .description("Oh My Crew for OpenCode - multi-agent orchestration, LSP tools, and more")
   .version(VERSION, "-v, --version", "Show version number")
   .enablePositionalOptions()
 
 program
   .command("install")
-  .description("Install and configure oh-my-opencode with interactive setup")
+  .description("Install and configure oh-my-crew with interactive setup")
   .option("--no-tui", "Run in non-interactive mode (requires all options)")
   .option("--claude <value>", "Claude subscription: no, yes, max20")
   .option("--openai <value>", "OpenAI/ChatGPT subscription: no, yes (default: no)")
@@ -34,14 +34,27 @@ program
   .option("--kimi-for-coding <value>", "Kimi For Coding subscription: no, yes (default: no)")
   .option("--opencode-go <value>", "OpenCode Go subscription: no, yes (default: no)")
   .option("--vercel-ai-gateway <value>", "Vercel AI Gateway: no, yes (default: no)")
+  .option("--custom-provider <value>", "Custom OpenAI-compatible provider: no, yes (default: no)")
+  .option("--custom-provider-id <id>", "Custom provider id, e.g. openrouter or axrai")
+  .option("--custom-base-url <url>", "Custom OpenAI-compatible base URL")
+  .option("--captain-model <provider/model>", "Model override for Captain - Ultraworker")
+  .option("--strategist-model <provider/model>", "Model override for Strategist - Deep Agent")
+  .option("--foreman-model <provider/model>", "Model override for Foreman - Plan Executor")
+  .option("--architect-model <provider/model>", "Model override for Architect - Plan Builder")
+  .option("--reviewer-model <provider/model>", "Model override for Sage, Auditor, and Advisor")
+  .option("--utility-model <provider/model>", "Model override for Scout and Scribe")
+  .option("--enable-mcp <comma-list>", "Enable built-in MCPs: websearch,context7,grep_app")
+  .option("--session-guardian <value>", "Session Guardian skill: no, yes (default: yes)")
+  .option("--disable-telemetry", "Persistently disable anonymous telemetry in oh-my-crew config")
   .option("--skip-auth", "Skip authentication setup hints")
   .addHelpText("after", `
 Examples:
-  $ bunx oh-my-opencode install
-  $ bunx oh-my-opencode install --no-tui --claude=max20 --openai=yes --gemini=yes --copilot=no
-  $ bunx oh-my-opencode install --no-tui --claude=no --gemini=no --copilot=yes --opencode-zen=yes
+  $ bunx oh-my-crew install
+  $ bunx oh-my-crew install --no-tui --claude=max20 --openai=yes --gemini=yes --copilot=no
+  $ bunx oh-my-crew install --no-tui --claude=no --gemini=no --copilot=yes --opencode-zen=yes
+  $ bunx oh-my-crew install --no-tui --claude=no --openai=no --gemini=no --copilot=no --custom-provider=yes --custom-provider-id=openrouter --custom-base-url=https://openrouter.ai/api/v1 --captain-model=openrouter/anthropic/claude-sonnet-4.6
 
-Model Providers (Priority: Native > Copilot > OpenCode Zen > Z.ai > Kimi > Vercel):
+Model Providers:
   Claude        Native anthropic/ models (Opus, Sonnet, Haiku)
   OpenAI        Native openai/ models (GPT-5.4 for Oracle)
   Gemini        Native google/ models (Gemini 3.1 Pro, Flash)
@@ -63,6 +76,18 @@ Model Providers (Priority: Native > Copilot > OpenCode Zen > Z.ai > Kimi > Verce
       kimiForCoding: options.kimiForCoding,
       opencodeGo: options.opencodeGo,
       vercelAiGateway: options.vercelAiGateway,
+      customProvider: options.customProvider,
+      customProviderId: options.customProviderId,
+      customBaseUrl: options.customBaseUrl,
+      captainModel: options.captainModel,
+      strategistModel: options.strategistModel,
+      foremanModel: options.foremanModel,
+      architectModel: options.architectModel,
+      reviewerModel: options.reviewerModel,
+      utilityModel: options.utilityModel,
+      enableMcp: options.enableMcp,
+      sessionGuardian: options.sessionGuardian,
+      disableTelemetry: options.disableTelemetry ?? false,
       skipAuth: options.skipAuth ?? false,
     }
     const exitCode = await install(args)

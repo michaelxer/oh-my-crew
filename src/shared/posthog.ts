@@ -36,6 +36,10 @@ type PostHogClient = {
   shutdown: () => Promise<void>
 }
 
+type PostHogOptions = {
+  enabled?: boolean
+}
+
 const NO_OP_POSTHOG: PostHogClient = {
   trackActive: () => undefined,
   shutdown: async () => undefined,
@@ -103,7 +107,12 @@ function getSharedProperties(source: PostHogSource): NonNullable<PostHogCaptureE
 function createPostHogClient(
   source: PostHogSource,
   options: ConstructorParameters<typeof PostHog>[1],
+  posthogOptions: PostHogOptions = {},
 ): PostHogClient {
+  if (posthogOptions.enabled === false) {
+    return NO_OP_POSTHOG
+  }
+
   if (shouldDisablePostHog() || !hasPostHogApiKey()) {
     return NO_OP_POSTHOG
   }
@@ -148,18 +157,18 @@ export function getPostHogDistinctId(): string {
     .digest("hex")
 }
 
-export function createCliPostHog(): PostHogClient {
+export function createCliPostHog(posthogOptions: PostHogOptions = {}): PostHogClient {
   return createPostHogClient("cli", {
     enableExceptionAutocapture: false,
     flushAt: 1,
     flushInterval: 0,
-  })
+  }, posthogOptions)
 }
 
-export function createPluginPostHog(): PostHogClient {
+export function createPluginPostHog(posthogOptions: PostHogOptions = {}): PostHogClient {
   return createPostHogClient("plugin", {
     enableExceptionAutocapture: false,
     flushAt: 1,
     flushInterval: 0,
-  })
+  }, posthogOptions)
 }

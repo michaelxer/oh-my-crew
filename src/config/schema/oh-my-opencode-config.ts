@@ -44,6 +44,8 @@ export const OhMyOpenCodeConfigSchema = z.object({
   hashline_edit: z.boolean().optional(),
   /** Enable model fallback on API errors (default: false). Set to true to enable automatic model switching when model errors occur. */
   model_fallback: z.boolean().optional(),
+  /** Anonymous daily-active telemetry. Set false to disable without environment variables. */
+  anonymous_telemetry: z.boolean().optional(),
   agents: AgentOverridesSchema.optional(),
   categories: CategoriesConfigSchema.optional(),
   claude_code: ClaudeCodeConfigSchema.optional(),

@@ -1037,6 +1037,45 @@ describe("createBuiltinAgents with requiresAnyModel gating (sisyphus)", () => {
       cacheSpy.mockRestore()
     }
   })
+
+  test("atlas is created on first run when no model cache or system default exists", async () => {
+    // #given
+    const providerModelsSpy = spyOn(connectedProvidersCache, "readProviderModelsCache").mockReturnValue(null)
+    const cacheSpy = spyOn(connectedProvidersCache, "readConnectedProvidersCache").mockReturnValue(null)
+    const fetchSpy = spyOn(shared, "fetchAvailableModels").mockResolvedValue(new Set())
+
+    try {
+      // #when
+      const agents = await createBuiltinAgents([], {}, undefined, undefined, undefined, undefined, [], {})
+
+      // #then
+      expect(agents.atlas).toBeDefined()
+      expect(agents.atlas.model).toBe("anthropic/claude-sonnet-4.6")
+    } finally {
+      providerModelsSpy.mockRestore()
+      cacheSpy.mockRestore()
+      fetchSpy.mockRestore()
+    }
+  })
+
+  test("disabled atlas stays disabled on first run fallback path", async () => {
+    // #given
+    const providerModelsSpy = spyOn(connectedProvidersCache, "readProviderModelsCache").mockReturnValue(null)
+    const cacheSpy = spyOn(connectedProvidersCache, "readConnectedProvidersCache").mockReturnValue(null)
+    const fetchSpy = spyOn(shared, "fetchAvailableModels").mockResolvedValue(new Set())
+
+    try {
+      // #when
+      const agents = await createBuiltinAgents(["atlas"], {}, undefined, undefined, undefined, undefined, [], {})
+
+      // #then
+      expect(agents.atlas).toBeUndefined()
+    } finally {
+      providerModelsSpy.mockRestore()
+      cacheSpy.mockRestore()
+      fetchSpy.mockRestore()
+    }
+  })
 })
 
 describe("buildAgent with category and skills", () => {

@@ -80,6 +80,22 @@ Session Guardian is **auto-loaded** for Captain and Strategist -- no configurati
 
 ### Step 1: Add to plugin config
 
+Recommended wizard:
+
+```bash
+npx oh-my-crew install
+```
+
+or:
+
+```bash
+bunx oh-my-crew install
+```
+
+For scripted setup, see [docs/guide/installation.md](docs/guide/installation.md).
+
+Manual config is also supported.
+
 Edit `~/.config/opencode/opencode.json` (or `opencode.jsonc`) and add `"oh-my-crew"` to the plugin array:
 
 ```json
@@ -98,7 +114,7 @@ OpenCode will auto-install the plugin from npm on startup. If the crew agents do
 
 ```bash
 cd ~/.config/opencode
-npm install oh-my-crew
+npm install oh-my-crew --save
 ```
 
 Then restart OpenCode again.
@@ -107,7 +123,8 @@ Then restart OpenCode again.
 
 ```bash
 opencode
-# You should see Captain, Strategist, Sage, etc. in the agent dropdown
+opencode agent list
+# You should see Captain, Strategist, Foreman, Sage, etc. in the agent dropdown/list
 # Type "ultrawork" to activate all agents
 ```
 
@@ -125,7 +142,7 @@ opencode
 }
 ```
 
-Anonymous telemetry is enabled by default to track active installations (DAU/WAU/MAU). A single event is sent at most once per UTC day per machine using a hashed installation identifier, never the raw hostname, and PostHog person profiles are not created. Disable with `OMO_SEND_ANONYMOUS_TELEMETRY=0` or `OMO_DISABLE_POSTHOG=1`. See [Privacy Policy](docs/legal/privacy-policy.md) and [Terms of Service](docs/legal/terms-of-service.md).
+Anonymous telemetry is enabled by default to track active installations (DAU/WAU/MAU). A single event is sent at most once per UTC day per machine using a hashed installation identifier, never the raw hostname, and PostHog person profiles are not created. Disable with `npx oh-my-crew install --disable-telemetry`, `OMO_SEND_ANONYMOUS_TELEMETRY=0`, or `OMO_DISABLE_POSTHOG=1`. See [Privacy Policy](docs/legal/privacy-policy.md) and [Terms of Service](docs/legal/terms-of-service.md).
 
 ---
 

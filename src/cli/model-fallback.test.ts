@@ -33,6 +33,38 @@ describe("generateModelConfig", () => {
       // #then should use ULTIMATE_FALLBACK for everything
       expect(result).toMatchSnapshot()
     })
+
+    test("applies installer model, MCP, session guardian, and telemetry selections", () => {
+      // #given scripted installer choices
+      const config = createConfig({
+        modelOverrides: {
+          captain: "custom/opus",
+          foreman: "custom/sonnet",
+          architect: "custom/planner",
+          reviewer: "custom/reviewer",
+          utility: "custom/fast",
+        },
+        enabledMcps: ["websearch", "context7"],
+        sessionGuardianEnabled: false,
+        telemetryEnabled: false,
+      })
+
+      // #when
+      const result = generateModelConfig(config)
+
+      // #then
+      expect(result.agents?.sisyphus?.model).toBe("custom/opus")
+      expect(result.agents?.atlas?.model).toBe("custom/sonnet")
+      expect(result.agents?.prometheus?.model).toBe("custom/planner")
+      expect(result.agents?.oracle?.model).toBe("custom/reviewer")
+      expect(result.agents?.momus?.model).toBe("custom/reviewer")
+      expect(result.agents?.metis?.model).toBe("custom/reviewer")
+      expect(result.agents?.explore?.model).toBe("custom/fast")
+      expect(result.agents?.librarian?.model).toBe("custom/fast")
+      expect(result.disabled_mcps).toEqual(["grep_app"])
+      expect(result.disabled_skills).toEqual(["session-guardian"])
+      expect(result.anonymous_telemetry).toBe(false)
+    })
   })
 
   describe("single native provider", () => {
@@ -447,8 +479,8 @@ describe("generateModelConfig", () => {
       const result = generateModelConfig(config)
 
       // #then
-      expect(result.agents?.["Cadet"]?.model).toBe("openai/gpt-5.5")
-      expect(result.agents?.["Cadet"]?.variant).toBe("medium")
+      expect(result.agents?.["sisyphus-junior"]?.model).toBe("openai/gpt-5.5")
+      expect(result.agents?.["sisyphus-junior"]?.variant).toBe("medium")
     })
   })
 

@@ -17,7 +17,16 @@ export const SYMBOLS = {
   star: color.yellow("*"),
 }
 
+const BUILTIN_MCP_NAMES = new Set(["websearch", "context7", "grep_app"])
 const ANSI_COLOR_PATTERN = new RegExp("\u001b\\[[0-9;]*m", "g")
+
+function parseCommaList(value: string | undefined): string[] | undefined {
+  if (value === undefined) return undefined
+  return value
+    .split(",")
+    .map((entry) => entry.trim())
+    .filter(Boolean)
+}
 
 function formatProvider(name: string, enabled: boolean, detail?: string): string {
   const status = enabled ? SYMBOLS.check : color.dim("○")
@@ -40,7 +49,9 @@ export function formatConfigSummary(config: InstallConfig): string {
   lines.push(formatProvider("OpenCode Zen", config.hasOpencodeZen, "opencode/ models"))
   lines.push(formatProvider("Z.ai Coding Plan", config.hasZaiCodingPlan, "Librarian/Multimodal"))
   lines.push(formatProvider("Kimi For Coding", config.hasKimiForCoding, "Sisyphus/Prometheus fallback"))
+  lines.push(formatProvider("OpenCode Go", config.hasOpencodeGo, "quick tasks"))
   lines.push(formatProvider("Vercel AI Gateway", config.hasVercelAiGateway, "universal proxy"))
+  lines.push(formatProvider("Custom provider", !!config.customProviderId, config.customProviderId))
 
   lines.push("")
   lines.push(color.dim("─".repeat(40)))
@@ -50,6 +61,19 @@ export function formatConfigSummary(config: InstallConfig): string {
   lines.push("")
   lines.push(`  ${SYMBOLS.info} Models auto-configured based on provider priority`)
   lines.push(`  ${SYMBOLS.bullet} Priority: Native > Copilot > OpenCode Zen > Z.ai`)
+
+  if (config.enabledMcps) {
+    lines.push("")
+    lines.push(`${SYMBOLS.info} Built-in MCPs: ${config.enabledMcps.length > 0 ? config.enabledMcps.join(", ") : "none"}`)
+  }
+
+  if (config.sessionGuardianEnabled !== undefined) {
+    lines.push(`${SYMBOLS.info} Session Guardian: ${config.sessionGuardianEnabled ? "enabled" : "disabled"}`)
+  }
+
+  if (config.telemetryEnabled === false) {
+    lines.push(`${SYMBOLS.info} Anonymous telemetry: disabled`)
+  }
 
   return lines.join("\n")
 }
@@ -158,6 +182,31 @@ export function validateNonTuiArgs(args: InstallArgs): { valid: boolean; errors:
     errors.push(`Invalid --vercel-ai-gateway value: ${args.vercelAiGateway} (expected: no, yes)`)
   }
 
+  if (args.customProvider !== undefined && !["no", "yes"].includes(args.customProvider)) {
+    errors.push(`Invalid --custom-provider value: ${args.customProvider} (expected: no, yes)`)
+  }
+
+  if (args.customProvider === "yes" && !args.customProviderId) {
+    errors.push("--custom-provider-id is required when --custom-provider=yes")
+  }
+
+  if (args.customBaseUrl && !/^https?:\/\//.test(args.customBaseUrl)) {
+    errors.push("--custom-base-url must start with http:// or https://")
+  }
+
+  if (args.sessionGuardian !== undefined && !["no", "yes"].includes(args.sessionGuardian)) {
+    errors.push(`Invalid --session-guardian value: ${args.sessionGuardian} (expected: no, yes)`)
+  }
+
+  const enabledMcps = parseCommaList(args.enableMcp)
+  if (enabledMcps) {
+    for (const mcp of enabledMcps) {
+      if (!BUILTIN_MCP_NAMES.has(mcp)) {
+        errors.push(`Invalid --enable-mcp entry: ${mcp} (expected one of: websearch, context7, grep_app)`)
+      }
+    }
+  }
+
   return { valid: errors.length === 0, errors }
 }
 
@@ -170,9 +219,22 @@ export function argsToConfig(args: InstallArgs): InstallConfig {
     hasCopilot: args.copilot === "yes",
     hasOpencodeZen: args.opencodeZen === "yes",
     hasZaiCodingPlan: args.zaiCodingPlan === "yes",
-hasKimiForCoding: args.kimiForCoding === "yes",
+    hasKimiForCoding: args.kimiForCoding === "yes",
     hasOpencodeGo: args.opencodeGo === "yes",
     hasVercelAiGateway: args.vercelAiGateway === "yes",
+    customProviderId: args.customProvider === "yes" ? args.customProviderId : undefined,
+    customBaseUrl: args.customProvider === "yes" ? args.customBaseUrl : undefined,
+    modelOverrides: {
+      captain: args.captainModel,
+      strategist: args.strategistModel,
+      foreman: args.foremanModel,
+      architect: args.architectModel,
+      utility: args.utilityModel,
+      reviewer: args.reviewerModel,
+    },
+    enabledMcps: parseCommaList(args.enableMcp),
+    sessionGuardianEnabled: args.sessionGuardian === undefined ? undefined : args.sessionGuardian === "yes",
+    telemetryEnabled: args.disableTelemetry ? false : undefined,
   }
 }
 
@@ -183,7 +245,7 @@ export function detectedToInitialValues(detected: DetectedConfig): {
   copilot: BooleanArg
   opencodeZen: BooleanArg
   zaiCodingPlan: BooleanArg
-kimiForCoding: BooleanArg
+  kimiForCoding: BooleanArg
   opencodeGo: BooleanArg
   vercelAiGateway: BooleanArg
 } {
@@ -199,7 +261,7 @@ kimiForCoding: BooleanArg
     copilot: detected.hasCopilot ? "yes" : "no",
     opencodeZen: detected.hasOpencodeZen ? "yes" : "no",
     zaiCodingPlan: detected.hasZaiCodingPlan ? "yes" : "no",
-kimiForCoding: detected.hasKimiForCoding ? "yes" : "no",
+    kimiForCoding: detected.hasKimiForCoding ? "yes" : "no",
     opencodeGo: detected.hasOpencodeGo ? "yes" : "no",
     vercelAiGateway: detected.hasVercelAiGateway ? "yes" : "no",
   }

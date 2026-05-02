@@ -1,5 +1,5 @@
 import { existsSync, readFileSync } from "node:fs"
-import { parseJsonc, LEGACY_PLUGIN_NAME, PLUGIN_NAME } from "../../shared"
+import { ACCEPTED_PACKAGE_NAMES, parseJsonc } from "../../shared"
 import type { DetectedConfig } from "../types"
 import { getOmoConfigPath } from "./config-context"
 import { detectConfigFormat } from "./opencode-config-format"
@@ -62,8 +62,9 @@ function detectProvidersFromOmoConfig(): {
 }
 
 function isOurPlugin(plugin: string): boolean {
-  return plugin === PLUGIN_NAME || plugin.startsWith(`${PLUGIN_NAME}@`) ||
-         plugin === LEGACY_PLUGIN_NAME || plugin.startsWith(`${LEGACY_PLUGIN_NAME}@`)
+  return ACCEPTED_PACKAGE_NAMES.some(
+    (name) => plugin === name || plugin.startsWith(`${name}@`)
+  )
 }
 
 function findOurPluginEntry(plugins: string[]): string | null {

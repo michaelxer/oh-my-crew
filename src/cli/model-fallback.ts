@@ -24,6 +24,7 @@ const ZAI_MODEL = "zai-coding-plan/glm-4.7"
 
 const ULTIMATE_FALLBACK = "opencode/gpt-5-nano"
 const SCHEMA_URL = "https://raw.githubusercontent.com/code-yeongyu/oh-my-openagent/dev/assets/oh-my-opencode.schema.json"
+const BUILTIN_MCPS = ["websearch", "context7", "grep_app"] as const
 
 function toFallbackModelObject(entry: FallbackEntry, provider: string): FallbackModelObject {
   return {
@@ -108,7 +109,7 @@ export function generateModelConfig(config: InstallConfig): GeneratedOmoConfig {
     avail.opencodeGo ||
     avail.vercelAiGateway
   if (!hasAnyProvider) {
-    return {
+    return applyInstallerSelections({
       $schema: SCHEMA_URL,
       agents: Object.fromEntries(
         Object.entries(CLI_AGENT_MODEL_REQUIREMENTS)
@@ -118,7 +119,7 @@ export function generateModelConfig(config: InstallConfig): GeneratedOmoConfig {
       categories: Object.fromEntries(
         Object.keys(CLI_CATEGORY_MODEL_REQUIREMENTS).map((cat) => [cat, { model: ULTIMATE_FALLBACK }])
       ),
-    }
+    }, config)
   }
 
   const agents: Record<string, AgentConfig> = {}
@@ -224,9 +225,66 @@ export function generateModelConfig(config: InstallConfig): GeneratedOmoConfig {
     categories,
   }
 
-  return isOpenAiOnlyAvailability(avail)
+  const configWithOpenAiCatalog = isOpenAiOnlyAvailability(avail)
     ? applyOpenAiOnlyModelCatalog(generatedConfig)
     : generatedConfig
+
+  return applyInstallerSelections(configWithOpenAiCatalog, config)
+}
+
+function applyInstallerSelections(
+  generatedConfig: GeneratedOmoConfig,
+  installConfig: InstallConfig,
+): GeneratedOmoConfig {
+  const config: GeneratedOmoConfig = {
+    ...generatedConfig,
+    agents: { ...(generatedConfig.agents ?? {}) },
+  }
+
+  const setAgentModel = (agent: string, model: string | undefined) => {
+    if (!model) return
+    config.agents = {
+      ...(config.agents ?? {}),
+      [agent]: {
+        ...((config.agents ?? {})[agent] ?? {}),
+        model,
+      },
+    }
+  }
+
+  setAgentModel("sisyphus", installConfig.modelOverrides?.captain)
+  setAgentModel("hephaestus", installConfig.modelOverrides?.strategist)
+  setAgentModel("atlas", installConfig.modelOverrides?.foreman)
+  setAgentModel("prometheus", installConfig.modelOverrides?.architect)
+  for (const agent of ["oracle", "momus", "metis"]) {
+    setAgentModel(agent, installConfig.modelOverrides?.reviewer)
+  }
+  for (const agent of ["explore", "librarian"]) {
+    setAgentModel(agent, installConfig.modelOverrides?.utility)
+  }
+
+  if (installConfig.enabledMcps) {
+    const enabled = new Set(installConfig.enabledMcps)
+    config.disabled_mcps = BUILTIN_MCPS.filter((mcp) => !enabled.has(mcp))
+  }
+
+  if (installConfig.sessionGuardianEnabled === false) {
+    config.disabled_skills = ["session-guardian"]
+  }
+
+  if (installConfig.telemetryEnabled === false) {
+    config.anonymous_telemetry = false
+  }
+
+  if (installConfig.customProviderId) {
+    config.custom_provider = {
+      id: installConfig.customProviderId,
+      ...(installConfig.customBaseUrl ? { base_url: installConfig.customBaseUrl } : {}),
+      key: "Set the API key in your OpenCode provider auth or environment; oh-my-crew does not write secrets.",
+    }
+  }
+
+  return config
 }
 
 export function shouldShowChatGPTOnlyWarning(config: InstallConfig): boolean {

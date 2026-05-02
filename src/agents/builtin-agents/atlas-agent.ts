@@ -4,8 +4,9 @@ import type { CategoriesConfig, CategoryConfig } from "../../config/schema"
 import type { AvailableAgent, AvailableSkill } from "../dynamic-agent-prompt-builder"
 import { AGENT_MODEL_REQUIREMENTS } from "../../shared"
 import { applyOverrides } from "./agent-overrides"
-import { applyModelResolution } from "./model-resolution"
+import { applyModelResolution, getFirstFallbackModel } from "./model-resolution"
 import { createAtlasAgent } from "../atlas"
+import { log } from "../../shared/logger"
 
 export function maybeCreateAtlasConfig(input: {
   disabledAgents: string[]
@@ -38,7 +39,7 @@ export function maybeCreateAtlasConfig(input: {
   const orchestratorOverride = agentOverrides["atlas"]
   const atlasRequirement = AGENT_MODEL_REQUIREMENTS["atlas"]
 
-  const atlasResolution = applyModelResolution({
+  let atlasResolution = applyModelResolution({
     uiSelectedModel: orchestratorOverride?.model !== undefined ? undefined : uiSelectedModel,
     userModel: orchestratorOverride?.model,
     requirement: atlasRequirement,
@@ -46,6 +47,16 @@ export function maybeCreateAtlasConfig(input: {
     systemDefaultModel,
   })
 
+  if (!atlasResolution) {
+    if (orchestratorOverride?.model) {
+      log("[agent-registration] User-configured Atlas model not resolved, using as-is", {
+        configuredModel: orchestratorOverride.model,
+      })
+      atlasResolution = { model: orchestratorOverride.model, provenance: "override" as const }
+    } else {
+      atlasResolution = getFirstFallbackModel(atlasRequirement)
+    }
+  }
   if (!atlasResolution) return undefined
   const { model: atlasModel, variant: atlasResolvedVariant } = atlasResolution
 
