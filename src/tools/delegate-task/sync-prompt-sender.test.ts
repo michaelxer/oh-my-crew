@@ -34,7 +34,7 @@ bunDescribe("sendSyncPrompt", () => {
 
     const input = {
       sessionID: "test-session",
-      agentToUse: "sisyphus-junior",
+      agentToUse: "Cadet",
       args: {
         description: "test task",
         prompt: "test prompt",
@@ -193,7 +193,7 @@ bunDescribe("sendSyncPrompt", () => {
 
     const input = {
       sessionID: "test-session",
-      agentToUse: "sisyphus-junior",
+      agentToUse: "Cadet",
       args: {
         description: "test task",
         prompt: "test prompt",
@@ -216,7 +216,7 @@ bunDescribe("sendSyncPrompt", () => {
 
     //#then
     bunExpect(promptAsync).toHaveBeenCalled()
-    bunExpect(promptArgs.body.agent).toBe("sisyphus-junior")
+    bunExpect(promptArgs.body.agent).toBe("Cadet")
     bunExpect(promptArgs.body.model).toEqual({
       providerID: "openai",
       modelID: "gpt-5.4",
@@ -301,7 +301,7 @@ bunDescribe("sendSyncPrompt", () => {
 
     const input = {
       sessionID: "test-session",
-      agentToUse: "sisyphus-junior",
+      agentToUse: "Cadet",
       args: {
         description: "test task",
         prompt: "test prompt",

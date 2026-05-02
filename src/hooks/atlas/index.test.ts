@@ -274,7 +274,7 @@ session_id: ses_subagent_abc
 </task_metadata>`,
         metadata: {
           sessionId: "ses_subagent_abc",
-          agent: "sisyphus-junior",
+          agent: "Cadet",
           category: "quick",
           truncated: false,
         } as Record<string, unknown>,
@@ -289,7 +289,7 @@ session_id: ses_subagent_abc
       // then - output is transformed but metadata is preserved
       expect(output.output).toContain("SUBAGENT WORK COMPLETED")
       expect(output.metadata.sessionId).toBe("ses_subagent_abc")
-      expect(output.metadata.agent).toBe("sisyphus-junior")
+      expect(output.metadata.agent).toBe("Cadet")
       expect(output.metadata.category).toBe("quick")
       expect(output.metadata.truncated).toBe(false)
 
@@ -311,7 +311,7 @@ session_id: ses_standalone_def
 </task_metadata>`,
         metadata: {
           sessionId: "ses_standalone_def",
-          agent: "sisyphus-junior",
+          agent: "Cadet",
           model: { providerID: "openai", modelID: "gpt-5.4" },
           truncated: false,
         } as Record<string, unknown>,
@@ -326,7 +326,7 @@ session_id: ses_standalone_def
       // then - standalone verification appended but metadata preserved
       expect(output.output).toContain("LYING")
       expect(output.metadata.sessionId).toBe("ses_standalone_def")
-      expect(output.metadata.agent).toBe("sisyphus-junior")
+      expect(output.metadata.agent).toBe("Cadet")
       expect(output.metadata.model).toEqual({ providerID: "openai", modelID: "gpt-5.4" })
       expect(output.metadata.truncated).toBe(false)
 
@@ -643,7 +643,7 @@ session_id: ses_standalone_def
 session_id: ses_auth_flow_123
 </task_metadata>`,
         metadata: {
-          agent: "sisyphus-junior",
+          agent: "Cadet",
           category: "deep",
         },
       }
@@ -658,7 +658,7 @@ session_id: ses_auth_flow_123
      const updatedState = readBoulderState(TEST_DIR)
       expect(updatedState?.task_sessions?.["todo:1"]?.session_id).toBe("ses_auth_flow_123")
       expect(updatedState?.task_sessions?.["todo:1"]?.task_title).toBe("Implement auth flow")
-      expect(updatedState?.task_sessions?.["todo:1"]?.agent).toBe("sisyphus-junior")
+      expect(updatedState?.task_sessions?.["todo:1"]?.agent).toBe("Cadet")
       expect(updatedState?.task_sessions?.["todo:1"]?.category).toBe("deep")
 
       cleanupMessageStorage(sessionID)
@@ -710,7 +710,7 @@ session_id: ses_auth_flow_123
 session_id: ses_auth_flow_123
 </task_metadata>`,
           metadata: {
-            agent: "sisyphus-junior",
+            agent: "Cadet",
             category: "deep",
           },
         }
@@ -760,7 +760,7 @@ session_id: ses_auth_flow_123
 session_id: ses_old_task_111
 </task_metadata>`,
         metadata: {
-          agent: "sisyphus-junior",
+          agent: "Cadet",
           category: "deep",
         },
       }
@@ -1155,7 +1155,7 @@ session_id: ses_untrusted_999
       test("should NOT append reminder when non-orchestrator writes outside .sisyphus/", async () => {
         // given
         const nonOrchestratorSession = "non-orchestrator-session"
-        setupMessageStorage(nonOrchestratorSession, "sisyphus-junior")
+        setupMessageStorage(nonOrchestratorSession, "Cadet")
         
         const hook = createAtlasHook(createMockPluginInput())
         const originalOutput = "File written successfully"
@@ -1818,10 +1818,10 @@ session_id: ses_untrusted_999
         started_at: "2026-01-02T10:00:00Z",
         session_ids: [MAIN_SESSION_ID],
         plan_name: "test-plan",
-        agent: "Atlas - Plan Executor",
+        agent: "Foreman - Plan Executor",
       }
       writeBoulderState(TEST_DIR, state)
-      registerAgentName("Atlas - Plan Executor")
+      registerAgentName("Foreman - Plan Executor")
 
       const mockInput = createMockPluginInput()
       const hook = createAtlasHook(mockInput)
@@ -1837,7 +1837,7 @@ session_id: ses_untrusted_999
       // then
       expect(mockInput._promptMock).toHaveBeenCalled()
       const callArgs = mockInput._promptMock.mock.calls[0][0]
-      expect(callArgs.body.agent).toBe("Atlas - Plan Executor")
+      expect(callArgs.body.agent).toBe("Foreman - Plan Executor")
       expect(callArgs.body.agent).not.toBe("atlas")
     })
 

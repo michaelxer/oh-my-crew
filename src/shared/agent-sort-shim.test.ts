@@ -13,10 +13,10 @@ describe("agent-sort-shim", () => {
     describe("#when toSorted with alphabetical compareFn", () => {
       test("#then returns canonical sisyphus->hephaestus->prometheus->atlas order", () => {
         // given
-        const sisyphus = { name: "Sisyphus - Ultraworker" }
-        const hephaestus = { name: "Hephaestus - Deep Agent" }
-        const prometheus = { name: "Prometheus - Plan Builder" }
-        const atlas = { name: "Atlas - Plan Executor" }
+        const sisyphus = { name: "Captain - Ultraworker" }
+        const hephaestus = { name: "Strategist - Deep Agent" }
+        const prometheus = { name: "Architect - Plan Builder" }
+        const atlas = { name: "Foreman - Plan Executor" }
         const input = [atlas, prometheus, hephaestus, sisyphus]
 
         // when
@@ -32,10 +32,10 @@ describe("agent-sort-shim", () => {
     describe("#when toSorted with alphabetical compareFn", () => {
       test("#then core agents come first in canonical order followed by non-core agents alphabetically", () => {
         // given
-        const sisyphus = { name: "Sisyphus - Ultraworker" }
-        const hephaestus = { name: "Hephaestus - Deep Agent" }
-        const prometheus = { name: "Prometheus - Plan Builder" }
-        const atlas = { name: "Atlas - Plan Executor" }
+        const sisyphus = { name: "Captain - Ultraworker" }
+        const hephaestus = { name: "Strategist - Deep Agent" }
+        const prometheus = { name: "Architect - Plan Builder" }
+        const atlas = { name: "Foreman - Plan Executor" }
         const build = { name: "build" }
         const plan = { name: "plan" }
         const input = [atlas, build, prometheus, plan, hephaestus, sisyphus]
@@ -55,7 +55,7 @@ describe("agent-sort-shim", () => {
         // given
         const oracle = { name: "oracle" }
         const librarian = { name: "librarian" }
-        const sisyphus = { name: "Sisyphus - Ultraworker" }
+        const sisyphus = { name: "Captain - Ultraworker" }
         const explore = { name: "explore" }
         const input = [oracle, librarian, sisyphus, explore]
 
@@ -74,8 +74,8 @@ describe("agent-sort-shim", () => {
     describe("#when toSorted with a string-coercing compareFn", () => {
       test("#then activation predicate fails, shim does not throw, and result matches native semantics", () => {
         // given
-        const sisyphusObj = { name: "Sisyphus - Ultraworker" }
-        const hephaestusObj = { name: "Hephaestus - Deep Agent" }
+        const sisyphusObj = { name: "Captain - Ultraworker" }
+        const hephaestusObj = { name: "Strategist - Deep Agent" }
         const input: unknown[] = [null, sisyphusObj, "string", 42, hephaestusObj]
         const compare = (a: unknown, b: unknown): number => {
           const sa = String(a)
@@ -129,10 +129,10 @@ describe("agent-sort-shim", () => {
     describe("#when sort with alphabetical compareFn (in-place)", () => {
       test("#then mutates the original array to canonical order", () => {
         // given
-        const sisyphus = { name: "Sisyphus - Ultraworker" }
-        const hephaestus = { name: "Hephaestus - Deep Agent" }
-        const prometheus = { name: "Prometheus - Plan Builder" }
-        const atlas = { name: "Atlas - Plan Executor" }
+        const sisyphus = { name: "Captain - Ultraworker" }
+        const hephaestus = { name: "Strategist - Deep Agent" }
+        const prometheus = { name: "Architect - Plan Builder" }
+        const atlas = { name: "Foreman - Plan Executor" }
         const input = [atlas, prometheus, hephaestus, sisyphus]
 
         // when
@@ -151,10 +151,10 @@ describe("agent-sort-shim", () => {
         // given
         installAgentSortShim()
         installAgentSortShim()
-        const sisyphus = { name: "Sisyphus - Ultraworker" }
-        const hephaestus = { name: "Hephaestus - Deep Agent" }
-        const prometheus = { name: "Prometheus - Plan Builder" }
-        const atlas = { name: "Atlas - Plan Executor" }
+        const sisyphus = { name: "Captain - Ultraworker" }
+        const hephaestus = { name: "Strategist - Deep Agent" }
+        const prometheus = { name: "Architect - Plan Builder" }
+        const atlas = { name: "Foreman - Plan Executor" }
         const input = [atlas, prometheus, hephaestus, sisyphus]
 
         // when

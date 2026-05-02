@@ -191,7 +191,7 @@ describe("checkCompletionConditions continuation coverage", () => {
     })) as unknown as RunContext["client"]["session"]["get"]
     ctx.client.session.messages = mock(async ({ path }: { path: { id: string } }) => ({
       data: path.id === "mismatch-subagent-session"
-        ? [{ info: { agent: "sisyphus-junior", providerID: "openai", modelID: "gpt-5.4" } }]
+        ? [{ info: { agent: "Cadet", providerID: "openai", modelID: "gpt-5.4" } }]
         : [],
     })) as unknown as RunContext["client"]["session"]["messages"]
 
@@ -226,7 +226,7 @@ describe("checkCompletionConditions continuation coverage", () => {
     })) as unknown as RunContext["client"]["session"]["get"]
     ctx.client.session.messages = mock(async ({ path }: { path: { id: string } }) => ({
       data: path.id === "appended-mismatch-session"
-        ? [{ info: { agent: "sisyphus-junior", providerID: "openai", modelID: "gpt-5.4" } }]
+        ? [{ info: { agent: "Cadet", providerID: "openai", modelID: "gpt-5.4" } }]
         : [],
     })) as unknown as RunContext["client"]["session"]["messages"]
 
@@ -374,7 +374,7 @@ describe("checkCompletionConditions continuation coverage", () => {
     })) as unknown as RunContext["client"]["session"]["get"]
     ctx.client.session.messages = mock(async ({ path }: { path: { id: string } }) => ({
       data: path.id === "ses_direct_child"
-        ? [{ info: { agent: "sisyphus-junior", providerID: "openai", modelID: "gpt-5.4" } }]
+        ? [{ info: { agent: "Cadet", providerID: "openai", modelID: "gpt-5.4" } }]
         : [],
     })) as unknown as RunContext["client"]["session"]["messages"]
 
@@ -448,7 +448,7 @@ describe("checkCompletionConditions continuation coverage", () => {
         ? [
             { id: "msg_0001", info: { agent: "atlas", providerID: "openai", modelID: "gpt-5.4", time: { created: 100 } } },
             { id: "msg_0003", info: { agent: "compaction", providerID: "openai", modelID: "gpt-5.4", time: { created: 200 } } },
-            { id: "msg_0002", info: { agent: "sisyphus-junior", providerID: "openai", modelID: "gpt-5.4", time: { created: 100 } } },
+            { id: "msg_0002", info: { agent: "Cadet", providerID: "openai", modelID: "gpt-5.4", time: { created: 100 } } },
           ]
         : [],
     })) as unknown as RunContext["client"]["session"]["messages"]

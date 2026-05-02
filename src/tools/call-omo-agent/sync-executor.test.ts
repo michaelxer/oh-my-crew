@@ -133,7 +133,7 @@ describe("executeSync", () => {
 
     //#then
     const promptInput = recorder.getCapturedInput()
-    expect(promptInput?.body.agent).toBe("Sisyphus - Ultraworker")
+    expect(promptInput?.body.agent).toBe("Captain - Ultraworker")
   })
 
   test("returns processed response with task metadata footer", async () => {
@@ -308,7 +308,7 @@ describe("executeSync", () => {
     const toolContext = createToolContext()
     const recorder = createPromptAsyncRecorder()
     const args = {
-      subagent_type: "\u200BSisyphus - Ultraworker",
+      subagent_type: "\u200BCaptain - Ultraworker",
       description: "prefixed agent",
       prompt: "find something",
       run_in_background: false,
@@ -319,7 +319,7 @@ describe("executeSync", () => {
 
     //#then
     const promptInput = recorder.getCapturedInput()
-    expect(promptInput?.body.agent).toBe("Sisyphus - Ultraworker")
+    expect(promptInput?.body.agent).toBe("Captain - Ultraworker")
   })
 
   test("returns generic prompt failure with task metadata", async () => {
@@ -403,7 +403,7 @@ describe("executeSync", () => {
     const toolContext = createToolContext()
     const recorder = createPromptAsyncRecorder()
     const args = {
-      subagent_type: "\u200B\u200BHephaestus - Deep Agent",
+      subagent_type: "\u200B\u200BStrategist - Deep Agent",
       description: "legacy zwsp",
       prompt: "find something",
       run_in_background: false,
@@ -413,7 +413,7 @@ describe("executeSync", () => {
     await executeSync(args, toolContext, createContext(recorder.promptAsync) as never, deps)
 
     //#then
-    expect(recorder.getCapturedInput()?.body.agent).toBe("Hephaestus - Deep Agent")
+    expect(recorder.getCapturedInput()?.body.agent).toBe("Strategist - Deep Agent")
   })
 })
 

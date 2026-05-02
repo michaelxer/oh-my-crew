@@ -129,7 +129,7 @@ describe("atlas hook idle-event session lineage", () => {
 
     writeIncompleteBoulder({ agent: "atlas" })
     subagentSessions.add(subagentSessionID)
-    setSessionAgent(subagentSessionID, "sisyphus-junior")
+    setSessionAgent(subagentSessionID, "Cadet")
 
     const hook = createHook({
       [subagentSessionID]: MAIN_SESSION_ID,

@@ -2,7 +2,7 @@ import { existsSync, readFileSync } from "node:fs"
 import { join } from "node:path"
 import { parse, ParseError, printParseErrorCode } from "jsonc-parser"
 
-import { CONFIG_BASENAME, LEGACY_CONFIG_BASENAME } from "./plugin-identity"
+import { CONFIG_BASENAME, LEGACY_CONFIG_BASENAME, LEGACY_CONFIG_BASENAME_2 } from "./plugin-identity"
 
 export interface JsoncParseResult<T> {
   data: T | null
@@ -96,16 +96,23 @@ export function detectPluginConfigFile(dir: string): DetectPluginConfigResult {
 
   const canonicalResult = detectConfigFile(join(dir, CONFIG_BASENAME))
   const legacyResult = detectConfigFile(join(dir, LEGACY_CONFIG_BASENAME))
+  const legacyResult2 = detectConfigFile(join(dir, LEGACY_CONFIG_BASENAME_2))
 
   let detectionResult: DetectPluginConfigResult
 
   if (canonicalResult.format !== "none") {
     detectionResult = {
       ...canonicalResult,
-      legacyPath: legacyResult.format !== "none" ? legacyResult.path : undefined,
+      legacyPath: legacyResult.format !== "none"
+        ? legacyResult.path
+        : legacyResult2.format !== "none"
+          ? legacyResult2.path
+          : undefined,
     }
   } else if (legacyResult.format !== "none") {
     detectionResult = legacyResult
+  } else if (legacyResult2.format !== "none") {
+    detectionResult = legacyResult2
   } else {
     detectionResult = { format: "none", path: join(dir, `${CONFIG_BASENAME}.json`) }
   }

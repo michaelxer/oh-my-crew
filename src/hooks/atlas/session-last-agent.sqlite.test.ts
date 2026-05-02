@@ -12,7 +12,7 @@ describe("getLastAgentFromSession SQLite backend ordering", () => {
           data: [
             { id: "msg_0001", info: { agent: "atlas", time: { created: 100 } } },
             { id: "msg_0003", info: { agent: "compaction", time: { created: 200 } } },
-            { id: "msg_0002", info: { agent: "sisyphus-junior", time: { created: 100 } } },
+            { id: "msg_0002", info: { agent: "Cadet", time: { created: 100 } } },
           ],
         }),
       },
@@ -24,7 +24,7 @@ describe("getLastAgentFromSession SQLite backend ordering", () => {
     })
 
     // then
-    expect(result).toBe("sisyphus-junior")
+    expect(result).toBe("Cadet")
   })
 
   test("handles equal timestamps with random-looking ids deterministically", async () => {
@@ -35,7 +35,7 @@ describe("getLastAgentFromSession SQLite backend ordering", () => {
           data: [
             { id: "msg_a91f00ab", info: { agent: "atlas", time: { created: 100 } } },
             { id: "msg_f0e1d2c3", info: { agent: "compaction", time: { created: 200 } } },
-            { id: "msg_d4c3b2a1", info: { agent: "sisyphus-junior", time: { created: 100 } } },
+            { id: "msg_d4c3b2a1", info: { agent: "Cadet", time: { created: 100 } } },
           ],
         }),
       },
@@ -47,7 +47,7 @@ describe("getLastAgentFromSession SQLite backend ordering", () => {
     })
 
     // then
-    expect(result).toBe("sisyphus-junior")
+    expect(result).toBe("Cadet")
   })
 
   test("skips compaction marker user messages that retain the original agent", async () => {

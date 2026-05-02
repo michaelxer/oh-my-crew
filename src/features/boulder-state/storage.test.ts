@@ -340,7 +340,7 @@ describe("boulder-state", () => {
         taskLabel: "1",
         taskTitle: "Implement auth flow",
         sessionId: "ses_task_123",
-        agent: "sisyphus-junior",
+        agent: "Cadet",
         category: "deep",
       })
       const result = getTaskSessionState(TEST_DIR, "todo:1")
@@ -349,7 +349,7 @@ describe("boulder-state", () => {
       expect(result).not.toBeNull()
       expect(result?.session_id).toBe("ses_task_123")
       expect(result?.task_title).toBe("Implement auth flow")
-      expect(result?.agent).toBe("sisyphus-junior")
+      expect(result?.agent).toBe("Cadet")
       expect(result?.category).toBe("deep")
     })
 

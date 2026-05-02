@@ -131,7 +131,7 @@ export function buildHephaestusPrompt(
   const antiPatterns = buildAntiPatternsSection();
   const todoDiscipline = buildTodoDisciplineSection(useTaskSystem);
   const toolCallFormat = buildToolCallFormatSection();
-  return `You are Hephaestus, an autonomous deep worker for software engineering.
+  return `You are Strategist, an autonomous deep worker for software engineering.
 
 ## Identity
 
@@ -533,7 +533,7 @@ export function createHephaestusAgent(
 
   return {
     description:
-      "Autonomous Deep Worker - goal-oriented execution with GPT 5.4 Codex. Explores thoroughly before acting, uses explore/librarian agents for comprehensive context, completes tasks end-to-end. Inspired by AmpCode deep mode. (Hephaestus - OhMyOpenCode)",
+      "Autonomous Deep Worker - goal-oriented execution with GPT 5.4 Codex. Explores thoroughly before acting, uses explore/librarian agents for comprehensive context, completes tasks end-to-end. Inspired by AmpCode deep mode. (Strategist - OhMyCrew)",
     mode: MODE,
     model,
     maxTokens: 32000,

@@ -159,7 +159,7 @@ describe("Sisyphus-Junior model inheritance", () => {
 
     // #then
     const agentConfig = config.agent as Record<string, { model?: string }>
-    expect(agentConfig[getAgentDisplayName("sisyphus-junior")]?.model).toBe(
+    expect(agentConfig[getAgentDisplayName("Cadet")]?.model).toBe(
       sisyphusJunior.SISYPHUS_JUNIOR_DEFAULTS.model
     )
   })
@@ -168,7 +168,7 @@ describe("Sisyphus-Junior model inheritance", () => {
     // #given
     const pluginConfig = createPluginConfig({
       agents: {
-        "sisyphus-junior": {
+        "Cadet": {
           model: "openai/gpt-5.3-codex",
         },
       },
@@ -191,7 +191,7 @@ describe("Sisyphus-Junior model inheritance", () => {
 
     // #then
     const agentConfig = config.agent as Record<string, { model?: string }>
-    expect(agentConfig[getAgentDisplayName("sisyphus-junior")]?.model).toBe(
+    expect(agentConfig[getAgentDisplayName("Cadet")]?.model).toBe(
       "openai/gpt-5.3-codex"
     )
   })
@@ -1399,7 +1399,7 @@ describe("per-agent todowrite/todoread deny when task_system enabled", () => {
     getAgentListDisplayName("hephaestus"),
     getAgentListDisplayName("prometheus"),
     getAgentListDisplayName("atlas"),
-    getAgentDisplayName("sisyphus-junior"),
+    getAgentDisplayName("Cadet"),
   ])
 
   test("denies todowrite and todoread for primary agents when task_system is enabled", async () => {
@@ -1412,7 +1412,7 @@ describe("per-agent todowrite/todoread deny when task_system enabled", () => {
       hephaestus: { name: "hephaestus", prompt: "test", mode: "primary" },
       prometheus: { name: "prometheus", prompt: "test", mode: "primary" },
       atlas: { name: "atlas", prompt: "test", mode: "primary" },
-      "sisyphus-junior": { name: "sisyphus-junior", prompt: "test", mode: "subagent" },
+      "Cadet": { name: "Cadet", prompt: "test", mode: "subagent" },
       oracle: { name: "oracle", prompt: "test", mode: "subagent" },
     })
 

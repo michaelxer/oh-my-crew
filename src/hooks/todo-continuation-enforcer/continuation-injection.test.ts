@@ -33,14 +33,14 @@ describe("injectContinuation", () => {
       ctx: ctx as never,
       sessionID: "ses_display_name_agent",
       resolvedInfo: {
-        agent: "Sisyphus - Ultraworker",
+        agent: "Captain - Ultraworker",
         model: { providerID: "anthropic", modelID: "claude-sonnet-4-20250514" },
       },
       sessionStateStore: sessionStateStore as never,
     })
 
     // then
-    expect(capturedAgent).toBe("Sisyphus - Ultraworker")
+    expect(capturedAgent).toBe("Captain - Ultraworker")
   })
 
   test("inherits tools from resolved message info when reinjecting", async () => {

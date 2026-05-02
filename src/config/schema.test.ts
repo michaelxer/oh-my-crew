@@ -476,7 +476,7 @@ describe("Sisyphus-Junior agent override", () => {
     // given
     const config = {
       agents: {
-        "sisyphus-junior": {
+        "Cadet": {
           model: "openai/gpt-5.4",
           temperature: 0.2,
         },
@@ -489,9 +489,9 @@ describe("Sisyphus-Junior agent override", () => {
     // then
     expect(result.success).toBe(true)
     if (result.success) {
-      expect(result.data.agents?.["sisyphus-junior"]).toBeDefined()
-      expect(result.data.agents?.["sisyphus-junior"]?.model).toBe("openai/gpt-5.4")
-      expect(result.data.agents?.["sisyphus-junior"]?.temperature).toBe(0.2)
+      expect(result.data.agents?.["Cadet"]).toBeDefined()
+      expect(result.data.agents?.["Cadet"]?.model).toBe("openai/gpt-5.4")
+      expect(result.data.agents?.["Cadet"]?.temperature).toBe(0.2)
     }
   })
 
@@ -499,7 +499,7 @@ describe("Sisyphus-Junior agent override", () => {
     // given
     const config = {
       agents: {
-        "sisyphus-junior": {
+        "Cadet": {
           prompt_append: "Additional instructions for sisyphus-junior",
         },
       },
@@ -511,7 +511,7 @@ describe("Sisyphus-Junior agent override", () => {
     // then
     expect(result.success).toBe(true)
     if (result.success) {
-      expect(result.data.agents?.["sisyphus-junior"]?.prompt_append).toBe(
+      expect(result.data.agents?.["Cadet"]?.prompt_append).toBe(
         "Additional instructions for sisyphus-junior"
       )
     }
@@ -521,7 +521,7 @@ describe("Sisyphus-Junior agent override", () => {
     // given
     const config = {
       agents: {
-        "sisyphus-junior": {
+        "Cadet": {
           tools: {
             read: true,
             write: false,
@@ -536,7 +536,7 @@ describe("Sisyphus-Junior agent override", () => {
     // then
     expect(result.success).toBe(true)
     if (result.success) {
-      expect(result.data.agents?.["sisyphus-junior"]?.tools).toEqual({
+      expect(result.data.agents?.["Cadet"]?.tools).toEqual({
         read: true,
         write: false,
       })

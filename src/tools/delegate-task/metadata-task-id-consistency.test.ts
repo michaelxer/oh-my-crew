@@ -349,7 +349,7 @@ describe("taskId and backgroundTaskId metadata consistency", () => {
         client: { session: { create: async () => ({ data: { id: "ses_sync" } }) } },
         directory: "/tmp",
         onSyncSessionCreated: null,
-      }, parentContext, "Sisyphus-Junior", MODEL, undefined, undefined, undefined, deps)
+      }, parentContext, "Cadet", MODEL, undefined, undefined, undefined, deps)
 
       const meta = ctx.captured.find((item: any) => item.metadata?.sessionId)
       expect(meta).toBeDefined()
@@ -371,12 +371,12 @@ describe("taskId and backgroundTaskId metadata consistency", () => {
       await executeBackgroundTask(args, ctx, {
         manager: {
           launch: async () => ({
-            id: "bg_abc123", description: "test", agent: "Sisyphus-Junior",
+            id: "bg_abc123", description: "test", agent: "Cadet",
             status: "pending", sessionID: "ses_xyz789",
           }),
           getTask: () => undefined,
         },
-      } as any, parentContext, "Sisyphus-Junior", MODEL, undefined)
+      } as any, parentContext, "Cadet", MODEL, undefined)
 
       const meta = ctx.captured.find((item: any) => item.metadata?.sessionId)
       expect(meta).toBeDefined()
@@ -396,7 +396,7 @@ describe("taskId and backgroundTaskId metadata consistency", () => {
       }
 
       const launchedTask = {
-        id: "bg_unstable_abc", description: "test", agent: "Sisyphus-Junior",
+        id: "bg_unstable_abc", description: "test", agent: "Cadet",
         status: "completed", sessionID: "ses_unstable_xyz",
       }
 
@@ -420,7 +420,7 @@ describe("taskId and backgroundTaskId metadata consistency", () => {
           },
           syncPollTimeoutMs: 100,
         } as any,
-        parentContext, "Sisyphus-Junior", MODEL, undefined, "anthropic/claude-sonnet-4-6",
+        parentContext, "Cadet", MODEL, undefined, "anthropic/claude-sonnet-4-6",
       )
 
       const meta = ctx.captured.find((item: any) => item.metadata?.sessionId)

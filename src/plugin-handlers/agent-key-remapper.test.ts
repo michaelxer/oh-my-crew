@@ -42,7 +42,7 @@ describe("remapAgentKeysToDisplayNames", () => {
       athena: {},
       metis: {},
       momus: {},
-      "sisyphus-junior": {},
+      "Cadet": {},
     }
 
     // when remapping
@@ -63,8 +63,8 @@ describe("remapAgentKeysToDisplayNames", () => {
     expect(result["metis"]).toBeUndefined()
     expect(result[getAgentDisplayName("momus")]).toBeDefined()
     expect(result["momus"]).toBeUndefined()
-    expect(result[getAgentDisplayName("sisyphus-junior")]).toBeDefined()
-    expect(result["sisyphus-junior"]).toBeUndefined()
+    expect(result[getAgentDisplayName("Cadet")]).toBeDefined()
+    expect(result["Cadet"]).toBeUndefined()
   })
 
   it("does not emit both config and display keys for remapped agents", () => {
@@ -191,9 +191,9 @@ describe("remapAgentKeysToDisplayNames", () => {
     const result = remapAgentKeysToDisplayNames(agents)
 
     // then exactly one row is emitted under the clean literal display name
-    expect(Object.keys(result)).toEqual(["Sisyphus - Ultraworker"])
-    expect(result["Sisyphus - Ultraworker"]).toEqual({
-      name: "Sisyphus - Ultraworker",
+    expect(Object.keys(result)).toEqual(["Captain - Ultraworker"])
+    expect(result["Captain - Ultraworker"]).toEqual({
+      name: "Captain - Ultraworker",
       foo: "bar",
     })
   })

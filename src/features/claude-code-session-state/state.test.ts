@@ -29,7 +29,7 @@ describe("claude-code-session-state", () => {
     test("should store agent for session", () => {
       // given
       const sessionID = "test-session-1"
-      const agent = "Prometheus - Plan Builder"
+      const agent = "Architect - Plan Builder"
 
       // when
       setSessionAgent(sessionID, agent)
@@ -41,25 +41,25 @@ describe("claude-code-session-state", () => {
     test("should strip zero-width ordering prefixes before storing agent for session", () => {
       // given
       const sessionID = "test-session-prefixed"
-      const agent = "\u200B\u200B\u200BPrometheus - Plan Builder"
+      const agent = "\u200B\u200B\u200BArchitect - Plan Builder"
 
       // when
       setSessionAgent(sessionID, agent)
 
       // then
-      expect(getSessionAgent(sessionID)).toBe("Prometheus - Plan Builder")
+      expect(getSessionAgent(sessionID)).toBe("Architect - Plan Builder")
     })
 
     test("should NOT overwrite existing agent (first-write wins)", () => {
       // given
       const sessionID = "test-session-1"
-      setSessionAgent(sessionID, "Prometheus - Plan Builder")
+      setSessionAgent(sessionID, "Architect - Plan Builder")
 
       // when - try to overwrite
       setSessionAgent(sessionID, "sisyphus")
 
       // then - first agent preserved
-      expect(getSessionAgent(sessionID)).toBe("Prometheus - Plan Builder")
+      expect(getSessionAgent(sessionID)).toBe("Architect - Plan Builder")
     })
 
     test("should return undefined for unknown session", () => {
@@ -74,7 +74,7 @@ describe("claude-code-session-state", () => {
     test("should overwrite existing agent", () => {
       // given
       const sessionID = "test-session-1"
-      setSessionAgent(sessionID, "Prometheus - Plan Builder")
+      setSessionAgent(sessionID, "Architect - Plan Builder")
 
       // when - force update
       updateSessionAgent(sessionID, "sisyphus")
@@ -89,10 +89,10 @@ describe("claude-code-session-state", () => {
       setSessionAgent(sessionID, "sisyphus")
 
       // when
-      updateSessionAgent(sessionID, "\u200B\u200BHephaestus - Deep Agent")
+      updateSessionAgent(sessionID, "\u200B\u200BStrategist - Deep Agent")
 
       // then
-      expect(getSessionAgent(sessionID)).toBe("Hephaestus - Deep Agent")
+      expect(getSessionAgent(sessionID)).toBe("Strategist - Deep Agent")
     })
   })
 
@@ -100,8 +100,8 @@ describe("claude-code-session-state", () => {
     test("should remove agent from session", () => {
       // given
       const sessionID = "test-session-1"
-      setSessionAgent(sessionID, "Prometheus - Plan Builder")
-      expect(getSessionAgent(sessionID)).toBe("Prometheus - Plan Builder")
+      setSessionAgent(sessionID, "Architect - Plan Builder")
+      expect(getSessionAgent(sessionID)).toBe("Architect - Plan Builder")
 
       // when
       clearSessionAgent(sessionID)
@@ -134,52 +134,52 @@ describe("claude-code-session-state", () => {
   describe("agent registration", () => {
     test("should register config-key lookup when given a display name", () => {
       // given
-      registerAgentName("Atlas - Plan Executor")
+      registerAgentName("Foreman - Plan Executor")
 
       // when / then
       expect(isAgentRegistered("atlas")).toBe(true)
-      expect(isAgentRegistered("Atlas - Plan Executor")).toBe(true)
+      expect(isAgentRegistered("Foreman - Plan Executor")).toBe(true)
     })
 
     test("should resolve config keys back to the registered raw agent name", () => {
       // given
-      registerAgentName("\u200B\u200B\u200B\u200BAtlas - Plan Executor")
+      registerAgentName("\u200B\u200B\u200B\u200BForeman - Plan Executor")
 
       // when / then
-      expect(resolveRegisteredAgentName("atlas")).toBe("\u200B\u200B\u200B\u200BAtlas - Plan Executor")
-      expect(resolveRegisteredAgentName("Atlas - Plan Executor")).toBe("\u200B\u200B\u200B\u200BAtlas - Plan Executor")
+      expect(resolveRegisteredAgentName("atlas")).toBe("\u200B\u200B\u200B\u200BForeman - Plan Executor")
+      expect(resolveRegisteredAgentName("Foreman - Plan Executor")).toBe("\u200B\u200B\u200B\u200BForeman - Plan Executor")
     })
 
     test("should resolve legacy parenthesized names to registered agent", () => {
       // given - agent registered with new display name format
-      registerAgentName("\u200BSisyphus - Ultraworker")
+      registerAgentName("\u200BCaptain - Ultraworker")
 
       // when - historical session has old parenthesized format
       const resolved = resolveRegisteredAgentName("Sisyphus (Ultraworker)")
 
       // then - resolves to registered name via config key lookup
-      expect(resolved).toBe("\u200BSisyphus - Ultraworker")
+      expect(resolved).toBe("\u200BCaptain - Ultraworker")
     })
 
     test("should resolve bare lowercase name from historical session", () => {
       // given - agent registered with new display name
-      registerAgentName("Prometheus - Plan Builder")
+      registerAgentName("Architect - Plan Builder")
 
       // when - old session stored just "prometheus"
       const resolved = resolveRegisteredAgentName("prometheus")
 
       // then
-      expect(resolved).toBe("Prometheus - Plan Builder")
+      expect(resolved).toBe("Architect - Plan Builder")
     })
 
     describe("#given atlas display name with zero-width prefix", () => {
       describe("#when checking registration without the zero-width prefix", () => {
         test("#then it treats the display name as registered", () => {
           // given
-          registerAgentName("\u200BAtlas - Plan Executor")
+          registerAgentName("\u200BForeman - Plan Executor")
 
           // when
-          const isRegistered = isAgentRegistered("Atlas - Plan Executor")
+          const isRegistered = isAgentRegistered("Foreman - Plan Executor")
 
           // then
           expect(isRegistered).toBe(true)
@@ -192,15 +192,15 @@ describe("claude-code-session-state", () => {
     test("should correctly identify Prometheus agent for permission checks", () => {
       // given - Prometheus session
       const sessionID = "test-prometheus-session"
-      const prometheusAgent = "Prometheus - Plan Builder"
+      const prometheusAgent = "Architect - Plan Builder"
 
       // when - agent is set (simulating chat.message hook)
       setSessionAgent(sessionID, prometheusAgent)
 
       // then - getSessionAgent returns correct agent for prometheus-md-only hook
       const agent = getSessionAgent(sessionID)
-      expect(agent).toBe("Prometheus - Plan Builder")
-      expect(["Prometheus - Plan Builder"].includes(agent!)).toBe(true)
+      expect(agent).toBe("Architect - Plan Builder")
+      expect(["Architect - Plan Builder"].includes(agent!)).toBe(true)
     })
 
     test("should return undefined when agent not set (bug scenario)", () => {
@@ -252,13 +252,13 @@ describe("claude-code-session-state", () => {
     test("strips legacy ZWSP-prefixed agent names from persisted session state (GH-3259)", () => {
       // given - persisted session payload from v3.14.0-v3.16.0 with ZWSP prefix
       const sessionID = "test-session-legacy-zwsp"
-      const legacyAgent = "\u200B\u200BHephaestus - Deep Agent"
+      const legacyAgent = "\u200B\u200BStrategist - Deep Agent"
 
       // when
       setSessionAgent(sessionID, legacyAgent)
 
       // then
-      expect(getSessionAgent(sessionID)).toBe("Hephaestus - Deep Agent")
+      expect(getSessionAgent(sessionID)).toBe("Strategist - Deep Agent")
     })
   })
 })

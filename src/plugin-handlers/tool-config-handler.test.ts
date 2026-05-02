@@ -71,7 +71,7 @@ describe("applyToolConfig", () => {
         "sisyphus",
         "hephaestus",
         "prometheus",
-        "sisyphus-junior",
+        "Cadet",
       ])("#then should deny todo tools for %s agent", (agentName) => {
         const params = createParams({
           taskSystem: true,
@@ -199,7 +199,7 @@ describe("applyToolConfig", () => {
         "sisyphus",
         "hephaestus",
         "prometheus",
-        "sisyphus-junior",
+        "Cadet",
       ])("#then should NOT deny todo tools for %s agent", (agentName) => {
         const params = createParams({
           taskSystem: false,
@@ -234,7 +234,7 @@ describe("applyToolConfig", () => {
         "sisyphus",
         "hephaestus",
         "prometheus",
-        "sisyphus-junior",
+        "Cadet",
       ])("#then should NOT deny todo tools for %s agent by default", (agentName) => {
         const params = createParams({
           agents: [agentName],

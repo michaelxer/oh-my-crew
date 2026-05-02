@@ -254,7 +254,7 @@ async function primeMainSession(
           content: [],
           modelID: PRIMARY_MODEL.modelID,
           providerID: PRIMARY_MODEL.providerID,
-          agent: "Sisyphus - Ultraworker",
+          agent: "Captain - Ultraworker",
           path: { cwd: "/tmp", root: "/tmp" },
         },
       },
@@ -336,7 +336,7 @@ async function triggerAssistantMessageError(
           model: PRIMARY_MODEL_STRING,
           modelID: PRIMARY_MODEL.modelID,
           providerID: PRIMARY_MODEL.providerID,
-          agent: "Sisyphus - Ultraworker",
+          agent: "Captain - Ultraworker",
           path: { cwd: "/tmp", root: "/tmp" },
           error: {
             statusCode: 529,

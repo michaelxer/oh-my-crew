@@ -447,8 +447,8 @@ describe("generateModelConfig", () => {
       const result = generateModelConfig(config)
 
       // #then
-      expect(result.agents?.["sisyphus-junior"]?.model).toBe("openai/gpt-5.5")
-      expect(result.agents?.["sisyphus-junior"]?.variant).toBe("medium")
+      expect(result.agents?.["Cadet"]?.model).toBe("openai/gpt-5.5")
+      expect(result.agents?.["Cadet"]?.variant).toBe("medium")
     })
   })
 

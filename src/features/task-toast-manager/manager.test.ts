@@ -41,7 +41,7 @@ describe("TaskToastManager", () => {
       const task = {
         id: "task_1",
         description: "Test task",
-        agent: "sisyphus-junior",
+        agent: "Cadet",
         isBackground: true,
         skills: ["playwright", "git-master"],
       }
@@ -138,7 +138,7 @@ describe("TaskToastManager", () => {
       const task = {
         id: "task_1",
         description: "Full info task",
-        agent: "sisyphus-junior",
+        agent: "Cadet",
         isBackground: true,
         skills: ["frontend-ui-ux"],
       }
@@ -160,7 +160,7 @@ describe("TaskToastManager", () => {
       const task = {
         id: "task_1",
         description: "Task with category default model",
-        agent: "sisyphus-junior",
+        agent: "Cadet",
         isBackground: false,
         modelInfo: { model: "google/gemini-3.1-pro", type: "category-default" as const },
       }
@@ -180,7 +180,7 @@ describe("TaskToastManager", () => {
       const task = {
         id: "task_1b",
         description: "Task with system default model",
-        agent: "sisyphus-junior",
+        agent: "Cadet",
         isBackground: false,
         modelInfo: { model: "anthropic/claude-sonnet-4-6", type: "system-default" as const },
       }
@@ -201,7 +201,7 @@ describe("TaskToastManager", () => {
       const task = {
         id: "task_2",
         description: "Task with inherited model",
-        agent: "sisyphus-junior",
+        agent: "Cadet",
         isBackground: false,
         modelInfo: { model: "cliproxy/claude-opus-4-7", type: "inherited" as const },
       }
@@ -243,7 +243,7 @@ describe("TaskToastManager", () => {
       const task = {
         id: "task_3",
         description: "Task with user model",
-        agent: "sisyphus-junior",
+        agent: "Cadet",
         isBackground: false,
         modelInfo: { model: "my-provider/my-model", type: "user-defined" as const },
       }
@@ -285,7 +285,7 @@ describe("TaskToastManager", () => {
       const task = {
         id: "task_model_display",
         description: "Build UI component",
-        agent: "sisyphus-junior",
+        agent: "Cadet",
         isBackground: true,
         category: "deep",
         modelInfo: { model: "openai/gpt-5.4", type: "category-default" as const },
@@ -305,7 +305,7 @@ describe("TaskToastManager", () => {
       const task = {
         id: "task_strip_provider",
         description: "Fix styles",
-        agent: "sisyphus-junior",
+        agent: "Cadet",
         isBackground: false,
         category: "visual-engineering",
         modelInfo: { model: "google/gemini-3.1-pro", type: "category-default" as const },
@@ -324,7 +324,7 @@ describe("TaskToastManager", () => {
       const task = {
         id: "task_no_model",
         description: "Quick fix",
-        agent: "sisyphus-junior",
+        agent: "Cadet",
         isBackground: true,
         category: "quick",
       }
@@ -366,7 +366,7 @@ describe("TaskToastManager", () => {
       limitedManager.addTask({
         id: "task_running",
         description: "Running task",
-        agent: "sisyphus-junior",
+        agent: "Cadet",
         isBackground: true,
         category: "deep",
         modelInfo: { model: "openai/gpt-5.3-codex", type: "category-default" as const },
@@ -374,7 +374,7 @@ describe("TaskToastManager", () => {
       limitedManager.addTask({
         id: "task_queued",
         description: "Queued task",
-        agent: "sisyphus-junior",
+        agent: "Cadet",
         isBackground: true,
         category: "quick",
         status: "queued",

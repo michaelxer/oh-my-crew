@@ -193,7 +193,7 @@ describe("createToolExecuteAfterHandler background launch detection", () => {
           output: "Background task launched.\n\nBackground Task ID: bg_123\n\n<task_metadata>\nsession_id: ses_child123\n</task_metadata>",
           metadata: {
             sessionId: childSessionID,
-            agent: "sisyphus-junior",
+            agent: "Cadet",
             category: "deep",
           },
         }
@@ -270,7 +270,7 @@ describe("createToolExecuteAfterHandler background launch detection", () => {
           output: "Background task launched.\n\nBackground Task ID: bg_456\n\n<task_metadata>\nsession_id: ses_child_lookup_failure\n</task_metadata>",
           metadata: {
             sessionId: childSessionID,
-            agent: "sisyphus-junior",
+            agent: "Cadet",
             category: "deep",
           },
         }
@@ -340,7 +340,7 @@ describe("createToolExecuteAfterHandler background launch detection", () => {
           output: "Background task launched.\n\nBackground Task ID: bg_789\n\n<task_metadata>\nsession_id: ses_outside_lineage\n</task_metadata>",
           metadata: {
             sessionId: childSessionID,
-            agent: "sisyphus-junior",
+            agent: "Cadet",
             category: "deep",
           },
         }
@@ -411,7 +411,7 @@ describe("createToolExecuteAfterHandler background launch detection", () => {
           output: "Background task launched.\n\nBackground Task ID: bg_999\n\n<task_metadata>\nsession_id: ses_unrelated_child\n</task_metadata>",
           metadata: {
             sessionId: childSessionID,
-            agent: "sisyphus-junior",
+            agent: "Cadet",
             category: "deep",
           },
         }

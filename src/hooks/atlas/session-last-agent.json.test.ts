@@ -46,7 +46,7 @@ describe("getLastAgentFromSession JSON backend", () => {
       time: { created: 100 },
     }), "utf-8")
     writeFileSync(join(messageDir, "msg_11111111_000002.json"), JSON.stringify({
-      agent: "sisyphus-junior",
+      agent: "Cadet",
       time: { created: 50 },
     }), "utf-8")
 
@@ -89,7 +89,7 @@ describe("getLastAgentFromSession JSON backend", () => {
 
     writeFileSync(join(messageDir, "msg_0002.json"), JSON.stringify({
       id: regularMessageID,
-      agent: "sisyphus-junior",
+      agent: "Cadet",
       time: { created: 100 },
     }), "utf-8")
 
@@ -111,6 +111,6 @@ describe("getLastAgentFromSession JSON backend", () => {
     })
 
     // then
-    expect(result).toBe("sisyphus-junior")
+    expect(result).toBe("Cadet")
   })
 })

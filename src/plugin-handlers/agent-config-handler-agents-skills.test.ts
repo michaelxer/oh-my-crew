@@ -48,7 +48,7 @@ describe("applyAgentConfig .agents skills", () => {
       sisyphusJunior,
       "createSisyphusJuniorAgentWithOverrides",
     ).mockReturnValue({
-      name: "sisyphus-junior",
+      name: "Cadet",
       prompt: "junior",
       mode: "all",
     } satisfies AgentConfig)

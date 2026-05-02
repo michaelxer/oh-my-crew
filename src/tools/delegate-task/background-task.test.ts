@@ -219,7 +219,7 @@ describeFn("executeBackgroundTask output/session metadata compatibility", () => 
           id: "bg_clean_agent",
           sessionID: "ses_clean_agent",
           description: "Clean agent",
-          agent: "sisyphus-junior",
+          agent: "Cadet",
           status: "running",
         }
       },
@@ -250,7 +250,7 @@ describeFn("executeBackgroundTask output/session metadata compatibility", () => 
 
     //#then
     expectFn(launchCalls).toHaveLength(1)
-    expectFn((launchCalls[0] as { agent: string }).agent).toBe("sisyphus-junior")
+    expectFn((launchCalls[0] as { agent: string }).agent).toBe("Cadet")
   })
 
   testFn("keeps launched background task alive when parent aborts before session id resolves", async () => {
@@ -533,7 +533,7 @@ describeFn("executeBackgroundTask output/session metadata compatibility", () => 
           id: "bg_legacy_zwsp",
           sessionID: "ses_legacy_zwsp",
           description: "Legacy ZWSP",
-          agent: "Hephaestus - Deep Agent",
+          agent: "Strategist - Deep Agent",
           status: "running",
         }
       },
@@ -556,7 +556,7 @@ describeFn("executeBackgroundTask output/session metadata compatibility", () => 
       },
       { manager },
       { sessionID: "ses_parent", messageID: "msg_legacy_zwsp" },
-      "\u200B\u200BHephaestus - Deep Agent",
+      "\u200B\u200BStrategist - Deep Agent",
       undefined,
       undefined,
       undefined,
@@ -564,6 +564,6 @@ describeFn("executeBackgroundTask output/session metadata compatibility", () => 
 
     //#then
     expectFn(launchCalls).toHaveLength(1)
-    expectFn(launchCalls[0].agent).toBe("Hephaestus - Deep Agent")
+    expectFn(launchCalls[0].agent).toBe("Strategist - Deep Agent")
   })
 })

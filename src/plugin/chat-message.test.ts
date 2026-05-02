@@ -747,7 +747,7 @@ describe("createChatMessageHandler - TUI variant passthrough", () => {
     //#then
     expect(output.message["model"]).toBeUndefined()
     expect(getSessionModel("test-session")).toEqual({ providerID: "openai", modelID: "gpt-5.4" })
-    expect(getSessionAgent("test-session")).toBe("Prometheus - Plan Builder")
+    expect(getSessionAgent("test-session")).toBe("Architect - Plan Builder")
   })
 
   test("respects a mid-conversation model switch instead of reusing the previous stored model", async () => {
@@ -772,13 +772,13 @@ describe("createChatMessageHandler - TUI variant passthrough", () => {
     //#given - persisted prompt body from v3.14.0-v3.16.0 may contain ZWSP-prefixed agent
     const args = createMockHandlerArgs()
     const handler = createChatMessageHandler(args)
-    const input = createMockInput("\u200B\u200BHephaestus - Deep Agent")
+    const input = createMockInput("\u200B\u200BStrategist - Deep Agent")
     const output = createMockOutput()
 
     //#when
     await handler(input, output)
 
     //#then
-    expect(getSessionAgent("test-session")).toBe("Hephaestus - Deep Agent")
+    expect(getSessionAgent("test-session")).toBe("Strategist - Deep Agent")
   })
 })

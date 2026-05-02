@@ -385,7 +385,7 @@ describe("BackgroundManager prompt rejection fallback routing", () => {
     const launchedTask = await manager.launch({
       description: "background retry test",
       prompt: "say hi",
-      agent: "sisyphus-junior",
+      agent: "Cadet",
       parentSessionID: "parent-session",
       parentMessageID: "parent-message",
       model: { providerID: "genai-proxy-openai", modelID: "gpt-5.4-mini" },
@@ -427,7 +427,7 @@ describe("BackgroundManager prompt rejection fallback routing", () => {
       parentMessageID: "parent-message",
       description: "resume retry test",
       prompt: "say hi",
-      agent: "sisyphus-junior",
+      agent: "Cadet",
       status: "completed",
       startedAt: new Date(),
       completedAt: new Date(),
@@ -5842,7 +5842,7 @@ describe("BackgroundManager - tool permission spread order", () => {
       queuedAt: new Date(),
       description: "test task",
       prompt: "test prompt",
-      agent: "sisyphus-junior",
+      agent: "Cadet",
       parentSessionID: "parent-session",
       parentMessageID: "parent-message",
       model: { providerID: "openai", modelID: "gpt-5.4", variant: "medium" },
@@ -5862,7 +5862,7 @@ describe("BackgroundManager - tool permission spread order", () => {
 
     //#then
     expect(promptCalls).toHaveLength(1)
-    expect(promptCalls[0].body.agent).toBe("sisyphus-junior")
+    expect(promptCalls[0].body.agent).toBe("Cadet")
     expect(promptCalls[0].body.model).toEqual({ providerID: "openai", modelID: "gpt-5.4" })
     expect(promptCalls[0].body.variant).toBe("medium")
 
@@ -6028,7 +6028,7 @@ describe("BackgroundManager attempt lifecycle bindings", () => {
       queuedAt: new Date(),
       description: "retry binding task",
       prompt: "continue",
-      agent: "sisyphus-junior",
+      agent: "Cadet",
       parentSessionID: "parent-session",
       parentMessageID: "parent-message",
       model: { providerID: "anthropic", modelID: "claude-haiku-4.5", variant: "max" },
@@ -6189,7 +6189,7 @@ describe("BackgroundManager attempt lifecycle bindings", () => {
       queuedAt: new Date("2026-04-27T00:00:00.000Z"),
       description: "ignore stale prompt errors",
       prompt: "continue",
-      agent: "sisyphus-junior",
+      agent: "Cadet",
       parentSessionID: "parent-session",
       parentMessageID: "parent-message",
       model: { providerID: "openai", modelID: "gpt-5.4-mini" },

@@ -297,16 +297,16 @@ describe("sisyphus-task", () => {
       expect(result).toBe(false)
     })
 
-    test("returns false for 'Momus - Plan Critic' - no substring false-positive", () => {
+    test("returns false for 'Auditor - Plan Critic' - no substring false-positive", () => {
       //#given / #when
-      const result = isPlanFamily("Momus - Plan Critic")
+      const result = isPlanFamily("Auditor - Plan Critic")
       //#then
       expect(result).toBe(false)
     })
 
-    test("returns false for 'Metis - Plan Consultant' - no substring false-positive", () => {
+    test("returns false for 'Advisor - Plan Consultant' - no substring false-positive", () => {
       //#given / #when
-      const result = isPlanFamily("Metis - Plan Consultant")
+      const result = isPlanFamily("Advisor - Plan Consultant")
       //#then
       expect(result).toBe(false)
     })
@@ -334,7 +334,7 @@ describe("sisyphus-task", () => {
           id: "task-123",
           status: "pending",
           description: "Parse test",
-          agent: "sisyphus-junior",
+          agent: "Cadet",
           sessionID: "test-session",
         }),
       }
@@ -397,7 +397,7 @@ describe("sisyphus-task", () => {
           id: "task-456",
           status: "pending",
           description: "Parse test",
-          agent: "sisyphus-junior",
+          agent: "Cadet",
           sessionID: "test-session",
         }),
       }
@@ -462,7 +462,7 @@ describe("sisyphus-task", () => {
           id: "task-123",
           status: "pending",
           description: "Test task",
-          agent: "sisyphus-junior",
+          agent: "Cadet",
           sessionID: "test-session",
         }),
       }
@@ -513,7 +513,7 @@ describe("sisyphus-task", () => {
        await tool.execute(args, toolContext)
 
        // then
-       expect(args.subagent_type).toBe("Sisyphus-Junior")
+       expect(args.subagent_type).toBe("Cadet")
     }, { timeout: 10000 })
 
     test("prefers category over subagent_type when both are provided", async () => {
@@ -525,7 +525,7 @@ describe("sisyphus-task", () => {
           id: "task-override",
           status: "pending",
           description: "Override test",
-          agent: "sisyphus-junior",
+          agent: "Cadet",
           sessionID: "test-session",
         }),
       }
@@ -571,14 +571,14 @@ describe("sisyphus-task", () => {
       await tool.execute(args, toolContext)
 
       //#then - category takes precedence, subagent_type is overridden to sisyphus-junior
-      expect(args.subagent_type).toBe("Sisyphus-Junior")
+      expect(args.subagent_type).toBe("Cadet")
     }, { timeout: 10000 })
 
     test("proceeds without error when systemDefaultModel is undefined", async () => {
       // given a mock client with no model in config
       const { createDelegateTask } = require("./tools")
       
-       const mockManager = { launch: async () => ({ id: "task-123", status: "pending", description: "Test task", agent: "sisyphus-junior", sessionID: "test-session" }) }
+       const mockManager = { launch: async () => ({ id: "task-123", status: "pending", description: "Test task", agent: "Cadet", sessionID: "test-session" }) }
        const mockClient = {
          app: { agents: async () => ({ data: [] }) },
          config: { get: async () => ({}) }, // No model configured
@@ -980,7 +980,7 @@ describe("sisyphus-task", () => {
             id: "task-variant",
             sessionID: "session-variant",
             description: "Variant task",
-            agent: "sisyphus-junior",
+            agent: "Cadet",
             status: "running",
           }
         },
@@ -1046,7 +1046,7 @@ describe("sisyphus-task", () => {
             id: "task-default-variant",
             sessionID: "session-default-variant",
             description: "Default variant task",
-            agent: "sisyphus-junior",
+            agent: "Cadet",
             status: "running",
           }
         },
@@ -1598,7 +1598,7 @@ describe("sisyphus-task", () => {
             id: "bg_explicit_true",
             sessionID: "ses_bg_explicit_true",
             description: "Explicit true",
-            agent: "Sisyphus-Junior",
+            agent: "Cadet",
             status: "running",
           }
         },
@@ -1651,14 +1651,14 @@ describe("sisyphus-task", () => {
                 id: "bg_tool_first",
                 sessionID: undefined,
                 description: "Tool first",
-                agent: "Sisyphus-Junior",
+                agent: "Cadet",
                 status: "running",
               }
             : {
                 id: "bg_tool_second",
                 sessionID: undefined,
                 description: "Tool second",
-                agent: "Sisyphus-Junior",
+                agent: "Cadet",
                 status: "running",
               }
         },
@@ -1835,7 +1835,7 @@ describe("sisyphus-task", () => {
         info: {
           id: "msg_001",
           role: "user",
-          agent: "sisyphus-junior",
+          agent: "Cadet",
           model: { providerID: "anthropic", modelID: "claude-opus-4-7" },
           variant: "max",
           time: { created: baseTime },
@@ -1890,7 +1890,7 @@ describe("sisyphus-task", () => {
     }
 
     const tool = createDelegateTask({
-      manager: { resume: async () => ({ id: "task-var", sessionID: "ses_var_test", description: "Variant test", agent: "sisyphus-junior", status: "running" }) },
+      manager: { resume: async () => ({ id: "task-var", sessionID: "ses_var_test", description: "Variant test", agent: "Cadet", status: "running" }) },
       client: mockClient,
     })
 
@@ -1917,7 +1917,7 @@ describe("sisyphus-task", () => {
     expect(promptMock).toHaveBeenCalled()
     const callArgs = promptMock.mock.calls[0][0]
     expect(callArgs.body.variant).toBe("max")
-    expect(callArgs.body.agent).toBe("sisyphus-junior")
+    expect(callArgs.body.agent).toBe("Cadet")
     expect(callArgs.body.model).toEqual({ providerID: "anthropic", modelID: "claude-opus-4-7" })
   }, { timeout: 10000 })
 
@@ -2225,7 +2225,7 @@ describe("sisyphus-task", () => {
         id: "task-unstable",
         sessionID: "ses_unstable_gemini",
         description: "Unstable gemini task",
-        agent: "sisyphus-junior",
+        agent: "Cadet",
         status: "running",
       }
       const mockManager = {
@@ -2296,7 +2296,7 @@ describe("sisyphus-task", () => {
             id: "task-normal-bg",
             sessionID: "ses_normal_bg",
             description: "Normal background task",
-            agent: "sisyphus-junior",
+            agent: "Cadet",
             status: "running",
           }
         },
@@ -2352,7 +2352,7 @@ describe("sisyphus-task", () => {
         id: "task-unstable-minimax",
         sessionID: "ses_unstable_minimax",
         description: "Unstable minimax task",
-        agent: "sisyphus-junior",
+        agent: "Cadet",
         status: "running",
       }
       const mockManager = {
@@ -2488,7 +2488,7 @@ describe("sisyphus-task", () => {
         id: "task-artistry",
         sessionID: "ses_artistry_gemini",
         description: "Artistry gemini task",
-        agent: "sisyphus-junior",
+        agent: "Cadet",
         status: "running",
       }
       const mockManager = {
@@ -2632,7 +2632,7 @@ describe("sisyphus-task", () => {
         id: "task-custom-unstable",
         sessionID: "ses_custom_unstable",
         description: "Custom unstable task",
-        agent: "sisyphus-junior",
+        agent: "Cadet",
         status: "running",
       }
       const mockManager = {
@@ -2713,7 +2713,7 @@ describe("sisyphus-task", () => {
             id: "task-fallback",
             sessionID: "ses_fallback_test",
             description: "Fallback test task",
-            agent: "sisyphus-junior",
+            agent: "Cadet",
             status: "running",
           }
         },
@@ -2777,7 +2777,7 @@ describe("sisyphus-task", () => {
             id: "task-ui-model",
             sessionID: "ses_ui_model_test",
             description: "UI model inheritance test",
-            agent: "sisyphus-junior",
+            agent: "Cadet",
             status: "running",
           }
         },
@@ -2841,7 +2841,7 @@ describe("sisyphus-task", () => {
             id: "task-override",
             sessionID: "ses_override_test",
             description: "Override precedence test",
-            agent: "sisyphus-junior",
+            agent: "Cadet",
             status: "running",
           }
         },
@@ -2902,7 +2902,7 @@ describe("sisyphus-task", () => {
             id: "task-category-precedence",
             sessionID: "ses_category_precedence_test",
             description: "Category precedence test",
-            agent: "sisyphus-junior",
+            agent: "Cadet",
             status: "running",
           }
         },
@@ -2967,7 +2967,7 @@ describe("sisyphus-task", () => {
             id: "task-1295-quick",
             sessionID: "ses_1295_quick",
             description: "Issue 1295 regression",
-            agent: "sisyphus-junior",
+            agent: "Cadet",
             status: "running",
           }
         },
@@ -3029,7 +3029,7 @@ describe("sisyphus-task", () => {
             id: "task-1295-custom",
             sessionID: "ses_1295_custom",
             description: "Issue 1295 custom category",
-            agent: "sisyphus-junior",
+            agent: "Cadet",
             status: "running",
           }
         },
@@ -4371,7 +4371,7 @@ describe("sisyphus-task", () => {
           id: "bg_meta_test",
           sessionID: "ses_bg_metadata",
           description: "Background metadata test",
-          agent: "sisyphus-junior",
+          agent: "Cadet",
           status: "running",
         }),
       }
@@ -4391,7 +4391,7 @@ describe("sisyphus-task", () => {
          manager: mockManager,
          client: mockClient,
          userCategories: {
-           "sisyphus-junior": { model: "anthropic/claude-sonnet-4-6" },
+           "Cadet": { model: "anthropic/claude-sonnet-4-6" },
          },
        })
 

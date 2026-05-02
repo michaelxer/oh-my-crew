@@ -112,7 +112,7 @@ describe("createToolExecuteBeforeHandler", () => {
       await handler(input, output)
 
       //#then
-      expect(output.args.subagent_type).toBe("sisyphus-junior")
+      expect(output.args.subagent_type).toBe("Cadet")
     })
 
     test("preserves existing subagent_type when explicitly provided", async () => {
@@ -140,7 +140,7 @@ describe("createToolExecuteBeforeHandler", () => {
       await handler(input, output)
 
       //#then
-      expect(output.args.subagent_type).toBe("sisyphus-junior")
+      expect(output.args.subagent_type).toBe("Cadet")
     })
 
     test("resolves subagent_type from session first message when task_id is provided without subagent_type", async () => {

@@ -144,7 +144,7 @@ describe("atlas hook idle-event persisted lineage", () => {
       },
       {
         [descendantSessionID]: [
-          { info: { agent: "sisyphus-junior", providerID: "openai", modelID: "gpt-5.4" } },
+          { info: { agent: "Cadet", providerID: "openai", modelID: "gpt-5.4" } },
         ],
       },
     )
@@ -225,7 +225,7 @@ describe("atlas hook idle-event persisted lineage", () => {
       },
       {
         [descendantSessionID]: [
-          { info: { agent: "sisyphus-junior", providerID: "openai", modelID: "gpt-5.4" } },
+          { info: { agent: "Cadet", providerID: "openai", modelID: "gpt-5.4" } },
         ],
       },
     )

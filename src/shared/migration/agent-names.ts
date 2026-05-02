@@ -1,50 +1,66 @@
 export const AGENT_NAME_MAP: Record<string, string> = {
-  // Sisyphus variants → "sisyphus"
+  // Captain (was Sisyphus) variants → "sisyphus"
   omo: "sisyphus",
   OmO: "sisyphus",
   Sisyphus: "sisyphus",
+  Captain: "sisyphus",
   "Sisyphus (Ultraworker)": "sisyphus",
+  "Sisyphus - Ultraworker": "sisyphus",
+  "Captain - Ultraworker": "sisyphus",
   sisyphus: "sisyphus",
 
-  // Hephaestus variants → "hephaestus"
+  // Strategist (was Hephaestus) variants → "hephaestus"
   "Hephaestus (Deep Agent)": "hephaestus",
+  "Hephaestus - Deep Agent": "hephaestus",
+  "Strategist - Deep Agent": "hephaestus",
 
-  // Prometheus variants → "prometheus"
+  // Architect (was Prometheus) variants → "prometheus"
   "OmO-Plan": "prometheus",
   "omo-plan": "prometheus",
   "Planner-Sisyphus": "prometheus",
   "planner-sisyphus": "prometheus",
   "Prometheus - Plan Builder": "prometheus",
   "Prometheus (Plan Builder)": "prometheus",
+  "Architect - Plan Builder": "prometheus",
   prometheus: "prometheus",
 
-  // Atlas variants → "atlas"
+  // Foreman (was Atlas) variants → "atlas"
   "orchestrator-sisyphus": "atlas",
   Atlas: "atlas",
+  Foreman: "atlas",
   "Atlas (Plan Executor)": "atlas",
+  "Atlas - Plan Executor": "atlas",
+  "Foreman - Plan Executor": "atlas",
   atlas: "atlas",
 
-  // Metis variants → "metis"
+  // Advisor (was Metis) variants → "metis"
   "plan-consultant": "metis",
   "Metis - Plan Consultant": "metis",
   "Metis (Plan Consultant)": "metis",
+  "Advisor - Plan Consultant": "metis",
   metis: "metis",
 
-  // Momus variants → "momus"
+  // Auditor (was Momus) variants → "momus"
   "Momus - Plan Critic": "momus",
   "Momus (Plan Critic)": "momus",
+  "Auditor - Plan Critic": "momus",
   momus: "momus",
 
-  // Sisyphus-Junior → "sisyphus-junior"
+  // Cadet (was Sisyphus-Junior) → "sisyphus-junior"
   "Sisyphus-Junior": "sisyphus-junior",
+  Cadet: "sisyphus-junior",
   "sisyphus-junior": "sisyphus-junior",
 
-  // Already lowercase - passthrough
+  // Crew name aliases - passthrough
   build: "build",
   oracle: "oracle",
+  Sage: "oracle",
   librarian: "librarian",
+  Scribe: "librarian",
   explore: "explore",
+  Scout: "explore",
   "multimodal-looker": "multimodal-looker",
+  Lookout: "multimodal-looker",
 }
 
 export const BUILTIN_AGENT_NAMES = new Set([

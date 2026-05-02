@@ -160,11 +160,11 @@ describe("getContinuationState JSON backend descendant coverage", () => {
       time: { created: 200 },
     }), "utf-8")
     writeFileSync(join(messageDir, "msg_d4c3b2a1_000003.json"), JSON.stringify({
-      agent: "sisyphus-junior",
+      agent: "Cadet",
       model: { providerID: "openai", modelID: "gpt-5.4" },
       time: { created: 100 },
     }), "utf-8")
-    sessionLastAgentBySessionID.set(sessionID, "sisyphus-junior")
+    sessionLastAgentBySessionID.set(sessionID, "Cadet")
 
     const { getContinuationState } = await import("./continuation-state")
 

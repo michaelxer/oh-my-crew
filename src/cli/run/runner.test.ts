@@ -82,7 +82,7 @@ describe("resolveRunAgent", () => {
 
   it("maps display-name style default_run_agent values to canonical runtime names", () => {
     // given
-    const config = createConfig({ default_run_agent: "Sisyphus - Ultraworker" })
+    const config = createConfig({ default_run_agent: "Captain - Ultraworker" })
 
     // when
     const agent = resolveRunAgent({ message: "test" }, config, {})

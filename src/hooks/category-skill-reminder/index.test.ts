@@ -78,7 +78,7 @@ describe("category-skill-reminder hook", () => {
       // given - sisyphus-junior agent session
       const hook = createHook()
       const sessionID = "junior-session"
-      updateSessionAgent(sessionID, "sisyphus-junior")
+      updateSessionAgent(sessionID, "Cadet")
 
       const output = { title: "", output: "result", metadata: {} }
 

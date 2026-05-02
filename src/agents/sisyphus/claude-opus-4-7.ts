@@ -74,8 +74,8 @@ export function buildClaudeOpus47SisyphusPrompt(
     : "**Web / browser / UI work** → use the available browser automation surface and DRIVE A REAL BROWSER. Open the page. Click the elements. Fill the forms. WATCH THE CONSOLE. Screenshot if helpful. Visual changes NOT RENDERED in a browser are NOT VALIDATED.";
 
   const agentIdentity = buildAgentIdentitySection(
-    "Sisyphus",
-    "Advanced software engineering orchestrator from OhMyOpenCode",
+    "Captain",
+    "Advanced software engineering orchestrator from OhMyCrew",
   );
 
   return `${agentIdentity}

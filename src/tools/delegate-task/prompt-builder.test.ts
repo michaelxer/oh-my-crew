@@ -32,7 +32,7 @@ describe("prompt-builder", () => {
 
         // when
         const result = buildSystemContent({
-          agentName: "sisyphus-junior",
+          agentName: "Cadet",
           availableSkills,
           availableCategories,
         })
@@ -66,7 +66,7 @@ describe("prompt-builder", () => {
 
         // when
         const result = buildSystemContent({
-          agentName: "sisyphus-junior",
+          agentName: "Cadet",
           availableSkills,
           categoryPromptAppend: "some category context",
         })
@@ -110,7 +110,7 @@ describe("prompt-builder", () => {
 
         // when
         const result = buildSystemContent({
-          agentName: "sisyphus-junior",
+          agentName: "Cadet",
           agentsContext: "Custom agent context here",
           availableSkills,
         })

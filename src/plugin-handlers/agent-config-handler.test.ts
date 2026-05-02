@@ -14,7 +14,7 @@ import { applyAgentConfig } from "./agent-config-handler"
 import type { PluginComponents } from "./plugin-components-loader"
 
 const BUILTIN_SISYPHUS_DISPLAY_NAME = getAgentListDisplayName("sisyphus")
-const BUILTIN_SISYPHUS_JUNIOR_DISPLAY_NAME = getAgentListDisplayName("sisyphus-junior")
+const BUILTIN_SISYPHUS_JUNIOR_DISPLAY_NAME = getAgentListDisplayName("Cadet")
 const BUILTIN_MULTIMODAL_LOOKER_DISPLAY_NAME = getAgentListDisplayName("multimodal-looker")
 
 function createPluginComponents(): PluginComponents {
@@ -93,7 +93,7 @@ describe("applyAgentConfig builtin override protection", () => {
   }
 
   const sisyphusJuniorConfig: AgentConfig = {
-    name: "Sisyphus-Junior",
+    name: "Cadet",
     prompt: "junior prompt",
     mode: "all",
   }
@@ -194,7 +194,7 @@ describe("applyAgentConfig builtin override protection", () => {
   test("normalizes display-name default_agent to runtime agent name", async () => {
     // given
     const config = createBaseConfig()
-    config.default_agent = "Sisyphus - Ultraworker"
+    config.default_agent = "Captain - Ultraworker"
 
     // when
     await applyAgentConfig({

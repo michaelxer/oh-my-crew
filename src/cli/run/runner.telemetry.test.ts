@@ -13,7 +13,7 @@ describe("run telemetry isolation", () => {
       loadPluginConfig: mock(() => ({})),
     }))
     mock.module("./agent-resolver", () => ({
-      resolveRunAgent: mock(() => "Sisyphus - Ultraworker"),
+      resolveRunAgent: mock(() => "Captain - Ultraworker"),
     }))
     mock.module("./server-connection", () => ({
       createServerConnection: mock(async () => ({

@@ -89,8 +89,8 @@ function buildDynamicOrchestratorPrompt(ctx?: OrchestratorContext): string {
   const categorySkillsGuide = buildCategorySkillsDelegationGuide(availableCategories, skills)
 
   const agentIdentity = buildAgentIdentitySection(
-    "Atlas",
-    "Master Orchestrator agent from OhMyOpenCode that coordinates specialized agents to complete todo lists",
+    "Foreman",
+    "Master Orchestrator agent from OhMyCrew that coordinates specialized agents to complete todo lists",
   )
   const basePrompt = getAtlasPrompt(model)
 
