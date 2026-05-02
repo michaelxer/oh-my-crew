@@ -74,7 +74,7 @@ function getSignalExitCode(signal) {
 function getPackageBaseName() {
   try {
     const packageJson = JSON.parse(readFileSync(new URL("../package.json", import.meta.url), "utf8"));
-    return packageJson.name || "oh-my-opencode";
+    return packageJson.binaryPackageBaseName || "oh-my-opencode";
   } catch {
     return "oh-my-opencode";
   }
