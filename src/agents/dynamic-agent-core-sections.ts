@@ -13,7 +13,7 @@ import { getToolsPromptDisplay } from "./dynamic-agent-tool-categorization"
  * the LLM may default to the base identity instead of the agent's intended persona.
  *
  * NOTE: Phrasing is carefully chosen to avoid triggering content filters on AI
- * proxy providers. Avoid "Powerful AI Agent" and aggressive identity override language.
+ * proxy providers. Avoid high-pressure agent marketing phrases and aggressive identity override language.
  */
 export function buildAgentIdentitySection(
   agentName: string,
