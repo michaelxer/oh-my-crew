@@ -18,7 +18,7 @@ Clean, role-descriptive agent names with content-filter-safe system prompts for 
 
 ## What is this?
 
-**Oh My Crew** is a fork of [oh-my-openagent](https://github.com/code-yeongyu/oh-my-openagent) (by [@code-yeongyu](https://github.com/code-yeongyu)) with the following modifications:
+**Oh My Crew** is a fork of [oh-my-openagent](https://github.com/code-yeongyu/oh-my-openagent) (by [@code-yeongyu](https://github.com/code-yeongyu)), based on [oh-my-china](https://github.com/enowdev/oh-my-china) (by [@enowdev](https://github.com/enowdev)), with the following modifications:
 
 1. **System prompts adjusted** to pass through AI proxy content filters
 2. **All agents renamed** to clean, role-descriptive crew names -- no political, cultural, or mythological references
@@ -43,6 +43,32 @@ Clean, role-descriptive agent names with content-filter-safe system prompts for 
 
 The phrase `"Powerful AI Agent"` combined with identity override directives triggers some AI proxy content filters. This fork replaces it with softer phrasing that passes through.
 
+### Session Guardian (NEW)
+
+Built-in skill that gives agents **autonomous session lifecycle management**:
+
+| Feature | What It Does |
+|---------|-------------|
+| **Git Checkpoints** | Auto-commits after each completed task. One commit per task, conventional commit messages. |
+| **Context Monitoring** | Tracks context window usage via heuristics + system signals. Knows when to stop. |
+| **Smart Handoff Timing** | Never interrupts mid-task. Finishes current work first, then creates handoff. |
+| **Structured Handoff Docs** | Generates `HANDOFF_DOC/handoff-NNN.md` with full context for the next session. |
+| **Chain Continuity** | Each handoff carries forward decisions and context from ALL previous sessions. |
+| **Copy-Paste Resume** | Outputs a ready-to-paste prompt for starting the next session seamlessly. |
+| **Credentials Protection** | Manages `.credentials/` folder for API keys, tokens, passwords. Auto-added to `.gitignore`. Agents never hardcode secrets in source code. |
+
+**How it works:**
+
+```text
+Agent works -> completes task -> git commit -> checks context level
+  |- Context OK -> picks up next task
+  \- Context high (65%+) -> creates handoff -> provides resume prompt -> stops
+```
+
+The handoff files are saved to `HANDOFF_DOC/` in your project root (auto-added to `.gitignore`). Sensitive credentials go in `.credentials/` (also auto-gitignored). When starting a new session, paste the provided prompt and the agent picks up exactly where it left off.
+
+Session Guardian is **auto-loaded** for Captain and Strategist -- no configuration needed.
+
 ---
 
 ## Installation
@@ -62,9 +88,9 @@ Edit `~/.config/opencode/opencode.json` (or `opencode.jsonc`) and add `"oh-my-cr
 }
 ```
 
-> **Replacing oh-my-openagent?** Use `"oh-my-crew"` only -- it includes everything OMO has. Remove `"oh-my-openagent@latest"` to avoid duplicate agents in the dropdown.
+> **Recommended:** Use `"oh-my-crew"` only. It includes everything you need from OMO and avoids dropdown duplication plus sub-agent routing conflicts.
 >
-> **Want both?** You can run both side by side: `"plugin": ["oh-my-openagent@latest", "oh-my-crew"]` -- you'll see duplicate agents (Sisyphus + Captain, etc.) but both work fine.
+> **Important:** If you keep `"oh-my-openagent@latest"` alongside OMC, you may get duplicate dropdown entries and old OMO sub-agent prompts can still win at runtime. For the cleanest setup, remove OMO and run OMC independently.
 
 ### Step 2: Restart OpenCode
 
@@ -133,7 +159,7 @@ This fork inherits all features from oh-my-openagent:
 | **Ralph Loop** | Self-referential loop until 100% done |
 | **Architect Planner** | Interview-mode strategic planning before execution |
 | **Claude Code Compatible** | All hooks, commands, skills, MCPs work unchanged |
-| **Session Guardian** | Auto git checkpoints, context monitoring, structured handoff docs |
+| **Session Guardian** | Auto git checkpoints, context monitoring, structured handoff docs for seamless multi-session work |
 
 For full documentation, see the [upstream project](https://github.com/code-yeongyu/oh-my-openagent).
 
@@ -155,15 +181,27 @@ git merge upstream/dev
 
 This project is based on:
 
-- **[oh-my-openagent](https://github.com/code-yeongyu/oh-my-openagent)** by **[@code-yeongyu](https://github.com/code-yeongyu)** (YeonGyu Kim) -- the original architecture, agents, tools, hooks, and all core features
+- **[oh-my-opencode / oh-my-openagent](https://github.com/code-yeongyu/oh-my-openagent)** by **[@code-yeongyu](https://github.com/code-yeongyu)** (YeonGyu Kim) -- the original architecture, agents, tools, hooks, and all core features
+- **[oh-my-china](https://github.com/enowdev/oh-my-china)** by **[@enowdev](https://github.com/enowdev)** -- the China-compatible fork with content filter fixes that this project builds upon
 
-This fork renames all agents from mythological/cultural names to clean, role-descriptive crew names while preserving all upstream functionality.
+This fork renames all agents from cultural/political themed names to clean, role-descriptive crew names while preserving all upstream functionality.
 
 - **Original repo**: [github.com/code-yeongyu/oh-my-openagent](https://github.com/code-yeongyu/oh-my-openagent)
-- **npm (this fork)**: [oh-my-crew](https://www.npmjs.com/package/oh-my-crew)
+- **China fork**: [github.com/enowdev/oh-my-china](https://github.com/enowdev/oh-my-china)
+- **npm**: [oh-my-crew](https://www.npmjs.com/package/oh-my-crew)
 - **npm (original)**: [oh-my-opencode](https://www.npmjs.com/package/oh-my-opencode)
 - **License**: [SUL-1.0](LICENSE.md) (inherited from upstream)
 - **Discord**: [Join the community](https://discord.gg/PUwSMR9XNk)
+
+---
+
+## Support
+
+If you find Oh My Crew useful, consider:
+
+- Give it a [star on GitHub](https://github.com/michaelxer/oh-my-crew) to help others discover it
+- Report issues or suggest features in [GitHub Issues](https://github.com/michaelxer/oh-my-crew/issues)
+- Join the [Discord community](https://discord.gg/PUwSMR9XNk) for discussion
 
 ---
 
