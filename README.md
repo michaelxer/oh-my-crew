@@ -80,7 +80,9 @@ Session Guardian is **auto-loaded** for Captain and Strategist -- no configurati
 
 ### Step 1: Add to plugin config
 
-Recommended: paste this into your LLM agent session and let it install non-interactively:
+#### Agent-guided install
+
+Paste this into your LLM agent session. The agent will ask the setup questions in chat, then run the installer with `--no-tui` so the terminal command itself does not open a menu:
 
 ```text
 Install and configure oh-my-crew by following the instructions here:
@@ -93,7 +95,9 @@ LLM agents should fetch the guide with:
 curl -fsSL https://raw.githubusercontent.com/michaelxer/oh-my-crew/refs/heads/oh-my-crew/docs/guide/installation.md
 ```
 
-Alternative: run the interactive wizard yourself in a real terminal:
+#### Terminal wizard
+
+If you are installing yourself, run this in a real terminal. The terminal wizard will ask the same setup questions there:
 
 ```bash
 npx oh-my-crew@latest install
@@ -105,7 +109,7 @@ or:
 bunx oh-my-crew@latest install
 ```
 
-For scripted setup and full LLM-agent instructions, see [docs/guide/installation.md](docs/guide/installation.md).
+For scripted setup and full LLM-agent instructions, see [docs/guide/installation.md](docs/guide/installation.md). In this project, `--no-tui` means "no terminal menu"; it does not mean "no questions". The agent can still ask questions in chat and pass your answers as flags.
 
 The same installer works for AXR AI users and for public/self-managed provider setups. If you choose AXR AI Trial or Pro, OMC fetches the live catalog from `https://api.axrai.app/v1/models.json`, writes the AXR provider config, and assigns crew models from that plan only. If you do not use AXR AI, the wizard continues with Claude, OpenAI/ChatGPT, Gemini, Copilot, OpenCode Zen, Z.ai, Kimi, OpenCode Go, Vercel AI Gateway, and custom OpenAI-compatible provider questions.
 

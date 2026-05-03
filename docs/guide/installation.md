@@ -2,16 +2,20 @@
 
 ## For Humans
 
-Best path: paste this into your LLM agent session:
+### Agent-guided install
+
+Paste this into your LLM agent session:
 
 ```text
 Install and configure oh-my-crew by following the instructions here:
 https://raw.githubusercontent.com/michaelxer/oh-my-crew/refs/heads/oh-my-crew/docs/guide/installation.md
 ```
 
-The agent should fetch this file with `curl`, ask about your subscriptions, run the non-interactive installer, verify the setup, and guide provider authentication.
+The agent should fetch this file with `curl`, ask about your subscriptions in chat, run the installer with `--no-tui`, verify the setup, and guide provider authentication.
 
-Alternative: run the interactive installer yourself in a real terminal:
+### Terminal wizard
+
+If you are installing yourself, run this in a real terminal. The terminal wizard will ask the setup questions there:
 
 ```bash
 npx oh-my-crew@latest install
@@ -22,6 +26,8 @@ or, with Bun:
 ```bash
 bunx oh-my-crew@latest install
 ```
+
+In this guide, `--no-tui` means "no terminal menu". It does not mean "no questions". In agent-guided setup, the LLM asks the questions in chat and passes your answers as flags.
 
 The wizard checks for OpenCode, asks first whether you have an active AXR AI subscription plan, adds `oh-my-crew` to the OpenCode `plugin` array, writes `oh-my-crew.json`, preserves existing provider settings, and backs up files before writing.
 
@@ -43,7 +49,7 @@ Anonymous telemetry is enabled by default to track active installations (DAU/WAU
 > curl -fsSL https://raw.githubusercontent.com/michaelxer/oh-my-crew/refs/heads/oh-my-crew/docs/guide/installation.md
 > ```
 
-You are helping the user install Oh My Crew. Do not use the interactive TUI unless you have a real interactive terminal. For normal agent setup, ask the questions below, then run `npx oh-my-crew@latest install --no-tui ...` or `bunx oh-my-crew@latest install --no-tui ...`.
+You are helping the user install Oh My Crew. Ask the questions below in chat, then run `npx oh-my-crew@latest install --no-tui ...` or `bunx oh-my-crew@latest install --no-tui ...`. Do not use the terminal TUI unless you have a real interactive terminal. `--no-tui` only disables the terminal menu; it does not remove the need to ask the user setup questions.
 
 ### Step 0: Ask About AXR AI
 

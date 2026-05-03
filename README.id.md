@@ -80,7 +80,9 @@ Session Guardian **dimuat otomatis** untuk Captain dan Strategist -- tidak perlu
 
 ### Langkah 1: Tambahkan ke konfigurasi plugin
 
-Direkomendasikan: tempel ini ke sesi LLM agent Anda dan biarkan agent memasang secara non-interaktif:
+#### Instalasi dipandu agent
+
+Tempel ini ke sesi LLM agent Anda. Agent akan bertanya di chat, lalu menjalankan installer dengan `--no-tui` supaya command terminal tidak membuka menu:
 
 ```text
 Install and configure oh-my-crew by following the instructions here:
@@ -93,7 +95,9 @@ LLM agent sebaiknya mengambil panduan dengan:
 curl -fsSL https://raw.githubusercontent.com/michaelxer/oh-my-crew/refs/heads/oh-my-crew/docs/guide/installation.md
 ```
 
-Alternatif: jalankan wizard interaktif sendiri di terminal sungguhan:
+#### Wizard terminal
+
+Jika Anda menginstal sendiri, jalankan ini di terminal sungguhan. Wizard terminal akan menanyakan pertanyaan setup yang sama di sana:
 
 ```bash
 npx oh-my-crew@latest install
@@ -105,7 +109,7 @@ atau:
 bunx oh-my-crew@latest install
 ```
 
-Untuk setup non-interaktif/scripted dan instruksi lengkap untuk LLM agent, lihat [docs/guide/installation.md](docs/guide/installation.md).
+Untuk setup scripted dan instruksi lengkap untuk LLM agent, lihat [docs/guide/installation.md](docs/guide/installation.md). Di project ini, `--no-tui` berarti "tanpa menu terminal"; bukan berarti "tanpa pertanyaan". Agent tetap bisa bertanya di chat lalu mengirim jawaban Anda sebagai flag.
 
 Installer yang sama bisa dipakai untuk pengguna AXR AI maupun setup publik dengan provider sendiri. Jika Anda memilih AXR AI Trial atau Pro, OMC mengambil katalog model live dari `https://api.axrai.app/v1/models.json`, menulis konfigurasi provider AXR, dan memasang model kru hanya dari plan tersebut. Jika Anda tidak memakai AXR AI, wizard akan lanjut bertanya tentang Claude, OpenAI/ChatGPT, Gemini, Copilot, OpenCode Zen, Z.ai, Kimi, OpenCode Go, Vercel AI Gateway, dan custom provider OpenAI-compatible.
 
