@@ -15,8 +15,9 @@ describe("remapAgentKeysToDisplayNames", () => {
 
     // then known agents get display name keys only
     expect(result[getAgentListDisplayName("sisyphus")]).toBeDefined()
-    expect(result["oracle"]).toBeDefined()
+    expect(result[getAgentListDisplayName("oracle")]).toBeDefined()
     expect(result["sisyphus"]).toBeUndefined()
+    expect(result["oracle"]).toBeUndefined()
   })
 
   it("preserves unknown agent keys unchanged", () => {
@@ -42,7 +43,7 @@ describe("remapAgentKeysToDisplayNames", () => {
       athena: {},
       metis: {},
       momus: {},
-      "Cadet": {},
+      "sisyphus-junior": {},
     }
 
     // when remapping
@@ -63,8 +64,8 @@ describe("remapAgentKeysToDisplayNames", () => {
     expect(result["metis"]).toBeUndefined()
     expect(result[getAgentDisplayName("momus")]).toBeDefined()
     expect(result["momus"]).toBeUndefined()
-    expect(result[getAgentDisplayName("Cadet")]).toBeDefined()
-    expect(result["Cadet"]).toBeUndefined()
+    expect(result[getAgentDisplayName("sisyphus-junior")]).toBeDefined()
+    expect(result["sisyphus-junior"]).toBeUndefined()
   })
 
   it("does not emit both config and display keys for remapped agents", () => {
@@ -143,7 +144,12 @@ describe("remapAgentKeysToDisplayNames", () => {
       prompt: "test",
       mode: "primary",
     })
-    expect(result.oracle).toEqual({ name: "oracle", prompt: "test", mode: "subagent" })
+    expect(result[getAgentListDisplayName("oracle")]).toEqual({
+      name: getAgentListDisplayName("oracle"),
+      prompt: "test",
+      mode: "subagent",
+    })
+    expect(result.oracle).toBeUndefined()
   })
 
   it("backfills runtime names for core agents when builtin configs omit name", () => {

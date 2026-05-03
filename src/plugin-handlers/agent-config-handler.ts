@@ -3,6 +3,7 @@ import { createSisyphusJuniorAgentWithOverrides } from "../agents/sisyphus-junio
 import type { OhMyOpenCodeConfig } from "../config";
 import { isTaskSystemEnabled, log, migrateAgentConfig } from "../shared";
 import {
+  AGENT_DISPLAY_NAMES,
   getAgentConfigKey,
   getAgentDisplayName,
   normalizeAgentForPromptKey,
@@ -40,6 +41,24 @@ type AgentConfigRecord = Record<string, Record<string, unknown> | undefined> & {
   build?: Record<string, unknown>;
   plan?: Record<string, unknown>;
 };
+
+function normalizeBuiltinAgentOverrideKeys(
+  overrides: OhMyOpenCodeConfig["agents"] | undefined,
+): OhMyOpenCodeConfig["agents"] | undefined {
+  if (!overrides) return undefined;
+
+  const normalized: Record<string, unknown> = {};
+  for (const [key, value] of Object.entries(overrides)) {
+    const configKey = getAgentConfigKey(key);
+    const normalizedKey = AGENT_DISPLAY_NAMES[configKey] !== undefined ? configKey : key;
+    normalized[normalizedKey] = {
+      ...((normalized[normalizedKey] as Record<string, unknown> | undefined) ?? {}),
+      ...(value as Record<string, unknown>),
+    };
+  }
+
+  return normalized as OhMyOpenCodeConfig["agents"];
+}
 
 function getConfiguredDefaultAgent(config: Record<string, unknown>): string | undefined {
   const defaultAgent = config.default_agent;
@@ -99,6 +118,7 @@ export async function applyAgentConfig(params: {
   const browserProvider =
     params.pluginConfig.browser_automation_engine?.provider ?? "playwright";
   const currentModel = params.config.model as string | undefined;
+  const pluginAgentOverrides = normalizeBuiltinAgentOverrideKeys(params.pluginConfig.agents);
   const disabledSkills = new Set<string>(params.pluginConfig.disabled_skills ?? []);
   const useTaskSystem = isTaskSystemEnabled(params.pluginConfig);
   const disableOmoEnv = params.pluginConfig.experimental?.disable_omo_env ?? false;
@@ -160,7 +180,7 @@ export async function applyAgentConfig(params: {
 
   const builtinAgents = await createBuiltinAgents(
     migratedDisabledAgents,
-    params.pluginConfig.agents,
+    pluginAgentOverrides,
     params.ctx.directory,
     currentModel,
     params.pluginConfig.categories,
@@ -212,7 +232,7 @@ export async function applyAgentConfig(params: {
     }
 
     if (plannerEnabled) {
-      const prometheusOverride = params.pluginConfig.agents?.["prometheus"] as
+      const prometheusOverride = pluginAgentOverrides?.["prometheus"] as
         | (Record<string, unknown> & { prompt_append?: string })
         | undefined;
 
@@ -230,7 +250,7 @@ export async function applyAgentConfig(params: {
     }
 
     agentConfig["sisyphus-junior"] = createSisyphusJuniorAgentWithOverrides(
-      params.pluginConfig.agents?.["sisyphus-junior"],
+      pluginAgentOverrides?.["sisyphus-junior"],
       (builtinAgents.atlas as { model?: string } | undefined)?.model,
       useTaskSystem,
     );
@@ -241,7 +261,7 @@ export async function applyAgentConfig(params: {
       const migratedBuildConfig = migrateAgentConfig(
         buildConfigWithoutName as Record<string, unknown>,
       );
-      const override = params.pluginConfig.agents?.["OpenCode-Builder"];
+      const override = pluginAgentOverrides?.["OpenCode-Builder"];
       const base = {
         ...migratedBuildConfig,
         description: `${(configAgent?.build?.description as string) ?? "Build agent"} (OpenCode default)`,
@@ -274,7 +294,7 @@ export async function applyAgentConfig(params: {
     const planDemoteConfig = shouldDemotePlan
       ? buildPlanDemoteConfig(
           agentConfig["prometheus"] as Record<string, unknown> | undefined,
-          params.pluginConfig.agents?.plan as Record<string, unknown> | undefined,
+          pluginAgentOverrides?.plan as Record<string, unknown> | undefined,
         )
       : undefined;
 

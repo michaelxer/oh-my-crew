@@ -357,7 +357,10 @@ describe("applyAgentConfig builtin override protection", () => {
         })
 
         // then
-        expect(result[BUILTIN_MULTIMODAL_LOOKER_DISPLAY_NAME]).toEqual(builtinMultimodalLookerConfig)
+        expect(result[BUILTIN_MULTIMODAL_LOOKER_DISPLAY_NAME]).toEqual({
+          ...builtinMultimodalLookerConfig,
+          name: BUILTIN_MULTIMODAL_LOOKER_DISPLAY_NAME,
+        })
         expect(result.multimodal_looker).toBeUndefined()
       })
     })
@@ -616,8 +619,10 @@ describe("applyAgentConfig builtin override protection", () => {
       })
 
       // then
-      expect(result.oracle).toBeDefined()
-      expect(result.oracle?.prompt).not.toBe("evil override prompt")
+      const oracleKey = getAgentListDisplayName("oracle")
+      expect(result[oracleKey]).toBeDefined()
+      expect(result[oracleKey]?.prompt).not.toBe("evil override prompt")
+      expect(result.oracle).toBeUndefined()
     })
 
     test("precedence: configAgents override agent_definitions", async () => {

@@ -1,4 +1,4 @@
-import { getAgentListDisplayName } from "../shared/agent-display-names"
+import { getAgentConfigKey, getAgentListDisplayName } from "../shared/agent-display-names"
 
 function rewriteAgentNameForListDisplay(
   key: string,
@@ -21,9 +21,10 @@ export function remapAgentKeysToDisplayNames(
   const result: Record<string, unknown> = {}
 
   for (const [key, value] of Object.entries(agents)) {
-    const displayName = getAgentListDisplayName(key)
-    if (displayName && displayName !== key) {
-      result[displayName] = rewriteAgentNameForListDisplay(key, value)
+    const configKey = getAgentConfigKey(key)
+    const displayName = getAgentListDisplayName(configKey)
+    if (displayName && (displayName !== key || configKey !== key)) {
+      result[displayName] = rewriteAgentNameForListDisplay(configKey, value)
       // Regression guard: do not also assign result[key].
       // This line was repeatedly re-added and caused duplicate agent rows in the UI.
       // Runtime callers that previously depended on config-key aliases were fixed in:
