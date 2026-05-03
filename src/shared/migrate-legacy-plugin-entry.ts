@@ -56,7 +56,11 @@ export function migrateLegacyPluginEntry(configPath: string): boolean {
     writeFileSync(tempPath, updated, "utf-8")
     const tempFileDescriptor = openSync(tempPath, "r")
     try {
-      fsyncSync(tempFileDescriptor)
+      try {
+        fsyncSync(tempFileDescriptor)
+      } catch (error) {
+        log("[migrateLegacyPluginEntry] Could not fsync temp config file before rename", { configPath, error })
+      }
     } finally {
       closeSync(tempFileDescriptor)
     }
