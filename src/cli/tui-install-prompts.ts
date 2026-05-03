@@ -199,40 +199,6 @@ export async function promptInstallConfig(detected: DetectedConfig): Promise<Ins
   })
   if (utilityModel === null) return null
 
-  const enabledMcpsValue = await p.multiselect({
-    message: "Enable built-in MCPs",
-    options: [
-      { value: "websearch", label: "websearch" },
-      { value: "context7", label: "context7" },
-      { value: "grep_app", label: "grep_app" },
-    ],
-    initialValues: ["websearch", "context7", "grep_app"],
-  })
-  if (p.isCancel(enabledMcpsValue)) {
-    p.cancel("Installation cancelled.")
-    return null
-  }
-
-  const sessionGuardian = await selectOrCancel<BooleanArg>({
-    message: "Enable Session Guardian behavior?",
-    options: [
-      { value: "yes", label: "Yes", hint: "Keep the built-in session lifecycle skill enabled" },
-      { value: "no", label: "No", hint: "Disable the session-guardian skill" },
-    ],
-    initialValue: "yes",
-  })
-  if (!sessionGuardian) return null
-
-  const anonymousTelemetry = await selectOrCancel<BooleanArg>({
-    message: "Enable anonymous telemetry?",
-    options: [
-      { value: "yes", label: "Yes", hint: "Daily active signal only; no prompts or code" },
-      { value: "no", label: "No", hint: "Write anonymous_telemetry=false" },
-    ],
-    initialValue: "yes",
-  })
-  if (!anonymousTelemetry) return null
-
   return {
     hasClaude: claude !== "no",
     isMax20: claude === "max20",
@@ -254,8 +220,5 @@ export async function promptInstallConfig(detected: DetectedConfig): Promise<Ins
       reviewer: reviewerModel || undefined,
       utility: utilityModel || undefined,
     },
-    enabledMcps: enabledMcpsValue as string[],
-    sessionGuardianEnabled: sessionGuardian === "yes",
-    telemetryEnabled: anonymousTelemetry === "yes",
   }
 }

@@ -1,6 +1,6 @@
 {
   "name": "oh-my-crew",
-  "version": "2.1.3",
+  "version": "2.1.4",
   "description": "Role-based agent fork of oh-my-opencode - Clean crew names with content-filter-safe system prompts",
   "binaryPackageBaseName": "oh-my-opencode",
   "main": "./dist/index.js",
