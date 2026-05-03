@@ -107,7 +107,9 @@ bunx oh-my-crew@latest install
 
 For scripted setup and full LLM-agent instructions, see [docs/guide/installation.md](docs/guide/installation.md).
 
-The wizard asks first whether you are a Mettle Community member with an AXR AI Trial or Pro plan. If selected, it fetches the live AXR model catalog from `https://api.axrai.app/v1/models.json` and configures only models available in that tier.
+The same installer works for AXR AI users and for public/self-managed provider setups. If you choose AXR AI Trial or Pro, OMC fetches the live catalog from `https://api.axrai.app/v1/models.json`, writes the AXR provider config, and assigns crew models from that plan only. If you do not use AXR AI, the wizard continues with Claude, OpenAI/ChatGPT, Gemini, Copilot, OpenCode Zen, Z.ai, Kimi, OpenCode Go, Vercel AI Gateway, and custom OpenAI-compatible provider questions.
+
+At the end, the installer writes the OpenCode plugin config, writes `oh-my-crew.json`, and shows the generated model assignments for the crew plus the verification commands.
 
 Manual config is also supported.
 

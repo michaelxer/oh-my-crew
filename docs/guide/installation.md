@@ -23,7 +23,7 @@ or, with Bun:
 bunx oh-my-crew@latest install
 ```
 
-The wizard checks for OpenCode, asks first whether you are a Mettle Community member with an AXR AI subscription plan, adds `oh-my-crew` to the OpenCode `plugin` array, writes `oh-my-crew.json`, preserves existing provider settings, and backs up files before writing.
+The wizard checks for OpenCode, asks first whether you have an active AXR AI subscription plan, adds `oh-my-crew` to the OpenCode `plugin` array, writes `oh-my-crew.json`, preserves existing provider settings, and backs up files before writing.
 
 If you choose AXR AI Trial or Pro, the installer fetches the live catalog from:
 
@@ -50,7 +50,7 @@ You are helping the user install Oh My Crew. Do not use the interactive TUI unle
 Ask first:
 
 ```text
-Are you a Mettle Community member with an AXR AI subscription plan?
+Do you have an active AXR AI subscription plan?
 ```
 
 If yes, ask which plan:

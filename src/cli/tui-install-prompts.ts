@@ -50,7 +50,7 @@ export async function promptInstallConfig(detected: DetectedConfig): Promise<Ins
   const initial = detectedToInitialValues(detected)
 
   const usesAxrai = await selectOrCancel<BooleanArg>({
-    message: "Are you a Mettle Community member with an AXR AI subscription plan?",
+    message: "Do you have an active AXR AI subscription plan?",
     options: [
       { value: "no", label: "No", hint: "Continue normal provider setup" },
       {

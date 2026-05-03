@@ -107,7 +107,9 @@ bunx oh-my-crew@latest install
 
 Untuk setup non-interaktif/scripted dan instruksi lengkap untuk LLM agent, lihat [docs/guide/installation.md](docs/guide/installation.md).
 
-Wizard akan bertanya terlebih dahulu apakah Anda anggota Mettle Community dengan paket AXR AI Trial atau Pro. Jika dipilih, installer mengambil katalog model live dari `https://api.axrai.app/v1/models.json` dan hanya memakai model yang tersedia pada tier tersebut.
+Installer yang sama bisa dipakai untuk pengguna AXR AI maupun setup publik dengan provider sendiri. Jika Anda memilih AXR AI Trial atau Pro, OMC mengambil katalog model live dari `https://api.axrai.app/v1/models.json`, menulis konfigurasi provider AXR, dan memasang model kru hanya dari plan tersebut. Jika Anda tidak memakai AXR AI, wizard akan lanjut bertanya tentang Claude, OpenAI/ChatGPT, Gemini, Copilot, OpenCode Zen, Z.ai, Kimi, OpenCode Go, Vercel AI Gateway, dan custom provider OpenAI-compatible.
+
+Di akhir proses, installer menulis konfigurasi plugin OpenCode, menulis `oh-my-crew.json`, lalu menampilkan assignment model untuk kru beserta command verifikasi.
 
 Konfigurasi manual juga tetap didukung.
 
