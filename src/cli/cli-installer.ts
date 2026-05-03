@@ -23,6 +23,7 @@ import {
   validateNonTuiArgs,
 } from "./install-validators"
 import { getUnsupportedOpenCodeVersionMessage } from "./minimum-opencode-version"
+import { fetchAxraiCatalog, getAxraiOpenCodeConfig } from "./axrai-catalog"
 
 export async function runCliInstaller(args: InstallArgs, version: string): Promise<number> {
   const validation = validateNonTuiArgs(args)
@@ -34,7 +35,7 @@ export async function runCliInstaller(args: InstallArgs, version: string): Promi
     }
     console.log()
     printInfo(
-      `Usage: bunx ${PUBLISHED_PACKAGE_NAME} install --no-tui --claude=<no|yes|max20> --gemini=<no|yes> --copilot=<no|yes>`,
+      `Usage: bunx ${PUBLISHED_PACKAGE_NAME} install --no-tui --axrai=<no|trial|pro> --claude=<no|yes|max20> --gemini=<no|yes> --copilot=<no|yes>`,
     )
     console.log()
     return 1
@@ -72,9 +73,22 @@ export async function runCliInstaller(args: InstallArgs, version: string): Promi
   }
 
   const config = argsToConfig(args)
+  if (config.axraiTier) {
+    try {
+      const catalog = await fetchAxraiCatalog()
+      const axrai = getAxraiOpenCodeConfig(catalog, config.axraiTier)
+      config.axraiModelIds = axrai.modelIds
+      config.axraiOpenCodeConfig = axrai.openCodeConfig
+      config.axraiPrimaryModel = axrai.primaryModel
+      config.axraiSmallModel = axrai.smallModel
+    } catch (err) {
+      printError(err instanceof Error ? err.message : "Failed to configure AXR AI from the live catalog")
+      return 1
+    }
+  }
 
   printStep(step++, totalSteps, `Adding ${PLUGIN_NAME} plugin...`)
-  const pluginResult = await addPluginToOpenCodeConfig(version)
+  const pluginResult = await addPluginToOpenCodeConfig(version, config.axraiOpenCodeConfig)
   if (!pluginResult.success) {
     printError(`Failed: ${pluginResult.error}`)
     return 1
@@ -93,7 +107,7 @@ export async function runCliInstaller(args: InstallArgs, version: string): Promi
 
   printBox(formatConfigSummary(config), isUpdate ? "Updated Configuration" : "Installation Complete")
 
-  if (!config.hasClaude) {
+  if (!config.hasClaude && !config.axraiTier) {
     printInfo(
       "Note: Sisyphus agent performs best with Claude Opus 4.5+. " +
         "Other models work but may have reduced orchestration quality.",
@@ -106,7 +120,9 @@ export async function runCliInstaller(args: InstallArgs, version: string): Promi
     !config.hasGemini &&
     !config.hasCopilot &&
     !config.hasOpencodeZen &&
-    !config.hasVercelAiGateway
+    !config.hasVercelAiGateway &&
+    !config.axraiTier &&
+    !config.customProviderId
   ) {
     printWarning("No model providers configured. Using opencode/big-pickle as fallback.")
   }
@@ -120,6 +136,9 @@ export async function runCliInstaller(args: InstallArgs, version: string): Promi
       ? "Anonymous telemetry disabled in oh-my-crew config."
       : "Anonymous telemetry is enabled by default. Disable it with --disable-telemetry, OMO_SEND_ANONYMOUS_TELEMETRY=0, or OMO_DISABLE_POSTHOG=1.",
   )
+  if (config.axraiTier) {
+    printInfo("AXR AI uses AXRAI_API_KEY from your environment; oh-my-crew does not write raw API keys.")
+  }
   printInfo("Docs: docs/legal/privacy-policy.md and docs/legal/terms-of-service.md")
   console.log()
 

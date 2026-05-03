@@ -94,6 +94,8 @@ bunx oh-my-crew install
 
 For scripted setup, see [docs/guide/installation.md](docs/guide/installation.md).
 
+The wizard asks first whether you are a Mettle Community member with an AXR AI Trial or Pro plan. If selected, it fetches the live AXR model catalog from `https://api.axrai.app/v1/models.json` and configures only models available in that tier.
+
 Manual config is also supported.
 
 Edit `~/.config/opencode/opencode.json` (or `opencode.jsonc`) and add `"oh-my-crew"` to the plugin array:

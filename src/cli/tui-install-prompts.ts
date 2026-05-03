@@ -1,12 +1,14 @@
 import * as p from "@clack/prompts"
 import type { Option } from "@clack/prompts"
 import type {
+  AxraiTier,
   BooleanArg,
   ClaudeSubscription,
   DetectedConfig,
   InstallConfig,
 } from "./types"
 import { detectedToInitialValues } from "./install-validators"
+import { fetchAxraiCatalog, getAxraiOpenCodeConfig } from "./axrai-catalog"
 
 async function selectOrCancel<TValue extends Readonly<string | boolean | number>>(params: {
   message: string
@@ -46,6 +48,64 @@ async function textOrCancel(params: {
 
 export async function promptInstallConfig(detected: DetectedConfig): Promise<InstallConfig | null> {
   const initial = detectedToInitialValues(detected)
+
+  const usesAxrai = await selectOrCancel<BooleanArg>({
+    message: "Are you a Mettle Community member with an AXR AI subscription plan?",
+    options: [
+      { value: "no", label: "No", hint: "Continue normal provider setup" },
+      {
+        value: "yes",
+        label: "Yes",
+        hint: "Only choose this with an active AXR AI plan, or OMC may not authenticate/run correctly.",
+      },
+    ],
+    initialValue: "no",
+  })
+  if (!usesAxrai) return null
+
+  if (usesAxrai === "yes") {
+    const axraiTier = await selectOrCancel<AxraiTier | "none">({
+      message: "What is your AXR AI subscription plan?",
+      options: [
+        { value: "trial", label: "Trial", hint: "Use only models currently listed for the AXR AI Trial tier" },
+        { value: "pro", label: "Pro", hint: "Use only models currently listed for the AXR AI Pro tier" },
+        { value: "none", label: "Sorry, I don't have an AXR AI plan", hint: "Continue normal provider setup" },
+      ],
+      initialValue: "trial",
+    })
+    if (!axraiTier) return null
+
+    if (axraiTier !== "none") {
+      try {
+        const catalog = await fetchAxraiCatalog()
+        const axrai = getAxraiOpenCodeConfig(catalog, axraiTier)
+        return {
+          hasClaude: false,
+          isMax20: false,
+          hasOpenAI: false,
+          hasGemini: false,
+          hasCopilot: false,
+          hasOpencodeZen: false,
+          hasZaiCodingPlan: false,
+          hasKimiForCoding: false,
+          hasOpencodeGo: false,
+          hasVercelAiGateway: false,
+          axraiTier,
+          axraiModelIds: axrai.modelIds,
+          axraiOpenCodeConfig: axrai.openCodeConfig,
+          axraiPrimaryModel: axrai.primaryModel,
+          axraiSmallModel: axrai.smallModel,
+        }
+      } catch (err) {
+        p.log.error(err instanceof Error ? err.message : "Failed to configure AXR AI from the live catalog")
+        p.note(
+          "Check your internet connection or choose \"Sorry, I don't have an AXR AI plan\" to continue normal provider setup.",
+          "AXR AI setup failed",
+        )
+        return null
+      }
+    }
+  }
 
   const claude = await selectOrCancel<ClaudeSubscription>({
     message: "Do you have a Claude Pro/Max subscription?",

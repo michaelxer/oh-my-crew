@@ -14,7 +14,15 @@ or, with Bun:
 bunx oh-my-crew install
 ```
 
-The wizard checks for OpenCode, adds `oh-my-crew` to the OpenCode `plugin` array, writes `oh-my-crew.json`, preserves existing provider settings, and backs up files before writing.
+The wizard checks for OpenCode, asks first whether you are a Mettle Community member with an AXR AI subscription plan, adds `oh-my-crew` to the OpenCode `plugin` array, writes `oh-my-crew.json`, preserves existing provider settings, and backs up files before writing.
+
+If you choose AXR AI Trial or Pro, the installer fetches the live catalog from:
+
+```text
+https://api.axrai.app/v1/models.json
+```
+
+It then writes the selected tier's OpenCode provider config into `opencode.json`/`opencode.jsonc` and maps OMC agents to models from that same tier only. It keeps the catalog's `{env:AXRAI_API_KEY}` placeholder, so set `AXRAI_API_KEY` in your environment before using AXR AI models.
 
 ## OpenCode Prerequisite
 
@@ -64,6 +72,7 @@ bunx oh-my-crew install --no-tui \
 
 Supported flags:
 
+- `--axrai=<no|trial|pro>`
 - `--claude=<yes|no|max20>`
 - `--openai=<yes|no>`
 - `--gemini=<yes|no>`
@@ -88,6 +97,15 @@ Supported flags:
 - `--skip-auth`
 
 Custom provider flags never write API keys. Configure keys through OpenCode auth or environment variables for your provider.
+
+For AXR AI scripted setup, the provider questions are optional because the live catalog drives the config:
+
+```bash
+bunx oh-my-crew install --no-tui --axrai=trial
+bunx oh-my-crew install --no-tui --axrai=pro
+```
+
+The installer validates the live catalog shape and will stop without writing partial AXR config if the catalog cannot be fetched or does not include the selected tier.
 
 ## Agent Model Mapping
 
@@ -155,4 +173,3 @@ If MCPs are missing, check `disabled_mcps` in `oh-my-crew.json` and run `opencod
 If Session Guardian is unwanted, run with `--session-guardian=no` or add `"session-guardian"` to `disabled_skills`.
 
 Anonymous telemetry can be disabled with `--disable-telemetry`, `OMO_SEND_ANONYMOUS_TELEMETRY=0`, or `OMO_DISABLE_POSTHOG=1`.
-

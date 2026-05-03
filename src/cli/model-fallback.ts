@@ -25,6 +25,7 @@ const ZAI_MODEL = "zai-coding-plan/glm-4.7"
 const ULTIMATE_FALLBACK = "opencode/gpt-5-nano"
 const SCHEMA_URL = "https://raw.githubusercontent.com/code-yeongyu/oh-my-openagent/dev/assets/oh-my-opencode.schema.json"
 const BUILTIN_MCPS = ["websearch", "context7", "grep_app"] as const
+const AXRAI_PROVIDER = "axrai"
 
 function toFallbackModelObject(entry: FallbackEntry, provider: string): FallbackModelObject {
   return {
@@ -97,6 +98,10 @@ function attachAllFallbackModels<T extends AgentConfig | CategoryConfig>(
 
 
 export function generateModelConfig(config: InstallConfig): GeneratedOmoConfig {
+  if (config.axraiTier) {
+    return applyInstallerSelections(generateAxraiModelConfig(config), config)
+  }
+
   const avail = toProviderAvailability(config)
   const hasAnyProvider =
     avail.native.claude ||
@@ -230,6 +235,81 @@ export function generateModelConfig(config: InstallConfig): GeneratedOmoConfig {
     : generatedConfig
 
   return applyInstallerSelections(configWithOpenAiCatalog, config)
+}
+
+function stripProvider(model: string | undefined): string | undefined {
+  if (!model) return undefined
+  return model.startsWith(`${AXRAI_PROVIDER}/`) ? model.slice(`${AXRAI_PROVIDER}/`.length) : model
+}
+
+function withAxraiProvider(modelId: string): string {
+  return `${AXRAI_PROVIDER}/${modelId}`
+}
+
+function createAxraiModelSelector(installConfig: InstallConfig): {
+  selectForChain: (fallbackChain: FallbackEntry[], preferSmall?: boolean) => AgentConfig
+} {
+  const allowedModelIds = installConfig.axraiModelIds?.length ? installConfig.axraiModelIds : [stripProvider(installConfig.axraiPrimaryModel) ?? "gpt-5.4"]
+  const allowlist = new Set(allowedModelIds)
+  const firstModelId = allowedModelIds[0]
+  const primaryId = stripProvider(installConfig.axraiPrimaryModel) ?? firstModelId
+  const smallId = stripProvider(installConfig.axraiSmallModel) ?? primaryId
+  const secondaryId =
+    [...allowlist].find((modelId) => modelId !== primaryId && modelId !== smallId) ??
+    [...allowlist].find((modelId) => modelId !== primaryId) ??
+    primaryId
+
+  const safePrimaryId = allowlist.has(primaryId) ? primaryId : firstModelId
+  const safeSmallId = allowlist.has(smallId) ? smallId : safePrimaryId
+  const safeSecondaryId = secondaryId && allowlist.has(secondaryId) ? secondaryId : safePrimaryId
+
+  const toConfig = (modelId: string, fallbackId: string): AgentConfig => {
+    const model = withAxraiProvider(modelId)
+    const fallbackModel = withAxraiProvider(fallbackId)
+    if (fallbackModel === model) return { model }
+    return {
+      model,
+      fallback_models: [{ model: fallbackModel }],
+    }
+  }
+
+  return {
+    selectForChain: (fallbackChain, preferSmall = false) => {
+      const chainMatch = fallbackChain.map((entry) => entry.model).find((modelId) => allowlist.has(modelId))
+      const modelId = chainMatch ?? (preferSmall ? safeSmallId : safePrimaryId)
+      const fallbackId = modelId === safeSecondaryId ? safePrimaryId : safeSecondaryId
+      return toConfig(modelId, fallbackId)
+    },
+  }
+}
+
+function generateAxraiModelConfig(installConfig: InstallConfig): GeneratedOmoConfig {
+  const selector = createAxraiModelSelector(installConfig)
+  const agents: Record<string, AgentConfig> = {}
+  const categories: Record<string, CategoryConfig> = {}
+
+  for (const [role, req] of Object.entries(CLI_AGENT_MODEL_REQUIREMENTS)) {
+    agents[role] = selector.selectForChain(
+      role === "sisyphus" ? getSisyphusFallbackChain() : req.fallbackChain,
+      role === "explore" || role === "librarian",
+    )
+  }
+
+  for (const [category, req] of Object.entries(CLI_CATEGORY_MODEL_REQUIREMENTS)) {
+    categories[category] = selector.selectForChain(req.fallbackChain, category === "quick" || category === "writing")
+  }
+
+  return {
+    $schema: SCHEMA_URL,
+    agents,
+    categories,
+    custom_provider: {
+      id: AXRAI_PROVIDER,
+      base_url: "https://api.axrai.app/v1",
+      key: "Set AXRAI_API_KEY in your environment. oh-my-crew does not write raw API keys.",
+      tier: installConfig.axraiTier,
+    },
+  }
 }
 
 function applyInstallerSelections(

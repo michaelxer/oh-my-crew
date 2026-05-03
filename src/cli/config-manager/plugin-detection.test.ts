@@ -97,6 +97,44 @@ describe("addPluginToOpenCodeConfig - single package writes", () => {
     expect(savedConfig.plugin).toEqual(["oh-my-crew"])
   })
 
+  it("merges axrAI OpenCode provider config while preserving other plugins", async () => {
+    // given
+    writeFileSync(testConfigPath, JSON.stringify({
+      plugin: ["other-plugin"],
+      provider: {
+        openai: { name: "OpenAI" },
+      },
+      model: "openai/gpt-5.4",
+    }, null, 2) + "\n", "utf-8")
+
+    // when
+    const result = await addPluginToOpenCodeConfig("3.11.0", {
+      provider: {
+        axrai: {
+          name: "axrAI Gateway",
+          options: {
+            baseURL: "https://api.axrai.app/v1",
+            apiKey: "{env:AXRAI_API_KEY}",
+          },
+          models: {
+            "gpt-5.5": { name: "gpt-5.5" },
+          },
+        },
+      },
+      model: "axrai/gpt-5.5",
+      small_model: "axrai/gpt-5-mini",
+    })
+
+    // then
+    expect(result.success).toBe(true)
+    const savedConfig = JSON.parse(readFileSync(testConfigPath, "utf-8"))
+    expect(savedConfig.plugin).toEqual(["other-plugin", "oh-my-crew"])
+    expect(savedConfig.provider.openai.name).toBe("OpenAI")
+    expect(savedConfig.provider.axrai.options.baseURL).toBe("https://api.axrai.app/v1")
+    expect(savedConfig.model).toBe("axrai/gpt-5.5")
+    expect(savedConfig.small_model).toBe("axrai/gpt-5-mini")
+  })
+
   it("upgrades a bare legacy plugin entry to canonical", async () => {
     // given
     writeFileSync(testConfigPath, JSON.stringify({ plugin: ["oh-my-opencode"] }, null, 2) + "\n", "utf-8")

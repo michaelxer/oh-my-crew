@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test"
 
-import { validateNonTuiArgs } from "./install-validators"
+import { argsToConfig, validateNonTuiArgs } from "./install-validators"
 import type { InstallArgs } from "./types"
 
 function createArgs(overrides: Partial<InstallArgs> = {}): InstallArgs {
@@ -30,5 +30,33 @@ describe("validateNonTuiArgs", () => {
     // #then
     expect(result.valid).toBe(false)
     expect(result.errors).toContain("Invalid --opencode-go value: maybe (expected: no, yes)")
+  })
+})
+
+describe("argsToConfig", () => {
+  test("axrAI mode ignores other provider flags and manual model overrides", () => {
+    // #given
+    const args = createArgs({
+      axrai: "trial",
+      claude: "max20",
+      openai: "yes",
+      gemini: "yes",
+      copilot: "yes",
+      customProvider: "yes",
+      customProviderId: "other-provider",
+      captainModel: "openai/gpt-5.5",
+    })
+
+    // #when
+    const result = argsToConfig(args)
+
+    // #then
+    expect(result.axraiTier).toBe("trial")
+    expect(result.hasClaude).toBe(false)
+    expect(result.hasOpenAI).toBe(false)
+    expect(result.hasGemini).toBe(false)
+    expect(result.hasCopilot).toBe(false)
+    expect(result.customProviderId).toBeUndefined()
+    expect(result.modelOverrides).toBeUndefined()
   })
 })

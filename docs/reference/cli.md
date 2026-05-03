@@ -38,17 +38,19 @@ bunx oh-my-crew install
 
 ### Installation Process
 
-1. **Subscription Selection**: Choose which providers and subscriptions you actually have
-2. **Plugin Registration**: Registers `oh-my-crew` in OpenCode settings and removes conflicting legacy entries such as `oh-my-opencode`, `oh-my-openagent`, and `oh-my-china`
-3. **Configuration File Creation**: Writes the generated OMC config to `oh-my-crew.json` in the active OpenCode config directory
-4. **Authentication Hints**: Shows the `opencode auth login` steps for the providers you selected, unless `--skip-auth` is set
-5. **Telemetry Defaults**: Anonymous telemetry remains enabled unless you opt out through the installer or environment variables
+1. **Subscription Selection**: Choose AXR AI Trial/Pro or continue with normal provider/subscription setup
+2. **Live AXR Catalog**: AXR AI setup fetches `https://api.axrai.app/v1/models.json` and uses only the selected tier's model IDs
+3. **Plugin Registration**: Registers `oh-my-crew` in OpenCode settings and removes conflicting legacy entries such as `oh-my-opencode`, `oh-my-openagent`, and `oh-my-china`
+4. **Configuration File Creation**: Writes the generated OMC config to `oh-my-crew.json` in the active OpenCode config directory and, for AXR AI, merges provider config into `opencode.json`
+5. **Authentication Hints**: Shows the `opencode auth login` steps for the providers you selected, unless `--skip-auth` is set
+6. **Telemetry Defaults**: Anonymous telemetry remains enabled unless you opt out through the installer or environment variables
 
 ### Options
 
 | Option | Description |
 | ------ | ----------- |
 | `--no-tui` | Run in non-interactive mode without TUI |
+| `--axrai <no\|trial\|pro>` | AXR AI setup using the live public catalog |
 | `--claude <no\|yes\|max20>` | Claude subscription mode |
 | `--openai <no\|yes>` | OpenAI / ChatGPT subscription |
 | `--gemini <no\|yes>` | Gemini integration |

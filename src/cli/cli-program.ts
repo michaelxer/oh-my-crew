@@ -34,6 +34,7 @@ program
   .option("--kimi-for-coding <value>", "Kimi For Coding subscription: no, yes (default: no)")
   .option("--opencode-go <value>", "OpenCode Go subscription: no, yes (default: no)")
   .option("--vercel-ai-gateway <value>", "Vercel AI Gateway: no, yes (default: no)")
+  .option("--axrai <value>", "AXR AI plan: no, trial, pro (default: no)")
   .option("--custom-provider <value>", "Custom OpenAI-compatible provider: no, yes (default: no)")
   .option("--custom-provider-id <id>", "Custom provider id, e.g. openrouter or axrai")
   .option("--custom-base-url <url>", "Custom OpenAI-compatible base URL")
@@ -76,6 +77,7 @@ Model Providers:
       kimiForCoding: options.kimiForCoding,
       opencodeGo: options.opencodeGo,
       vercelAiGateway: options.vercelAiGateway,
+      axrai: options.axrai,
       customProvider: options.customProvider,
       customProviderId: options.customProviderId,
       customBaseUrl: options.customBaseUrl,

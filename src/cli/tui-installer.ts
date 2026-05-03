@@ -53,7 +53,7 @@ export async function runTuiInstaller(args: InstallArgs, version: string): Promi
   if (!config) return 1
 
   spinner.start(`Adding ${PLUGIN_NAME} to OpenCode config`)
-  const pluginResult = await addPluginToOpenCodeConfig(version)
+  const pluginResult = await addPluginToOpenCodeConfig(version, config.axraiOpenCodeConfig)
   if (!pluginResult.success) {
     spinner.stop(`Failed to add plugin: ${pluginResult.error}`)
     p.outro(color.red("Installation failed."))
@@ -70,14 +70,23 @@ export async function runTuiInstaller(args: InstallArgs, version: string): Promi
   }
   spinner.stop(`Config written to ${color.cyan(omoResult.configPath)}`)
 
-  if (!config.hasClaude) {
+  if (!config.hasClaude && !config.axraiTier) {
     p.log.info(
       `${color.bold("Note:")} Sisyphus agent performs best with Claude Opus 4.5+.\n` +
         `Other models work but may have reduced orchestration quality.`,
     )
   }
 
-  if (!config.hasClaude && !config.hasOpenAI && !config.hasGemini && !config.hasCopilot && !config.hasOpencodeZen && !config.hasVercelAiGateway) {
+  if (
+    !config.hasClaude &&
+    !config.hasOpenAI &&
+    !config.hasGemini &&
+    !config.hasCopilot &&
+    !config.hasOpencodeZen &&
+    !config.hasVercelAiGateway &&
+    !config.axraiTier &&
+    !config.customProviderId
+  ) {
     p.log.warn("No model providers configured. Using opencode/big-pickle as fallback.")
   }
 
@@ -90,6 +99,9 @@ export async function runTuiInstaller(args: InstallArgs, version: string): Promi
       ? "Anonymous telemetry disabled in oh-my-crew config."
       : "Anonymous telemetry is enabled by default. Disable it with --disable-telemetry, OMO_SEND_ANONYMOUS_TELEMETRY=0, or OMO_DISABLE_POSTHOG=1."
   )
+  if (config.axraiTier) {
+    p.log.info("AXR AI uses AXRAI_API_KEY from your environment; oh-my-crew does not write raw API keys.")
+  }
   p.log.info("Docs: docs/legal/privacy-policy.md and docs/legal/terms-of-service.md")
 
   p.note(

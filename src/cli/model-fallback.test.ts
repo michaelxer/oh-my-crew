@@ -22,6 +22,68 @@ function createConfig(overrides: Partial<InstallConfig> = {}): InstallConfig {
 }
 
 describe("generateModelConfig", () => {
+  describe("axrAI catalog-driven setup", () => {
+    test("Trial output uses only Trial models and does not contain gpt-5.5", () => {
+      // given
+      const result = generateModelConfig({
+        hasClaude: false,
+        isMax20: false,
+        hasOpenAI: false,
+        hasGemini: false,
+        hasCopilot: false,
+        hasOpencodeZen: false,
+        hasZaiCodingPlan: false,
+        hasKimiForCoding: false,
+        hasOpencodeGo: false,
+        hasVercelAiGateway: false,
+        axraiTier: "trial",
+        axraiModelIds: ["gemini-3.1-pro", "glm-5.0", "gpt-5.3-codex", "gpt-5.4", "kimi-k2.5"],
+        axraiPrimaryModel: "axrai/gpt-5.4",
+        axraiSmallModel: "axrai/gpt-5.4",
+      })
+
+      // then
+      const serialized = JSON.stringify(result)
+      expect(serialized).toContain("axrai/gpt-5.4")
+      expect(serialized).not.toContain("gpt-5.5")
+      expect(serialized).not.toContain("deepseek")
+      expect(result.agents?.sisyphus?.model.startsWith("axrai/")).toBe(true)
+      expect(result.agents?.atlas?.fallback_models?.[0]?.model.startsWith("axrai/")).toBe(true)
+    })
+
+    test("Pro output can use gpt-5.5 and only axrAI provider-prefixed models", () => {
+      // given
+      const result = generateModelConfig({
+        hasClaude: false,
+        isMax20: false,
+        hasOpenAI: false,
+        hasGemini: false,
+        hasCopilot: false,
+        hasOpencodeZen: false,
+        hasZaiCodingPlan: false,
+        hasKimiForCoding: false,
+        hasOpencodeGo: false,
+        hasVercelAiGateway: false,
+        axraiTier: "pro",
+        axraiModelIds: ["gpt-5.5", "gpt-5-mini", "gemini-3.1-pro"],
+        axraiPrimaryModel: "axrai/gpt-5.5",
+        axraiSmallModel: "axrai/gpt-5-mini",
+      })
+
+      // then
+      const serialized = JSON.stringify(result)
+      expect(serialized).toContain("axrai/gpt-5.5")
+      expect(serialized).toContain("axrai/gpt-5-mini")
+      expect(serialized).not.toContain("deepseek-v4")
+      for (const agent of Object.values(result.agents ?? {})) {
+        expect(agent.model.startsWith("axrai/")).toBe(true)
+        for (const fallback of agent.fallback_models ?? []) {
+          expect(fallback.model.startsWith("axrai/")).toBe(true)
+        }
+      }
+    })
+  })
+
   describe("no providers available", () => {
     test("returns ULTIMATE_FALLBACK for all agents and categories when no providers", () => {
       // #given no providers are available
