@@ -3,7 +3,7 @@ import { join, dirname, basename } from "node:path"
 
 import { log } from "./logger"
 import { getSidecarPath } from "./migration/migrations-sidecar"
-import { CONFIG_BASENAME, LEGACY_CONFIG_BASENAME } from "./plugin-identity"
+import { CONFIG_BASENAME, LEGACY_CONFIG_BASENAME, LEGACY_CONFIG_BASENAME_2 } from "./plugin-identity"
 import { writeFileAtomically } from "./write-file-atomically"
 
 function buildCanonicalPath(legacyPath: string): string {
@@ -70,7 +70,10 @@ function migrateLegacySidecarFile(legacyPath: string, canonicalPath: string): bo
 
 export function migrateLegacyConfigFile(legacyPath: string): boolean {
   if (!existsSync(legacyPath)) return false
-  if (!basename(legacyPath).startsWith(LEGACY_CONFIG_BASENAME)) return false
+  const legacyBasename = basename(legacyPath)
+  const isKnownLegacyConfig = legacyBasename.startsWith(LEGACY_CONFIG_BASENAME)
+    || legacyBasename.startsWith(LEGACY_CONFIG_BASENAME_2)
+  if (!isKnownLegacyConfig) return false
 
   const canonicalPath = buildCanonicalPath(legacyPath)
   if (existsSync(canonicalPath)) return false

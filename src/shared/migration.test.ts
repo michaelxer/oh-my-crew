@@ -183,11 +183,11 @@ describe("migrateAgentNames", () => {
   test("migrates Sisyphus-Junior to lowercase", () => {
     // given agents config with "Cadet" key
     // when migrateAgentNames called
-    // then key becomes "Cadet"
+    // then key becomes "sisyphus-junior"
     const agents = { "Cadet": { model: "test" } }
     const { migrated, changed } = migrateAgentNames(agents)
     expect(changed).toBe(true)
-    expect(migrated["Cadet"]).toEqual({ model: "test" })
+    expect(migrated["sisyphus-junior"]).toEqual({ model: "test" })
     expect(migrated["Cadet"]).toBeUndefined()
   })
 

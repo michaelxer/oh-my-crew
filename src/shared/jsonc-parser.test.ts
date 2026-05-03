@@ -338,9 +338,10 @@ describe("detectPluginConfigFile", () => {
     clearPluginConfigFileDetectionCache()
   })
 
-  test("prefers oh-my-openagent over oh-my-opencode when both jsonc files exist", () => {
+  test("prefers oh-my-crew over legacy config files when jsonc files exist", () => {
     // given
     if (!existsSync(testDir)) mkdirSync(testDir, { recursive: true })
+    writeFileSync(join(testDir, "oh-my-crew.jsonc"), "{}")
     writeFileSync(join(testDir, "oh-my-openagent.jsonc"), "{}")
     writeFileSync(join(testDir, "oh-my-opencode.jsonc"), "{}")
 
@@ -349,7 +350,7 @@ describe("detectPluginConfigFile", () => {
 
     // then
     expect(result.format).toBe("jsonc")
-    expect(result.path).toBe(join(testDir, "oh-my-openagent.jsonc"))
+    expect(result.path).toBe(join(testDir, "oh-my-crew.jsonc"))
     expect(result.legacyPath).toBe(join(testDir, "oh-my-opencode.jsonc"))
 
     rmSync(testDir, { recursive: true, force: true })
@@ -371,9 +372,10 @@ describe("detectPluginConfigFile", () => {
     rmSync(testDir, { recursive: true, force: true })
   })
 
-  test("loads oh-my-openagent.json before oh-my-opencode.json when no jsonc exists", () => {
+  test("loads oh-my-crew.json before legacy json files when no jsonc exists", () => {
     // given
     if (!existsSync(testDir)) mkdirSync(testDir, { recursive: true })
+    writeFileSync(join(testDir, "oh-my-crew.json"), "{}")
     writeFileSync(join(testDir, "oh-my-openagent.json"), "{}")
     writeFileSync(join(testDir, "oh-my-opencode.json"), "{}")
 
@@ -382,7 +384,7 @@ describe("detectPluginConfigFile", () => {
 
     // then
     expect(result.format).toBe("json")
-    expect(result.path).toBe(join(testDir, "oh-my-openagent.json"))
+    expect(result.path).toBe(join(testDir, "oh-my-crew.json"))
     expect(result.legacyPath).toBe(join(testDir, "oh-my-opencode.json"))
 
     rmSync(testDir, { recursive: true, force: true })
@@ -398,7 +400,7 @@ describe("detectPluginConfigFile", () => {
 
     // then
     expect(result.format).toBe("none")
-    expect(result.path).toBe(join(emptyDir, "oh-my-openagent.json"))
+    expect(result.path).toBe(join(emptyDir, "oh-my-crew.json"))
 
     rmSync(testDir, { recursive: true, force: true })
   })
@@ -407,30 +409,30 @@ describe("detectPluginConfigFile", () => {
     // given
     if (!existsSync(testDir)) mkdirSync(testDir, { recursive: true })
     writeFileSync(join(testDir, "oh-my-opencode.json"), "{}")
-    writeFileSync(join(testDir, "oh-my-openagent.jsonc"), "{}")
+    writeFileSync(join(testDir, "oh-my-crew.jsonc"), "{}")
 
     // when
     const result = detectPluginConfigFile(testDir)
 
     // then
     expect(result.format).toBe("jsonc")
-    expect(result.path).toBe(join(testDir, "oh-my-openagent.jsonc"))
+    expect(result.path).toBe(join(testDir, "oh-my-crew.jsonc"))
     expect(result.legacyPath).toBe(join(testDir, "oh-my-opencode.json"))
 
     rmSync(testDir, { recursive: true, force: true })
   })
 
-  test("loads oh-my-openagent when only canonical jsonc exists", () => {
+  test("loads oh-my-crew when only canonical jsonc exists", () => {
     // given
     if (!existsSync(testDir)) mkdirSync(testDir, { recursive: true })
-    writeFileSync(join(testDir, "oh-my-openagent.jsonc"), "{}")
+    writeFileSync(join(testDir, "oh-my-crew.jsonc"), "{}")
 
     // when
     const result = detectPluginConfigFile(testDir)
 
     // then
     expect(result.format).toBe("jsonc")
-    expect(result.path).toBe(join(testDir, "oh-my-openagent.jsonc"))
+    expect(result.path).toBe(join(testDir, "oh-my-crew.jsonc"))
     expect(result.legacyPath).toBeUndefined()
 
     rmSync(testDir, { recursive: true, force: true })

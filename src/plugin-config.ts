@@ -12,7 +12,7 @@ import {
   resolveAgentDefinitionPaths,
 } from "./shared";
 import { migrateLegacyConfigFile } from "./shared/migrate-legacy-config-file";
-import { CONFIG_BASENAME, LEGACY_CONFIG_BASENAME } from "./shared/plugin-identity";
+import { CONFIG_BASENAME, LEGACY_CONFIG_BASENAME, LEGACY_CONFIG_BASENAME_2 } from "./shared/plugin-identity";
 
 function loadExplicitGitMasterOverrides(configPath: string): Record<string, unknown> | undefined {
   try {
@@ -213,7 +213,13 @@ export function loadPluginConfig(
   }
 
   // Auto-copy legacy config file to canonical name if needed
-  if (userDetected.format !== "none" && path.basename(userDetected.path).startsWith(LEGACY_CONFIG_BASENAME)) {
+  if (
+    userDetected.format !== "none"
+    && (
+      path.basename(userDetected.path).startsWith(LEGACY_CONFIG_BASENAME)
+      || path.basename(userDetected.path).startsWith(LEGACY_CONFIG_BASENAME_2)
+    )
+  ) {
     const migrated = migrateLegacyConfigFile(userDetected.path);
     const canonicalPath = path.join(
       path.dirname(userDetected.path),
@@ -242,7 +248,13 @@ export function loadPluginConfig(
   }
 
   // Auto-copy legacy project config file to canonical name if needed
-  if (projectDetected.format !== "none" && path.basename(projectDetected.path).startsWith(LEGACY_CONFIG_BASENAME)) {
+  if (
+    projectDetected.format !== "none"
+    && (
+      path.basename(projectDetected.path).startsWith(LEGACY_CONFIG_BASENAME)
+      || path.basename(projectDetected.path).startsWith(LEGACY_CONFIG_BASENAME_2)
+    )
+  ) {
     const projectMigrated = migrateLegacyConfigFile(projectDetected.path);
     const canonicalProjectPath = path.join(
       path.dirname(projectDetected.path),

@@ -239,7 +239,7 @@ describe("AGENT_MODEL_REQUIREMENTS", () => {
 
   test("sisyphus-junior has an OpenAI fallback and minimax before big-pickle", () => {
     // given - sisyphus-junior agent requirement
-    const sisyphusJunior = AGENT_MODEL_REQUIREMENTS["Cadet"]
+    const sisyphusJunior = AGENT_MODEL_REQUIREMENTS["sisyphus-junior"]
 
     // when - locating the OpenAI fallback entry
     const openAiFallback = sisyphusJunior.fallbackChain.find((entry) => entry.providers.includes("openai"))
@@ -282,7 +282,7 @@ describe("AGENT_MODEL_REQUIREMENTS", () => {
       "metis",
       "momus",
       "atlas",
-      "Cadet",
+      "sisyphus-junior",
     ]
 
     // when - checking AGENT_MODEL_REQUIREMENTS
