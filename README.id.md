@@ -80,19 +80,32 @@ Session Guardian **dimuat otomatis** untuk Captain dan Strategist -- tidak perlu
 
 ### Langkah 1: Tambahkan ke konfigurasi plugin
 
-Wizard yang direkomendasikan:
+Direkomendasikan: tempel ini ke sesi LLM agent Anda dan biarkan agent memasang secara non-interaktif:
+
+```text
+Install and configure oh-my-crew by following the instructions here:
+https://raw.githubusercontent.com/michaelxer/oh-my-crew/refs/heads/oh-my-crew/docs/guide/installation.md
+```
+
+LLM agent sebaiknya mengambil panduan dengan:
 
 ```bash
-npx oh-my-crew install
+curl -fsSL https://raw.githubusercontent.com/michaelxer/oh-my-crew/refs/heads/oh-my-crew/docs/guide/installation.md
+```
+
+Alternatif: jalankan wizard interaktif sendiri di terminal sungguhan:
+
+```bash
+npx oh-my-crew@latest install
 ```
 
 atau:
 
 ```bash
-bunx oh-my-crew install
+bunx oh-my-crew@latest install
 ```
 
-Untuk setup non-interaktif/scripted, lihat [docs/guide/installation.md](docs/guide/installation.md).
+Untuk setup non-interaktif/scripted dan instruksi lengkap untuk LLM agent, lihat [docs/guide/installation.md](docs/guide/installation.md).
 
 Wizard akan bertanya terlebih dahulu apakah Anda anggota Mettle Community dengan paket AXR AI Trial atau Pro. Jika dipilih, installer mengambil katalog model live dari `https://api.axrai.app/v1/models.json` dan hanya memakai model yang tersedia pada tier tersebut.
 

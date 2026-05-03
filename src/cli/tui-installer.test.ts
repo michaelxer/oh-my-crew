@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, it, spyOn } from "bun:test"
+import { afterEach, beforeEach, describe, expect, it, mock, spyOn } from "bun:test"
 import * as p from "@clack/prompts"
 import * as configManager from "./config-manager"
 import * as tuiInstallPrompts from "./tui-install-prompts"
@@ -15,6 +15,7 @@ function createMockSpinner(): ReturnType<typeof p.spinner> {
 describe("runTuiInstaller", () => {
   const originalIsStdinTty = process.stdin.isTTY
   const originalIsStdoutTty = process.stdout.isTTY
+  const originalConsoleError = console.error
 
   beforeEach(() => {
     Object.defineProperty(process.stdin, "isTTY", { configurable: true, value: true })
@@ -24,6 +25,22 @@ describe("runTuiInstaller", () => {
   afterEach(() => {
     Object.defineProperty(process.stdin, "isTTY", { configurable: true, value: originalIsStdinTty })
     Object.defineProperty(process.stdout, "isTTY", { configurable: true, value: originalIsStdoutTty })
+    console.error = originalConsoleError
+  })
+
+  it("shows both non-interactive flags when no TTY is available", async () => {
+    // given
+    Object.defineProperty(process.stdin, "isTTY", { configurable: true, value: false })
+    console.error = mock(() => undefined)
+
+    // when
+    const result = await runTuiInstaller({ tui: true }, "3.16.0")
+
+    // then
+    expect(result).toBe(1)
+    expect(console.error).toHaveBeenCalledWith(
+      "Error: Interactive installer requires a TTY. Use --no-tui or --non-interactive with provider flags.",
+    )
   })
 
   it("blocks installation when OpenCode is below the minimum version", async () => {

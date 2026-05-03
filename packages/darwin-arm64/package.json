@@ -1,11 +1,11 @@
 {
-  "name": "oh-my-opencode-darwin-arm64",
-  "version": "3.17.12",
-  "description": "Platform-specific binary for oh-my-opencode (darwin-arm64)",
+  "name": "oh-my-crew-darwin-arm64",
+  "version": "2.1.6",
+  "description": "Platform-specific binary for oh-my-crew (darwin-arm64)",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/code-yeongyu/oh-my-openagent"
+    "url": "https://github.com/michaelxer/oh-my-crew"
   },
   "os": [
     "darwin"
@@ -14,7 +14,7 @@
     "arm64"
   ],
   "files": [
-    "bin"
+    "bin/oh-my-opencode"
   ],
   "bin": {
     "oh-my-opencode": "./bin/oh-my-opencode"

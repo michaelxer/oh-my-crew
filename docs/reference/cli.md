@@ -50,6 +50,7 @@ bunx oh-my-crew install
 | Option | Description |
 | ------ | ----------- |
 | `--no-tui` | Run in non-interactive mode without TUI |
+| `--non-interactive` | Alias for `--no-tui` |
 | `--axrai <no\|trial\|pro>` | AXR AI setup using the live public catalog |
 | `--claude <no\|yes\|max20>` | Claude subscription mode |
 | `--openai <no\|yes>` | OpenAI / ChatGPT subscription |

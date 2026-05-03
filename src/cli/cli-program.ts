@@ -25,6 +25,7 @@ program
   .command("install")
   .description("Install and configure oh-my-crew with interactive setup")
   .option("--no-tui", "Run in non-interactive mode (requires all options)")
+  .option("--non-interactive", "Alias for --no-tui")
   .option("--claude <value>", "Claude subscription: no, yes, max20")
   .option("--openai <value>", "OpenAI/ChatGPT subscription: no, yes (default: no)")
   .option("--gemini <value>", "Gemini integration: no, yes")
@@ -52,6 +53,7 @@ program
 Examples:
   $ bunx oh-my-crew install
   $ bunx oh-my-crew install --no-tui --claude=max20 --openai=yes --gemini=yes --copilot=no
+  $ bunx oh-my-crew install --non-interactive --claude=max20 --openai=yes --gemini=yes --copilot=no
   $ bunx oh-my-crew install --no-tui --claude=no --gemini=no --copilot=yes --opencode-zen=yes
   $ bunx oh-my-crew install --no-tui --claude=no --openai=no --gemini=no --copilot=no --custom-provider=yes --custom-provider-id=openrouter --custom-base-url=https://openrouter.ai/api/v1 --captain-model=openrouter/anthropic/claude-sonnet-4.6
 
@@ -67,7 +69,7 @@ Model Providers:
 `)
   .action(async (options) => {
     const args: InstallArgs = {
-      tui: options.tui !== false,
+      tui: options.tui !== false && !options.nonInteractive,
       claude: options.claude,
       openai: options.openai,
       gemini: options.gemini,

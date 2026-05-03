@@ -80,19 +80,32 @@ Session Guardian is **auto-loaded** for Captain and Strategist -- no configurati
 
 ### Step 1: Add to plugin config
 
-Recommended wizard:
+Recommended: paste this into your LLM agent session and let it install non-interactively:
+
+```text
+Install and configure oh-my-crew by following the instructions here:
+https://raw.githubusercontent.com/michaelxer/oh-my-crew/refs/heads/oh-my-crew/docs/guide/installation.md
+```
+
+LLM agents should fetch the guide with:
 
 ```bash
-npx oh-my-crew install
+curl -fsSL https://raw.githubusercontent.com/michaelxer/oh-my-crew/refs/heads/oh-my-crew/docs/guide/installation.md
+```
+
+Alternative: run the interactive wizard yourself in a real terminal:
+
+```bash
+npx oh-my-crew@latest install
 ```
 
 or:
 
 ```bash
-bunx oh-my-crew install
+bunx oh-my-crew@latest install
 ```
 
-For scripted setup, see [docs/guide/installation.md](docs/guide/installation.md).
+For scripted setup and full LLM-agent instructions, see [docs/guide/installation.md](docs/guide/installation.md).
 
 The wizard asks first whether you are a Mettle Community member with an AXR AI Trial or Pro plan. If selected, it fetches the live AXR model catalog from `https://api.axrai.app/v1/models.json` and configures only models available in that tier.
 

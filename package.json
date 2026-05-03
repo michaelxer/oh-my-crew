@@ -1,8 +1,8 @@
 {
   "name": "oh-my-crew",
-  "version": "2.1.5",
+  "version": "2.1.6",
   "description": "Role-based agent fork of oh-my-opencode - Clean crew names with content-filter-safe system prompts",
-  "binaryPackageBaseName": "oh-my-opencode",
+  "binaryPackageBaseName": "oh-my-crew",
   "main": "./dist/index.js",
   "types": "dist/index.d.ts",
   "type": "module",
@@ -80,17 +80,17 @@
     "typescript": "^5.7.3"
   },
   "optionalDependencies": {
-    "oh-my-opencode-darwin-arm64": "3.17.12",
-    "oh-my-opencode-darwin-x64": "3.17.12",
-    "oh-my-opencode-darwin-x64-baseline": "3.17.12",
-    "oh-my-opencode-linux-arm64": "3.17.12",
-    "oh-my-opencode-linux-arm64-musl": "3.17.12",
-    "oh-my-opencode-linux-x64": "3.17.12",
-    "oh-my-opencode-linux-x64-baseline": "3.17.12",
-    "oh-my-opencode-linux-x64-musl": "3.17.12",
-    "oh-my-opencode-linux-x64-musl-baseline": "3.17.12",
-    "oh-my-opencode-windows-x64": "3.17.12",
-    "oh-my-opencode-windows-x64-baseline": "3.17.12"
+    "oh-my-crew-darwin-arm64": "2.1.6",
+    "oh-my-crew-darwin-x64": "2.1.6",
+    "oh-my-crew-darwin-x64-baseline": "2.1.6",
+    "oh-my-crew-linux-arm64": "2.1.6",
+    "oh-my-crew-linux-arm64-musl": "2.1.6",
+    "oh-my-crew-linux-x64": "2.1.6",
+    "oh-my-crew-linux-x64-baseline": "2.1.6",
+    "oh-my-crew-linux-x64-musl": "2.1.6",
+    "oh-my-crew-linux-x64-musl-baseline": "2.1.6",
+    "oh-my-crew-windows-x64": "2.1.6",
+    "oh-my-crew-windows-x64-baseline": "2.1.6"
   },
   "overrides": {},
   "trustedDependencies": [

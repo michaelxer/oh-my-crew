@@ -77,24 +77,28 @@ function getLibcFamily() {
   }
 }
 
-function getPackageBaseName() {
+function getPackageInfo() {
   try {
     const packageJson = JSON.parse(readFileSync(new URL("./package.json", import.meta.url), "utf8"));
-    return packageJson.binaryPackageBaseName || "oh-my-opencode";
+    return {
+      name: packageJson.name || "oh-my-crew",
+      binaryPackageBaseName: packageJson.binaryPackageBaseName || packageJson.name || "oh-my-crew",
+    };
   } catch {
-    return "oh-my-opencode";
+    return { name: "oh-my-crew", binaryPackageBaseName: "oh-my-crew" };
   }
 }
 
 function main() {
   const { platform, arch } = process;
   const libcFamily = getLibcFamily();
-  const packageBaseName = getPackageBaseName();
+  const packageInfo = getPackageInfo();
+  const packageBaseName = packageInfo.binaryPackageBaseName;
 
   // Check opencode version requirement
   const versionCheck = checkOpenCodeVersion();
   if (versionCheck.version && !versionCheck.ok) {
-    console.warn(`⚠ oh-my-opencode requires OpenCode >= ${MIN_OPENCODE_VERSION}`);
+    console.warn(`⚠ ${packageInfo.name} requires OpenCode >= ${MIN_OPENCODE_VERSION}`);
     console.warn(`  Detected: ${versionCheck.version}`);
     console.warn(`  Please update OpenCode to avoid compatibility issues.`);
   }
@@ -122,9 +126,9 @@ function main() {
       );
     }
 
-    console.log(`✓ oh-my-opencode binary installed for ${platform}-${arch} (${resolvedPackage})`);
+    console.log(`✓ ${packageInfo.name} binary installed for ${platform}-${arch} (${resolvedPackage})`);
   } catch (error) {
-    console.warn(`⚠ oh-my-opencode: ${error.message}`);
+    console.warn(`⚠ ${packageInfo.name}: ${error.message}`);
     console.warn(`  The CLI may not work on this platform.`);
     // Don't fail installation - let user try anyway
   }

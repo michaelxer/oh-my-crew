@@ -37,7 +37,7 @@ async function buildPlatform(platform: PlatformTarget): Promise<boolean> {
   console.log(`   Output: ${outfile}`);
 
   try {
-    await $`bun build --compile --minify --sourcemap --bytecode --target=${platform.target} ${ENTRY_POINT} --outfile=${outfile}`;
+    await $`bun build --compile --minify --bytecode --target=${platform.target} ${ENTRY_POINT} --outfile=${outfile}`;
 
     // Verify binary exists
     if (!existsSync(outfile)) {
@@ -61,7 +61,7 @@ async function buildPlatform(platform: PlatformTarget): Promise<boolean> {
 }
 
 async function main() {
-  console.log("🔨 Building oh-my-opencode platform binaries");
+  console.log("🔨 Building oh-my-crew platform binaries");
   console.log(`   Entry point: ${ENTRY_POINT}`);
   console.log(`   Platforms: ${PLATFORMS.length}`);
 

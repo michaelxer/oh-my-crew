@@ -71,19 +71,23 @@ function getSignalExitCode(signal) {
   return 128 + (signalCodeByName[signal] ?? 1);
 }
 
-function getPackageBaseName() {
+function getPackageInfo() {
   try {
     const packageJson = JSON.parse(readFileSync(new URL("../package.json", import.meta.url), "utf8"));
-    return packageJson.binaryPackageBaseName || "oh-my-opencode";
+    return {
+      name: packageJson.name || "oh-my-crew",
+      binaryPackageBaseName: packageJson.binaryPackageBaseName || packageJson.name || "oh-my-crew",
+    };
   } catch {
-    return "oh-my-opencode";
+    return { name: "oh-my-crew", binaryPackageBaseName: "oh-my-crew" };
   }
 }
 
 function main() {
   const { platform, arch } = process;
   const libcFamily = getLibcFamily();
-  const packageBaseName = getPackageBaseName();
+  const packageInfo = getPackageInfo();
+  const packageBaseName = packageInfo.binaryPackageBaseName;
   const avx2Supported = supportsAvx2();
   
   let packageCandidates;
@@ -96,7 +100,7 @@ function main() {
       packageBaseName,
     });
   } catch (error) {
-    console.error(`\noh-my-opencode: ${error.message}\n`);
+    console.error(`\n${packageInfo.name}: ${error.message}\n`);
     process.exit(1);
   }
 
@@ -111,7 +115,7 @@ function main() {
     .filter((entry) => entry !== null);
 
   if (resolvedBinaries.length === 0) {
-    console.error(`\noh-my-opencode: Platform binary not installed.`);
+    console.error(`\n${packageInfo.name}: Platform binary not installed.`);
     console.error(`\nYour platform: ${platform}-${arch}${libcFamily === "musl" ? "-musl" : ""}`);
     console.error(`Expected packages (in order): ${packageCandidates.join(", ")}`);
     console.error(`\nTo fix, run:`);
@@ -131,7 +135,7 @@ function main() {
         continue;
       }
 
-      console.error(`\noh-my-opencode: Failed to execute binary.`);
+      console.error(`\n${packageInfo.name}: Failed to execute binary.`);
       console.error(`Error: ${result.error.message}\n`);
       process.exit(2);
     }

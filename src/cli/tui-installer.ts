@@ -15,7 +15,7 @@ import { promptInstallConfig } from "./tui-install-prompts"
 
 export async function runTuiInstaller(args: InstallArgs, version: string): Promise<number> {
   if (!process.stdin.isTTY || !process.stdout.isTTY) {
-    console.error("Error: Interactive installer requires a TTY. Use --no-tui or set environment variables directly.")
+    console.error("Error: Interactive installer requires a TTY. Use --no-tui or --non-interactive with provider flags.")
     return 1
   }
 
