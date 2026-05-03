@@ -1,4 +1,6 @@
 import color from "picocolors"
+import { getAgentDisplayName } from "../shared/agent-display-names"
+import { generateModelConfig } from "./model-fallback"
 import type {
   BooleanArg,
   ClaudeSubscription,
@@ -19,6 +21,18 @@ export const SYMBOLS = {
 
 const BUILTIN_MCP_NAMES = new Set(["websearch", "context7", "grep_app"])
 const ANSI_COLOR_PATTERN = new RegExp("\u001b\\[[0-9;]*m", "g")
+const AGENT_SUMMARY_ORDER = [
+  "sisyphus",
+  "hephaestus",
+  "prometheus",
+  "atlas",
+  "metis",
+  "momus",
+  "oracle",
+  "librarian",
+  "explore",
+  "multimodal-looker",
+] as const
 
 function parseCommaList(value: string | undefined): string[] | undefined {
   if (value === undefined) return undefined
@@ -33,6 +47,31 @@ function formatProvider(name: string, enabled: boolean, detail?: string): string
   const label = enabled ? color.white(name) : color.dim(name)
   const suffix = detail ? color.dim(` (${detail})`) : ""
   return `  ${status} ${label}${suffix}`
+}
+
+function formatModelLabel(model: string | undefined, variant: string | undefined): string {
+  if (!model) return color.dim("none")
+  return variant ? `${model} ${color.dim(`[${variant}]`)}` : model
+}
+
+function formatAgentModelSummary(config: InstallConfig): string[] {
+  const generated = generateModelConfig(config)
+  const agents = generated.agents ?? {}
+  const knownAgents = AGENT_SUMMARY_ORDER.filter((agent) => agents[agent])
+  const extraAgents = Object.keys(agents).filter((agent) => !AGENT_SUMMARY_ORDER.includes(agent as never)).sort()
+  const orderedAgents = [...knownAgents, ...extraAgents]
+
+  if (orderedAgents.length === 0) {
+    return [`  ${SYMBOLS.warn} No agent-specific model assignments were generated`]
+  }
+
+  return orderedAgents.map((agent) => {
+    const agentConfig = agents[agent]
+    const fallback = agentConfig?.fallback_models?.[0]
+    const primary = formatModelLabel(agentConfig?.model, agentConfig?.variant)
+    const backup = formatModelLabel(fallback?.model, fallback?.variant)
+    return `  ${SYMBOLS.bullet} ${getAgentDisplayName(agent)}: ${primary} ${color.dim("->")} ${backup}`
+  })
 }
 
 export function formatConfigSummary(config: InstallConfig): string {
@@ -67,6 +106,19 @@ export function formatConfigSummary(config: InstallConfig): string {
     lines.push(`  ${SYMBOLS.info} Models auto-configured based on provider priority`)
     lines.push(`  ${SYMBOLS.bullet} Priority: Native > Copilot > OpenCode Zen > Z.ai`)
   }
+
+  lines.push("")
+  lines.push(color.bold(color.white("Crew Models")))
+  lines.push("")
+  lines.push(...formatAgentModelSummary(config))
+
+  lines.push("")
+  lines.push(color.bold(color.white("Useful Commands")))
+  lines.push("")
+  lines.push(`  ${SYMBOLS.bullet} ${color.cyan("opencode")} - start OpenCode with OMC loaded`)
+  lines.push(`  ${SYMBOLS.bullet} ${color.cyan("opencode agent list")} - inspect available crew agents`)
+  lines.push(`  ${SYMBOLS.bullet} ${color.cyan("opencode debug config")} - verify merged OpenCode config`)
+  lines.push(`  ${SYMBOLS.bullet} ${color.cyan("npx oh-my-crew@latest doctor")} - run OMC diagnostics`)
 
   if (config.enabledMcps) {
     lines.push("")

@@ -230,6 +230,7 @@ npx oh-my-crew@latest doctor
 Confirm:
 
 - `opencode.json` contains `oh-my-crew` in the `plugin` array
+- The installer completion summary shows `Crew Models` with each agent's primary model and first fallback
 - The agent list includes Captain, Strategist, Foreman, Architect, Sage, Scout, Scribe, Cadet, and Lookout
 - `Foreman - Plan Executor` appears; internally it maps to `atlas`
 - MCP list includes the enabled built-ins unless the user explicitly disabled them

@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test"
 
-import { argsToConfig, validateNonTuiArgs } from "./install-validators"
+import { argsToConfig, formatConfigSummary, validateNonTuiArgs } from "./install-validators"
 import type { InstallArgs } from "./types"
 
 function createArgs(overrides: Partial<InstallArgs> = {}): InstallArgs {
@@ -58,5 +58,22 @@ describe("argsToConfig", () => {
     expect(result.hasCopilot).toBe(false)
     expect(result.customProviderId).toBeUndefined()
     expect(result.modelOverrides).toBeUndefined()
+  })
+})
+
+describe("formatConfigSummary", () => {
+  test("shows final crew model assignments and useful commands", () => {
+    // #given
+    const config = argsToConfig(createArgs())
+
+    // #when
+    const result = formatConfigSummary(config)
+
+    // #then
+    expect(result).toContain("Crew Models")
+    expect(result).toContain("Captain - Ultraworker: opencode/gpt-5-nano")
+    expect(result).toContain("Useful Commands")
+    expect(result).toContain("opencode agent list")
+    expect(result).toContain("npx oh-my-crew@latest doctor")
   })
 })

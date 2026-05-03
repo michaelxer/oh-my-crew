@@ -51,7 +51,7 @@ describe("generateOmoConfig - model fallback system", () => {
 
     //#then
     expect(result.$schema).toBe("https://raw.githubusercontent.com/code-yeongyu/oh-my-openagent/dev/assets/oh-my-opencode.schema.json")
-    expect((result.agents as Record<string, { model: string }>).sisyphus).toBeUndefined()
+    expect((result.agents as Record<string, { model: string }>).sisyphus.model).toBe("opencode/gpt-5-nano")
   })
 
   test("uses ZAI model for librarian when Z.ai is available", () => {

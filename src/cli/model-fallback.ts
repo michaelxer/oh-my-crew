@@ -117,9 +117,7 @@ export function generateModelConfig(config: InstallConfig): GeneratedOmoConfig {
     return applyInstallerSelections({
       $schema: SCHEMA_URL,
       agents: Object.fromEntries(
-        Object.entries(CLI_AGENT_MODEL_REQUIREMENTS)
-          .filter(([role, req]) => !(role === "sisyphus" && req.requiresAnyModel))
-          .map(([role]) => [role, { model: ULTIMATE_FALLBACK }])
+        Object.keys(CLI_AGENT_MODEL_REQUIREMENTS).map((role) => [role, { model: ULTIMATE_FALLBACK }])
       ),
       categories: Object.fromEntries(
         Object.keys(CLI_CATEGORY_MODEL_REQUIREMENTS).map((cat) => [cat, { model: ULTIMATE_FALLBACK }])
