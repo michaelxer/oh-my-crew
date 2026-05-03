@@ -1,4 +1,5 @@
 import { getSessionAgent } from "../../features/claude-code-session-state"
+import { getAgentConfigKey } from "../../shared/agent-display-names"
 
 export const AGENT_NAMES = [
   "sisyphus",
@@ -37,6 +38,10 @@ export function normalizeAgentName(agent: string | undefined): string | undefine
   const normalized = agent.toLowerCase().trim()
   if (AGENT_NAMES.includes(normalized)) {
     return normalized
+  }
+  const configKey = getAgentConfigKey(agent)
+  if (AGENT_NAMES.includes(configKey)) {
+    return configKey
   }
   const match = normalized.match(agentPattern)
   if (match) {

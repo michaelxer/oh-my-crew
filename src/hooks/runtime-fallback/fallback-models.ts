@@ -5,6 +5,7 @@ import { HOOK_NAME } from "./constants"
 import { log } from "../../shared/logger"
 import { SessionCategoryRegistry } from "../../shared/session-category-registry"
 import { normalizeFallbackModels, flattenToFallbackModelStrings } from "../../shared/model-resolver"
+import { getAgentConfigKey } from "../../shared/agent-display-names"
 
 /**
  * Returns fallback model strings for the runtime-fallback system.
@@ -50,7 +51,8 @@ function getRawFallbackModelsForSession(
   }
 
   const tryGetFallbackFromAgent = (agentName: string): (string | FallbackModelObject)[] | undefined => {
-    const agentConfig = pluginConfig.agents?.[agentName as keyof typeof pluginConfig.agents]
+    const agentConfigKey = getAgentConfigKey(agentName)
+    const agentConfig = pluginConfig.agents?.[agentConfigKey as keyof typeof pluginConfig.agents]
     if (!agentConfig) return undefined
 
     if (agentConfig?.fallback_models) {

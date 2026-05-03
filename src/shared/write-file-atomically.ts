@@ -1,11 +1,16 @@
 import { closeSync, fsyncSync, openSync, renameSync, unlinkSync, writeFileSync } from "node:fs"
+import { log } from "./logger"
 
 export function writeFileAtomically(filePath: string, content: string): void {
-	const tempPath = `${filePath}.tmp`
-	writeFileSync(tempPath, content, "utf-8")
+  const tempPath = `${filePath}.tmp`
+  writeFileSync(tempPath, content, "utf-8")
   const tempFileDescriptor = openSync(tempPath, "r")
   try {
-    fsyncSync(tempFileDescriptor)
+    try {
+      fsyncSync(tempFileDescriptor)
+    } catch (error) {
+      log("[writeFileAtomically] Could not fsync temp file before rename", { filePath, error })
+    }
   } finally {
     closeSync(tempFileDescriptor)
   }

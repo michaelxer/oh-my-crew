@@ -339,7 +339,7 @@ describe("loadPluginConfig", () => {
     const projectConfigDir = join(projectDir, ".opencode")
     const legacyConfigPath = join(projectConfigDir, "oh-my-opencode.jsonc")
     const backupConfigPath = `${legacyConfigPath}.bak`
-    const canonicalConfigPath = join(projectConfigDir, "oh-my-openagent.jsonc")
+    const canonicalConfigPath = join(projectConfigDir, "oh-my-crew.jsonc")
 
     tempDirs.push(rootDir)
     mkdirSync(userConfigDir, { recursive: true })
@@ -405,7 +405,7 @@ describe("loadPluginConfig", () => {
     const projectDir = join(rootDir, "project")
     const projectConfigDir = join(projectDir, ".opencode")
     const legacyConfigPath = join(projectConfigDir, "oh-my-opencode.jsonc")
-    const canonicalConfigPath = join(projectConfigDir, "oh-my-openagent.jsonc")
+    const canonicalConfigPath = join(projectConfigDir, "oh-my-crew.jsonc")
 
     tempDirs.push(rootDir)
     mkdirSync(userConfigDir, { recursive: true })
