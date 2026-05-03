@@ -11,6 +11,10 @@ on:
         required: false
         type: string
         default: ""
+      platform:
+        required: false
+        type: string
+        default: ""
     secrets:
       NPM_TOKEN:
         required: false
@@ -22,6 +26,11 @@ on:
         type: string
       dist_tag:
         description: "npm dist tag (e.g., beta, latest)"
+        required: false
+        type: string
+        default: ""
+      platform:
+        description: "Optional single platform to publish"
         required: false
         type: string
         default: ""
@@ -40,7 +49,7 @@ jobs:
       fail-fast: false
       max-parallel: 11
       matrix:
-        platform: [darwin-arm64, darwin-x64, darwin-x64-baseline, linux-x64, linux-x64-baseline, linux-arm64, linux-x64-musl, linux-x64-musl-baseline, linux-arm64-musl, windows-x64, windows-x64-baseline]
+        platform: ${{ fromJSON(inputs.platform == '' && '["darwin-arm64","darwin-x64","darwin-x64-baseline","linux-x64","linux-x64-baseline","linux-arm64","linux-x64-musl","linux-x64-musl-baseline","linux-arm64-musl","windows-x64","windows-x64-baseline"]' || format('["{0}"]', inputs.platform)) }}
     steps:
       - uses: actions/checkout@v4
 
@@ -173,7 +182,7 @@ jobs:
       fail-fast: false
       max-parallel: 2
       matrix:
-        platform: [darwin-arm64, darwin-x64, darwin-x64-baseline, linux-x64, linux-x64-baseline, linux-arm64, linux-x64-musl, linux-x64-musl-baseline, linux-arm64-musl, windows-x64, windows-x64-baseline]
+        platform: ${{ fromJSON(inputs.platform == '' && '["darwin-arm64","darwin-x64","darwin-x64-baseline","linux-x64","linux-x64-baseline","linux-arm64","linux-x64-musl","linux-x64-musl-baseline","linux-arm64-musl","windows-x64","windows-x64-baseline"]' || format('["{0}"]', inputs.platform)) }}
     steps:
       - name: Validate release inputs
         id: validate
@@ -276,17 +285,17 @@ jobs:
             fi
           }
 
-          for attempt in 1 2 3; do
+          for attempt in 1 2 3 4; do
             if publish_package 2>&1 | tee npm-publish.log; then
               exit 0
             fi
 
-            if ! grep -Eq "E429|Too Many Requests|rate limited" npm-publish.log || [ "$attempt" = "3" ]; then
+            if ! grep -Eq "E429|Too Many Requests|rate limited" npm-publish.log || [ "$attempt" = "4" ]; then
               exit 1
             fi
 
-            sleep_seconds=$((attempt * 300))
-            echo "npm publish was rate-limited; retrying in ${sleep_seconds}s (attempt ${attempt}/3)."
+            sleep_seconds=$((attempt * 900))
+            echo "npm publish was rate-limited; retrying in ${sleep_seconds}s (attempt ${attempt}/4)."
             sleep "$sleep_seconds"
           done
-        timeout-minutes: 30
+        timeout-minutes: 100
