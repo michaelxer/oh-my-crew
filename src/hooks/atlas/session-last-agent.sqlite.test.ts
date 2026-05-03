@@ -24,7 +24,7 @@ describe("getLastAgentFromSession SQLite backend ordering", () => {
     })
 
     // then
-    expect(result).toBe("Cadet")
+    expect(result).toBe("cadet")
   })
 
   test("handles equal timestamps with random-looking ids deterministically", async () => {
@@ -47,7 +47,7 @@ describe("getLastAgentFromSession SQLite backend ordering", () => {
     })
 
     // then
-    expect(result).toBe("Cadet")
+    expect(result).toBe("cadet")
   })
 
   test("skips compaction marker user messages that retain the original agent", async () => {

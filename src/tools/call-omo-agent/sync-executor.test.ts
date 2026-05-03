@@ -109,7 +109,7 @@ describe("executeSync", () => {
     const promptInput = recorder.getCapturedInput()
     expect(promptInput).toBeDefined()
     expect(promptInput?.path.id).toBe("ses-test-123")
-    expect(promptInput?.body.agent).toBe("explore")
+    expect(promptInput?.body.agent).toBe("Scout")
     expect(promptInput?.body.tools.question).toBe(false)
     expect(promptInput?.body.tools.task).toBe(false)
     expect(promptInput?.body.parts).toEqual([{ type: "text", text: "find something" }])
@@ -295,7 +295,7 @@ describe("executeSync", () => {
     const result = await executeSync(args, toolContext, createContext(recorder.promptAsync) as never, deps)
 
     //#then
-    expect(result).toContain('Error: Agent "explore" not found')
+    expect(result).toContain('Error: Agent "Scout" not found')
     expect(result).toContain("session_id: ses-missing-agent")
     expect(deps.waitForCompletion).not.toHaveBeenCalled()
     expect(deps.processMessages).not.toHaveBeenCalled()

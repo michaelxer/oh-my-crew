@@ -5,7 +5,7 @@ import { getAgentToolRestrictions, log } from "../../shared"
 import { applySessionPromptParams } from "../../shared/session-prompt-params-helpers"
 import type { DelegatedModelConfig } from "../../shared/model-resolution-types"
 import type { FallbackEntry } from "../../shared/model-requirements"
-import { stripAgentListSortPrefix } from "../../shared/agent-display-names"
+import { normalizeAgentForPrompt, stripAgentListSortPrefix } from "../../shared/agent-display-names"
 import { waitForCompletion } from "./completion-poller"
 import { processMessages } from "./message-processor"
 import { createOrGetSession } from "./session-creator"
@@ -99,7 +99,8 @@ export async function executeSync(
 
     log(`[call_omo_agent] Sending prompt to session ${sessionID}`)
     log(`[call_omo_agent] Prompt text:`, args.prompt.substring(0, 100))
-    const normalizedSubagentType = stripAgentListSortPrefix(args.subagent_type)
+    const normalizedSubagentType = normalizeAgentForPrompt(stripAgentListSortPrefix(args.subagent_type))
+      ?? stripAgentListSortPrefix(args.subagent_type)
 
     try {
       await (ctx.client.session as unknown as SessionWithPromptAsync).promptAsync({

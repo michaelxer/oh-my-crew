@@ -163,7 +163,7 @@ describe("getHephaestusPrompt", () => {
 
     // then
     expect(prompt).toContain("autonomous deep worker");
-    expect(prompt).toContain("Hephaestus");
+    expect(prompt).toContain("Strategist");
   });
 
   test("useTaskSystem=true includes Task Discipline for GPT models", () => {
@@ -243,7 +243,7 @@ describe("createHephaestusAgent", () => {
     expect(config.prompt).toContain("`edit` and `write`");
   });
 
-  test("includes Hephaestus identity in prompt", () => {
+  test("includes Strategist identity in prompt", () => {
     // given
     const model = "openai/gpt-5.4";
 
@@ -251,7 +251,7 @@ describe("createHephaestusAgent", () => {
     const config = createHephaestusAgent(model);
 
     // then
-    expect(config.prompt).toContain("Hephaestus");
+    expect(config.prompt).toContain("Strategist");
     expect(config.prompt).toContain("autonomous deep worker");
   });
 

@@ -8,6 +8,11 @@ import type { ToolContextWithMetadata } from "./tool-context-with-metadata"
 import { getMessageDir } from "./message-storage-directory"
 import { getSessionTools } from "../../shared/session-tools-store"
 
+function readTaskSessionId(task: unknown): string | undefined {
+	const maybeTask = task as { sessionId?: string; sessionID?: string } | undefined
+	return maybeTask?.sessionId ?? maybeTask?.sessionID
+}
+
 export async function executeBackgroundAgent(
 	args: CallOmoAgentArgs,
 	toolContext: ToolContextWithMetadata,
@@ -50,13 +55,13 @@ export async function executeBackgroundAgent(
 		const waitTimeoutMs = 30_000
 		const waitIntervalMs = 50
 
-		let sessionId = task.sessionId
+		let sessionId = readTaskSessionId(task)
 		while (!sessionId && Date.now() - waitStart < waitTimeoutMs) {
 			const updated = manager.getTask(task.id)
 			if (updated?.status === "error" || updated?.status === "cancelled" || updated?.status === "interrupt") {
 				return `Task failed to start (status: ${updated.status}).\n\nTask ID: ${task.id}`
 			}
-			sessionId = updated?.sessionId
+			sessionId = readTaskSessionId(updated)
 			if (sessionId) {
 				break
 			}

@@ -188,7 +188,7 @@ describe("getAgentConfigKey", () => {
     expect(getAgentConfigKey("Foreman - Plan Executor")).toBe("atlas")
     expect(getAgentConfigKey("Advisor - Plan Consultant")).toBe("metis")
     expect(getAgentConfigKey("Auditor - Plan Critic")).toBe("momus")
-    expect(getAgentConfigKey("Cadet")).toBe("Cadet")
+    expect(getAgentConfigKey("Cadet")).toBe("sisyphus-junior")
   })
 
   it("resolves atlas even when the UI ordering prefix is present", () => {
@@ -263,7 +263,7 @@ describe("AGENT_DISPLAY_NAMES", () => {
       hephaestus: "Strategist - Deep Agent",
       prometheus: "Architect - Plan Builder",
       atlas: "Foreman - Plan Executor",
-      "Cadet": "Cadet",
+      "sisyphus-junior": "Cadet",
       metis: "Advisor - Plan Consultant",
       momus: "Auditor - Plan Critic",
       athena: "Athena - Council",

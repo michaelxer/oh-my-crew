@@ -86,7 +86,7 @@ describe("Agent Config Integration", () => {
   describe("Display name resolution", () => {
     test("returns correct display names for all builtin agents", () => {
       // given - lowercase config keys
-      const agents = ["sisyphus", "hephaestus", "prometheus", "atlas", "metis", "momus", "oracle", "librarian", "explore", "multimodal-looker"]
+      const agents = ["sisyphus", "hephaestus", "prometheus", "atlas", "sisyphus-junior", "metis", "momus", "oracle", "librarian", "explore", "multimodal-looker"]
 
       // when - display names are requested
       const displayNames = agents.map((agent) => getAgentDisplayName(agent))
@@ -96,12 +96,13 @@ describe("Agent Config Integration", () => {
       expect(displayNames).toContain("Strategist - Deep Agent")
       expect(displayNames).toContain("Architect - Plan Builder")
       expect(displayNames).toContain("Foreman - Plan Executor")
+      expect(displayNames).toContain("Cadet")
       expect(displayNames).toContain("Advisor - Plan Consultant")
       expect(displayNames).toContain("Auditor - Plan Critic")
-      expect(displayNames).toContain("oracle")
-      expect(displayNames).toContain("librarian")
-      expect(displayNames).toContain("explore")
-      expect(displayNames).toContain("multimodal-looker")
+      expect(displayNames).toContain("Sage")
+      expect(displayNames).toContain("Scribe")
+      expect(displayNames).toContain("Scout")
+      expect(displayNames).toContain("Lookout")
     })
 
     test("handles lowercase keys case-insensitively", () => {
@@ -146,7 +147,7 @@ describe("Agent Config Integration", () => {
 
     test("model requirements include all builtin agents", () => {
       // given - expected builtin agents
-      const expectedAgents = ["sisyphus", "hephaestus", "prometheus", "atlas", "metis", "momus", "oracle", "librarian", "explore", "multimodal-looker"]
+      const expectedAgents = ["sisyphus", "hephaestus", "prometheus", "atlas", "sisyphus-junior", "metis", "momus", "oracle", "librarian", "explore", "multimodal-looker"]
 
       // when - checking AGENT_MODEL_REQUIREMENTS
       const agentKeys = Object.keys(AGENT_MODEL_REQUIREMENTS)

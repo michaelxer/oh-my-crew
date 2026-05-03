@@ -8,7 +8,7 @@ import { formatDetailedError } from "./error-formatting"
 import { getSessionTools } from "../../shared/session-tools-store"
 import { SessionCategoryRegistry } from "../../shared/session-category-registry"
 import { QUESTION_DENIED_SESSION_PERMISSION } from "../../shared/question-denied-session-permission"
-import { stripAgentListSortPrefix } from "../../shared/agent-display-names"
+import { normalizeAgentForPrompt, stripAgentListSortPrefix } from "../../shared/agent-display-names"
 import { buildTaskMetadataBlock } from "../../features/tool-metadata-store/task-metadata-contract"
 import { resolveMetadataModel } from "./resolve-metadata-model"
 
@@ -111,7 +111,8 @@ export async function executeBackgroundTask(
 
   try {
     const tddEnabled = executorCtx.sisyphusAgentConfig?.tdd
-    const normalizedAgent = stripAgentListSortPrefix(agentToUse)
+    const normalizedAgent = normalizeAgentForPrompt(stripAgentListSortPrefix(agentToUse))
+      ?? stripAgentListSortPrefix(agentToUse)
     const effectivePrompt = buildTaskPrompt(args.prompt, normalizedAgent, tddEnabled)
     const task = await manager.launch({
       description: args.description,

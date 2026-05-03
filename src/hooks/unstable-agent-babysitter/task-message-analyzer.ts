@@ -88,6 +88,10 @@ export function isUnstableTask(task: BackgroundTask): boolean {
   return modelId ? modelId.includes("gemini") || modelId.includes("minimax") : false
 }
 
+export function getBackgroundTaskSessionId(task: BackgroundTask): string | undefined {
+  return task.sessionId ?? (task as BackgroundTask & { sessionID?: string }).sessionID
+}
+
 export function buildReminder(task: BackgroundTask, summary: string | null, idleMs: number): string {
   const idleSeconds = Math.round(idleMs / 1000)
   const summaryText = summary ?? "(No thinking trace available)"
@@ -97,7 +101,7 @@ Task ID: ${task.id}
 Description: ${task.description}
 Agent: ${task.agent}
 Status: ${task.status}
-Session ID: ${task.sessionId ?? "N/A"}
+Session ID: ${getBackgroundTaskSessionId(task) ?? "N/A"}
 
 Thinking summary (first ${THINKING_SUMMARY_MAX_CHARS} chars):
 ${summaryText}

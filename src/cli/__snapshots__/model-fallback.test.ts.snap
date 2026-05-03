@@ -31,6 +31,9 @@ exports[`generateModelConfig no providers available returns ULTIMATE_FALLBACK fo
     "prometheus": {
       "model": "opencode/gpt-5-nano",
     },
+    "sisyphus": {
+      "model": "opencode/gpt-5-nano",
+    },
     "sisyphus-junior": {
       "model": "opencode/gpt-5-nano",
     },

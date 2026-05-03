@@ -6,6 +6,7 @@ import { isAbortError } from "../../shared/is-abort-error"
 import {
   buildReminder,
   extractMessages,
+  getBackgroundTaskSessionId,
   getMessageInfo,
   getMessageParts,
   isUnstableTask,
@@ -203,7 +204,8 @@ export function createUnstableAgentBabysitterHook(ctx: BabysitterContext, option
       const lastReminderAt = reminderCooldowns.get(task.id)
       if (lastReminderAt && now - lastReminderAt < COOLDOWN_MS) continue
 
-      const summary = task.sessionId ? await getThinkingSummary(ctx, task.sessionId) : null
+      const taskSessionId = getBackgroundTaskSessionId(task)
+      const summary = taskSessionId ? await getThinkingSummary(ctx, taskSessionId) : null
       const reminder = buildReminder(task, summary, idleMs)
       const { agent, model, tools } = await resolveMainSessionTarget(ctx, mainSessionID)
 

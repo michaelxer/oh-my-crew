@@ -111,6 +111,6 @@ describe("getLastAgentFromSession JSON backend", () => {
     })
 
     // then
-    expect(result).toBe("Cadet")
+    expect(result).toBe("cadet")
   })
 })

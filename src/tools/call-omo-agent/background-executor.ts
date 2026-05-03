@@ -9,6 +9,11 @@ import { getSessionAgent } from "../../features/claude-code-session-state"
 import { getMessageDir } from "./message-dir"
 import { getSessionTools } from "../../shared/session-tools-store"
 
+function readTaskSessionId(task: unknown): string | undefined {
+  const maybeTask = task as { sessionId?: string; sessionID?: string } | undefined
+  return maybeTask?.sessionId ?? maybeTask?.sessionID
+}
+
 export async function executeBackground(
   args: CallOmoAgentArgs,
   toolContext: {
@@ -59,13 +64,13 @@ export async function executeBackground(
     const WAIT_FOR_SESSION_INTERVAL_MS = 50
     const WAIT_FOR_SESSION_TIMEOUT_MS = 30000
     const waitStart = Date.now()
-    let sessionId = task.sessionId
+    let sessionId = readTaskSessionId(task)
     while (!sessionId && Date.now() - waitStart < WAIT_FOR_SESSION_TIMEOUT_MS) {
       const updated = manager.getTask(task.id)
       if (updated?.status === "error" || updated?.status === "cancelled" || updated?.status === "interrupt") {
         return `Task failed to start (status: ${updated.status}).\n\nTask ID: ${task.id}`
       }
-      sessionId = updated?.sessionId
+      sessionId = readTaskSessionId(updated)
       if (sessionId) {
         break
       }
