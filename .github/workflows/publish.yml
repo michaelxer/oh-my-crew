@@ -201,16 +201,18 @@ jobs:
         if: steps.check.outputs.skip != 'true'
         env:
           DIST_TAG: ${{ needs.version.outputs.dist_tag }}
-          NPM_CONFIG_PROVENANCE: true
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
           set -o pipefail
           publish_package() {
-            if [ -n "$DIST_TAG" ]; then
-              npm publish --access public --provenance --tag "$DIST_TAG" --loglevel verbose
-            else
-              npm publish --access public --provenance --loglevel verbose
+            args=(--access public --loglevel verbose)
+            if [ -z "$NODE_AUTH_TOKEN" ]; then
+              args+=(--provenance)
             fi
+            if [ -n "$DIST_TAG" ]; then
+              args+=(--tag "$DIST_TAG")
+            fi
+            npm publish "${args[@]}"
           }
 
           for attempt in 1 2 3; do
