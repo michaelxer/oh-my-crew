@@ -5,7 +5,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/michaelxer/oh-my-crew"
+    "url": "git+https://github.com/michaelxer/oh-my-crew.git"
   },
   "os": [
     "darwin"
@@ -15,8 +15,5 @@
   ],
   "files": [
     "bin/oh-my-opencode"
-  ],
-  "bin": {
-    "oh-my-opencode": "./bin/oh-my-opencode"
-  }
+  ]
 }

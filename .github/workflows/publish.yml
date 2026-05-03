@@ -178,9 +178,18 @@ jobs:
         if: steps.check.outputs.skip != 'true'
         run: bun run build
 
-      - name: Strip token auth from .npmrc to force OIDC
+      - name: Configure npm authentication
         if: steps.check.outputs.skip != 'true'
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
+          if [ -n "$NODE_AUTH_TOKEN" ]; then
+            echo "Using NPM_TOKEN for npm publish."
+            npm whoami >/dev/null
+            exit 0
+          fi
+
+          echo "No NPM_TOKEN configured; using npm trusted publishing via OIDC."
           for f in .npmrc "$HOME/.npmrc"; do
             if [ -f "$f" ]; then
               sed -i.bak '/_authToken/d' "$f"
@@ -193,6 +202,7 @@ jobs:
         env:
           DIST_TAG: ${{ needs.version.outputs.dist_tag }}
           NPM_CONFIG_PROVENANCE: true
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
           if [ -n "$DIST_TAG" ]; then
             npm publish --access public --provenance --tag "$DIST_TAG" --loglevel verbose

@@ -11,6 +11,9 @@ on:
         required: false
         type: string
         default: ""
+    secrets:
+      NPM_TOKEN:
+        required: false
   workflow_dispatch:
     inputs:
       version:
@@ -29,7 +32,7 @@ permissions:
 
 jobs:
   build:
-    runs-on: ${{ startsWith(matrix.platform, 'windows-') && 'windows-latest' || startsWith(matrix.platform, 'darwin-') && 'macos-latest' || 'ubuntu-latest' }}
+    runs-on: ${{ matrix.platform == 'windows-x64-baseline' && 'ubuntu-latest' || startsWith(matrix.platform, 'windows-') && 'windows-latest' || startsWith(matrix.platform, 'darwin-') && 'macos-latest' || 'ubuntu-latest' }}
     defaults:
       run:
         shell: bash
@@ -142,7 +145,11 @@ jobs:
           cd "packages/${PLATFORM}"
 
           if [[ "$PLATFORM" == windows-* ]]; then
-            7z a -tzip "../../binary-${PLATFORM}.zip" bin/ package.json
+            if command -v zip >/dev/null 2>&1; then
+              zip -r "../../binary-${PLATFORM}.zip" bin/ package.json
+            else
+              7z a -tzip "../../binary-${PLATFORM}.zip" bin/ package.json
+            fi
           else
             tar -czvf "../../binary-${PLATFORM}.tar.gz" bin/ package.json
           fi
@@ -232,9 +239,18 @@ jobs:
         if: steps.check.outputs.skip != 'true'
         run: npm install -g npm@latest
 
-      - name: Strip token auth from .npmrc to force OIDC
+      - name: Configure npm authentication
         if: steps.check.outputs.skip != 'true'
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
+          if [ -n "$NODE_AUTH_TOKEN" ]; then
+            echo "Using NPM_TOKEN for npm publish."
+            npm whoami >/dev/null
+            exit 0
+          fi
+
+          echo "No NPM_TOKEN configured; using npm trusted publishing via OIDC."
           for f in .npmrc "$HOME/.npmrc"; do
             if [ -f "$f" ]; then
               sed -i.bak '/_authToken/d' "$f"
@@ -247,6 +263,7 @@ jobs:
         env:
           DIST_TAG: ${{ steps.validate.outputs.dist_tag }}
           NPM_CONFIG_PROVENANCE: true
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
           cd "packages/${{ matrix.platform }}"
 
