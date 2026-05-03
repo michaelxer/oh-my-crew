@@ -2,6 +2,7 @@
 
 import { beforeEach, describe, expect, it, mock, spyOn } from "bun:test";
 import { resolveSession } from "./session-resolver";
+import { PUBLISHED_PACKAGE_NAME } from "../../shared";
 import type { OpencodeClient } from "./types";
 
 const createMockClient = (overrides: {
@@ -86,7 +87,7 @@ describe("resolveSession", () => {
     expect(result).toBe("new-session-id")
     expect(mockClient.session.create).toHaveBeenCalledWith({
       body: {
-        title: "oh-my-opencode run",
+        title: `${PUBLISHED_PACKAGE_NAME} run`,
         permission: [
           { permission: "question", action: "deny", pattern: "*" },
         ],
@@ -113,7 +114,7 @@ describe("resolveSession", () => {
     expect(mockClient.session.create).toHaveBeenCalledTimes(2)
     expect(mockClient.session.create).toHaveBeenCalledWith({
       body: {
-        title: "oh-my-opencode run",
+        title: `${PUBLISHED_PACKAGE_NAME} run`,
         permission: [
           { permission: "question", action: "deny", pattern: "*" },
         ],
