@@ -204,11 +204,28 @@ jobs:
           NPM_CONFIG_PROVENANCE: true
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
-          if [ -n "$DIST_TAG" ]; then
-            npm publish --access public --provenance --tag "$DIST_TAG" --loglevel verbose
-          else
-            npm publish --access public --provenance --loglevel verbose
-          fi
+          set -o pipefail
+          publish_package() {
+            if [ -n "$DIST_TAG" ]; then
+              npm publish --access public --provenance --tag "$DIST_TAG" --loglevel verbose
+            else
+              npm publish --access public --provenance --loglevel verbose
+            fi
+          }
+
+          for attempt in 1 2 3; do
+            if publish_package 2>&1 | tee npm-publish.log; then
+              exit 0
+            fi
+
+            if ! grep -Eq "E429|Too Many Requests|rate limited" npm-publish.log || [ "$attempt" = "3" ]; then
+              exit 1
+            fi
+
+            sleep_seconds=$((attempt * 300))
+            echo "npm publish was rate-limited; retrying in ${sleep_seconds}s (attempt ${attempt}/3)."
+            sleep "$sleep_seconds"
+          done
 
   release:
     runs-on: ubuntu-latest
