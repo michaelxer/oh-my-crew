@@ -320,22 +320,34 @@ In the final message, always include:
 - Install mode, such as normal providers, AXR Trial, AXR Pro, or AXR Owner / Full Access
 - Whether provider auth is configured or still needs user action
 - A `Crew Models` summary listing each core agent's primary model and first fallback
+- A `Crew Roles` summary listing what each core agent is for
+- An `OMC Features` summary with the most useful capabilities the user can try next
 - A clear `Restart OpenCode now` instruction when the install happened from an OpenCode agent/chat session
 
 Use these display names when summarizing `oh-my-crew.json`:
 
-| Config key | Display name |
-|------------|--------------|
-| `sisyphus` | Captain - Ultraworker |
-| `hephaestus` | Strategist - Deep Agent |
-| `prometheus` | Architect - Plan Builder |
-| `atlas` | Foreman - Plan Executor |
-| `metis` | Advisor - Plan Consultant |
-| `momus` | Auditor - Plan Critic |
-| `oracle` | Sage |
-| `librarian` | Scribe |
-| `explore` | Scout |
-| `sisyphus-junior` | Cadet |
-| `multimodal-looker` | Lookout |
+| Config key | Display name | Role |
+|------------|--------------|------|
+| `sisyphus` | Captain - Ultraworker | Main orchestrator for complex hands-off work |
+| `hephaestus` | Strategist - Deep Agent | Autonomous deep implementation worker |
+| `prometheus` | Architect - Plan Builder | Planning-first architect that interviews, designs, and creates execution plans |
+| `atlas` | Foreman - Plan Executor | Todo-driven executor that works through an existing plan |
+| `metis` | Advisor - Plan Consultant | Pre-plan reviewer that finds ambiguity and hidden risk |
+| `momus` | Auditor - Plan Critic | Critical reviewer for plans, bugs, regressions, and missing tests |
+| `oracle` | Sage | Read-only architecture, debugging, and decision consultant |
+| `librarian` | Scribe | Documentation, code search, and evidence-gathering specialist |
+| `explore` | Scout | Fast codebase exploration and contextual search |
+| `sisyphus-junior` | Cadet | Smaller executor used for delegated/category work |
+| `multimodal-looker` | Lookout | Vision and screenshot/PDF/image analysis specialist |
+
+Include these OMC features in the final user-facing summary:
+
+- `ultrawork` / `ulw`: hands-off multi-agent orchestration until the task is done
+- Architect/Planner mode: planning-first workflow before execution
+- Background agents: parallel specialists for research, implementation, review, and exploration
+- Session Guardian: git checkpoints, context monitoring, handoff docs, and resume prompts
+- Built-in MCPs: web search, Context7 docs, and grep.app/GitHub code search when available
+- LSP and AST-Grep tools: safer code navigation and refactoring
+- Model fallbacks: agents can use configured fallback models when a primary model is unavailable
 
 For hands-off orchestration, include `ultrawork` or `ulw` in a prompt. For planning-first work, use Architect/Planner mode and then execute the plan.

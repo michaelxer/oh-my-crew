@@ -121,7 +121,7 @@ For scripted setup and full LLM-agent instructions, see [docs/guide/installation
 
 The installer supports Claude, OpenAI/ChatGPT, Gemini, GitHub Copilot, OpenCode Zen, Z.ai, Kimi, OpenCode Go, Vercel AI Gateway, and custom OpenAI-compatible providers. It asks only the setup questions needed for the provider path you choose.
 
-At the end, the installer writes the OpenCode plugin config, writes `oh-my-crew.json`, and shows the generated model assignments for the crew plus the verification commands.
+At the end, the installer writes the OpenCode plugin config, writes `oh-my-crew.json`, and shows the generated model assignments for the crew plus the verification commands. Agent-guided installs should also summarize each crew role and the main OMC features: `ultrawork`/`ulw`, Architect/Planner mode, background agents, Session Guardian handoffs, built-in MCPs, LSP/AST-Grep tools, and model fallbacks.
 
 Manual config is also supported.
 
