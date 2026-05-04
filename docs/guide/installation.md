@@ -11,7 +11,7 @@ Install and configure oh-my-crew by following the instructions here:
 https://raw.githubusercontent.com/michaelxer/oh-my-crew/refs/heads/oh-my-crew/docs/guide/installation.md
 ```
 
-The agent should fetch this file with `curl`, ask about your subscriptions in chat, run the installer with `--no-tui`, verify the setup, and guide provider authentication.
+The agent should fetch this file with `curl.exe` on Windows PowerShell or `curl` in POSIX shells, ask about your subscriptions in chat, run the installer with `--no-tui`, verify the setup, and guide provider authentication.
 
 ### Terminal wizard
 
@@ -33,22 +33,40 @@ In this guide, `--no-tui` means "no terminal menu". It does not mean "no questio
 
 The wizard checks for OpenCode, asks first whether you have an active AXR AI subscription plan, adds `oh-my-crew` to the OpenCode `plugin` array, writes `oh-my-crew.json`, preserves existing provider settings, and backs up files before writing.
 
-If you choose AXR AI Trial or Pro, the installer fetches the live catalog from:
+If you choose AXR AI Trial or Pro, the installer fetches the public live catalog from:
 
 ```text
 https://api.axrai.app/v1/models.json
 ```
 
-It then writes the selected tier's OpenCode provider config into `opencode.json`/`opencode.jsonc` and maps OMC agents to models from that same tier only. It keeps the catalog's `{env:AXRAI_API_KEY}` placeholder, so set `AXRAI_API_KEY` in your environment before using AXR AI models.
+If you explicitly choose AXR AI Owner / Full Access, the installer fetches the authenticated owner catalog from:
+
+```text
+https://api.axrai.app/v1/catalog
+```
+
+It then writes the selected AXR provider config into `opencode.json`/`opencode.jsonc` and maps OMC agents to models from that catalog only. It keeps the catalog's `{env:AXRAI_API_KEY}` placeholder, so set `AXRAI_API_KEY` in your environment before using AXR AI models. OMC never writes raw API keys into OpenCode config.
 
 Anonymous telemetry is enabled by default to track active installations (DAU/WAU/MAU). A single event is sent at most once per UTC day per machine using a hashed installation identifier, never the raw hostname, and PostHog person profiles are not created. Disable with `--disable-telemetry`, `OMO_SEND_ANONYMOUS_TELEMETRY=0`, or `OMO_DISABLE_POSTHOG=1`. See [Privacy Policy](../legal/privacy-policy.md) and [Terms of Service](../legal/terms-of-service.md).
 
 ## For LLM Agents
 
-> **IMPORTANT: Use `curl` to fetch this file, not a summarizing webpage reader.** Summaries often drop important flags like `--axrai`, `--openai`, `--non-interactive`, and provider-specific setup notes.
+> **IMPORTANT: Use raw fetch to read this file, not a summarizing webpage reader.** Summaries often drop important flags like `--axrai`, `--openai`, `--non-interactive`, and provider-specific setup notes.
 >
 > ```bash
 > curl -fsSL https://raw.githubusercontent.com/michaelxer/oh-my-crew/refs/heads/oh-my-crew/docs/guide/installation.md
+> ```
+>
+> In Windows PowerShell, use `curl.exe` because `curl` can resolve to `Invoke-WebRequest`:
+>
+> ```powershell
+> curl.exe -fsSL https://raw.githubusercontent.com/michaelxer/oh-my-crew/refs/heads/oh-my-crew/docs/guide/installation.md
+> ```
+>
+> PowerShell-native fallback:
+>
+> ```powershell
+> Invoke-WebRequest -Uri https://raw.githubusercontent.com/michaelxer/oh-my-crew/refs/heads/oh-my-crew/docs/guide/installation.md -UseBasicParsing | Select-Object -ExpandProperty Content
 > ```
 
 You are helping the user install Oh My Crew. Ask the questions below in chat, then run `npx oh-my-crew@latest install --no-tui ...` or `bunx oh-my-crew@latest install --no-tui ...`. Do not use the terminal TUI unless you have a real interactive terminal. `--no-tui` only disables the terminal menu; it does not remove the need to ask the user setup questions.
@@ -65,13 +83,15 @@ If yes, ask which plan:
 
 - Trial -> `--axrai=trial`
 - Pro -> `--axrai=pro`
+- Owner / Full Access -> `--axrai=owner`
 - No active AXR plan -> continue normal provider questions
 
-If the user chooses AXR AI Trial or Pro, run one of these and skip the normal provider flags:
+If the user chooses AXR AI Trial, Pro, or Owner / Full Access, run one of these and skip the normal provider flags:
 
 ```bash
 npx oh-my-crew@latest install --no-tui --axrai=trial
 npx oh-my-crew@latest install --no-tui --axrai=pro
+npx oh-my-crew@latest install --no-tui --axrai=owner
 ```
 
 or:
@@ -79,9 +99,10 @@ or:
 ```bash
 bunx oh-my-crew@latest install --no-tui --axrai=trial
 bunx oh-my-crew@latest install --no-tui --axrai=pro
+bunx oh-my-crew@latest install --no-tui --axrai=owner
 ```
 
-AXR mode fetches the live model catalog and ignores older provider/model override flags so the generated config stays tied to the selected AXR tier. Do not invent AXR model IDs. Do not write raw API keys into config.
+AXR Trial/Pro mode fetches the public model catalog. AXR Owner / Full Access mode requires `AXRAI_API_KEY` in the environment and fetches the authenticated owner catalog. AXR mode ignores older provider/model override flags so the generated config stays tied to the selected AXR catalog. Do not invent AXR model IDs. Do not write raw API keys into config.
 
 ### Step 1: Ask Normal Provider Questions
 
@@ -161,6 +182,7 @@ Examples:
 
 - AXR Trial: `npx oh-my-crew@latest install --no-tui --axrai=trial`
 - AXR Pro: `npx oh-my-crew@latest install --no-tui --axrai=pro`
+- AXR Owner / Full Access: `npx oh-my-crew@latest install --no-tui --axrai=owner`
 - Claude + OpenAI: `npx oh-my-crew@latest install --no-tui --claude=yes --openai=yes --gemini=no --copilot=no`
 - Claude max20 + Gemini: `npx oh-my-crew@latest install --no-tui --claude=max20 --openai=no --gemini=yes --copilot=no`
 - Copilot only: `npx oh-my-crew@latest install --no-tui --claude=no --openai=no --gemini=no --copilot=yes`
@@ -242,7 +264,7 @@ Confirm:
 - The installer completion summary shows `Crew Models` with each agent's primary model and first fallback
 - The agent list includes Captain, Strategist, Foreman, Architect, Sage, Scout, Scribe, Cadet, and Lookout
 - `Foreman - Plan Executor` appears; internally it maps to `atlas`
-- MCP list includes the enabled built-ins unless the user explicitly disabled them
+- Built-in MCPs are not disabled in `oh-my-crew.json`. Depending on your OpenCode version, `opencode mcp list` may show only user-configured MCP servers, so do not treat that command alone as proof that built-in OMC MCPs are missing.
 
 If `Foreman - Plan Executor` is missing, rerun the installer. As a temporary manual workaround, add this to `oh-my-crew.json`:
 
@@ -265,7 +287,7 @@ npm install oh-my-crew@latest --save
 
 If duplicate agents appear, remove legacy plugin entries such as `oh-my-opencode`, `oh-my-openagent`, or `oh-my-china` from `opencode.json`. The installer removes those entries when it updates the plugin array.
 
-If MCPs are missing, check `disabled_mcps` in `oh-my-crew.json` and run `opencode mcp list`.
+If MCPs appear missing, check `disabled_mcps` in `oh-my-crew.json` first. `opencode mcp list` may only report user-configured MCP servers in some OpenCode versions, while OMC built-ins are supplied by the plugin runtime.
 
 If Session Guardian is unwanted, run with `--session-guardian=no` or add `"session-guardian"` to `disabled_skills`.
 

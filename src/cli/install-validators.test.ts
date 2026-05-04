@@ -31,6 +31,17 @@ describe("validateNonTuiArgs", () => {
     expect(result.valid).toBe(false)
     expect(result.errors).toContain("Invalid --opencode-go value: maybe (expected: no, yes)")
   })
+
+  test("accepts Owner / Full Access AXR value", () => {
+    // #given
+    const args = createArgs({ axrai: "owner" })
+
+    // #when
+    const result = validateNonTuiArgs(args)
+
+    // #then
+    expect(result.valid).toBe(true)
+  })
 })
 
 describe("argsToConfig", () => {
@@ -57,6 +68,25 @@ describe("argsToConfig", () => {
     expect(result.hasGemini).toBe(false)
     expect(result.hasCopilot).toBe(false)
     expect(result.customProviderId).toBeUndefined()
+    expect(result.modelOverrides).toBeUndefined()
+  })
+
+  test("owner axrAI mode is explicit and ignores normal provider flags", () => {
+    // #given
+    const args = createArgs({
+      axrai: "owner",
+      claude: "max20",
+      openai: "yes",
+      captainModel: "openai/gpt-5.5",
+    })
+
+    // #when
+    const result = argsToConfig(args)
+
+    // #then
+    expect(result.axraiTier).toBe("owner")
+    expect(result.hasClaude).toBe(false)
+    expect(result.hasOpenAI).toBe(false)
     expect(result.modelOverrides).toBeUndefined()
   })
 })

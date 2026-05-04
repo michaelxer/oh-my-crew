@@ -11,7 +11,7 @@ describe("getPluginNameWithVersion", () => {
     globalThis.fetch = originalFetch
   })
 
-  test("returns the canonical latest tag when current version matches latest", async () => {
+  test("returns the canonical bare package name when current version matches latest", async () => {
     //#given
     globalThis.fetch = mock(() =>
       Promise.resolve({
@@ -24,7 +24,7 @@ describe("getPluginNameWithVersion", () => {
     const result = await getPluginNameWithVersion("3.13.1")
 
     //#then
-    expect(result).toBe("oh-my-crew@latest")
+    expect(result).toBe("oh-my-crew")
   })
 
   test("preserves the canonical prerelease channel when fetch fails", async () => {

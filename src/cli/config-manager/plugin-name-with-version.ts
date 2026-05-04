@@ -24,6 +24,7 @@ export async function getPluginNameWithVersion(
     const allTags = new Set([...PRIORITIZED_TAGS, ...Object.keys(distTags)])
     for (const tag of allTags) {
       if (distTags[tag] === currentVersion) {
+        if (tag === "latest") return packageName
         return `${packageName}@${tag}`
       }
     }

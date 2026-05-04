@@ -101,7 +101,7 @@ export function formatConfigSummary(config: InstallConfig): string {
   lines.push("")
   if (config.axraiTier) {
     lines.push(`  ${SYMBOLS.info} Models auto-configured from live AXR AI ${config.axraiTier} catalog`)
-    lines.push(`  ${SYMBOLS.bullet} Catalog: https://api.axrai.app/v1/models.json`)
+    lines.push(`  ${SYMBOLS.bullet} Catalog: ${config.axraiTier === "owner" ? "https://api.axrai.app/v1/catalog" : "https://api.axrai.app/v1/models.json"}`)
   } else {
     lines.push(`  ${SYMBOLS.info} Models auto-configured based on provider priority`)
     lines.push(`  ${SYMBOLS.bullet} Priority: Native > Copilot > OpenCode Zen > Z.ai`)
@@ -196,10 +196,10 @@ export function printBox(content: string, title?: string): void {
 
 export function validateNonTuiArgs(args: InstallArgs): { valid: boolean; errors: string[] } {
   const errors: string[] = []
-  const usesAxrai = args.axrai === "trial" || args.axrai === "pro"
+  const usesAxrai = args.axrai === "trial" || args.axrai === "pro" || args.axrai === "owner"
 
-  if (args.axrai !== undefined && !["no", "trial", "pro"].includes(args.axrai)) {
-    errors.push(`Invalid --axrai value: ${args.axrai} (expected: no, trial, pro)`)
+  if (args.axrai !== undefined && !["no", "trial", "pro", "owner"].includes(args.axrai)) {
+    errors.push(`Invalid --axrai value: ${args.axrai} (expected: no, trial, pro, owner)`)
   }
 
   if (!usesAxrai && args.claude === undefined) {
@@ -273,7 +273,7 @@ export function validateNonTuiArgs(args: InstallArgs): { valid: boolean; errors:
 }
 
 export function argsToConfig(args: InstallArgs): InstallConfig {
-  const axraiTier = args.axrai === "trial" || args.axrai === "pro" ? args.axrai : undefined
+  const axraiTier = args.axrai === "trial" || args.axrai === "pro" || args.axrai === "owner" ? args.axrai : undefined
   return {
     hasClaude: axraiTier ? false : args.claude !== "no",
     isMax20: axraiTier ? false : args.claude === "max20",

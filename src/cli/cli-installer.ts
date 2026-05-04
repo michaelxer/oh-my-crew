@@ -20,7 +20,7 @@ import {
   validateNonTuiArgs,
 } from "./install-validators"
 import { getUnsupportedOpenCodeVersionMessage } from "./minimum-opencode-version"
-import { fetchAxraiCatalog, getAxraiOpenCodeConfig } from "./axrai-catalog"
+import { fetchAxraiCatalog, fetchAxraiOwnerCatalog, getAxraiOpenCodeConfig } from "./axrai-catalog"
 
 export async function runCliInstaller(args: InstallArgs, version: string): Promise<number> {
   const validation = validateNonTuiArgs(args)
@@ -32,7 +32,7 @@ export async function runCliInstaller(args: InstallArgs, version: string): Promi
     }
     console.log()
     printInfo(
-      `Usage: bunx ${PUBLISHED_PACKAGE_NAME} install --no-tui --axrai=<no|trial|pro> --claude=<no|yes|max20> --gemini=<no|yes> --copilot=<no|yes>`,
+      `Usage: bunx ${PUBLISHED_PACKAGE_NAME} install --no-tui --axrai=<no|trial|pro|owner> --claude=<no|yes|max20> --gemini=<no|yes> --copilot=<no|yes>`,
     )
     console.log()
     return 1
@@ -72,7 +72,9 @@ export async function runCliInstaller(args: InstallArgs, version: string): Promi
   const config = argsToConfig(args)
   if (config.axraiTier) {
     try {
-      const catalog = await fetchAxraiCatalog()
+      const catalog = config.axraiTier === "owner"
+        ? await fetchAxraiOwnerCatalog()
+        : await fetchAxraiCatalog()
       const axrai = getAxraiOpenCodeConfig(catalog, config.axraiTier)
       config.axraiModelIds = axrai.modelIds
       config.axraiOpenCodeConfig = axrai.openCodeConfig

@@ -27,7 +27,7 @@ program
   .option("--kimi-for-coding <value>", "Kimi For Coding subscription: no, yes (default: no)")
   .option("--opencode-go <value>", "OpenCode Go subscription: no, yes (default: no)")
   .option("--vercel-ai-gateway <value>", "Vercel AI Gateway: no, yes (default: no)")
-  .option("--axrai <value>", "AXR AI plan: no, trial, pro (default: no)")
+  .option("--axrai <value>", "AXR AI plan: no, trial, pro, owner (default: no)")
   .option("--custom-provider <value>", "Custom OpenAI-compatible provider: no, yes (default: no)")
   .option("--custom-provider-id <id>", "Custom provider id, e.g. openrouter or axrai")
   .option("--custom-base-url <url>", "Custom OpenAI-compatible base URL")
@@ -48,6 +48,7 @@ Examples:
   $ npx oh-my-crew install --no-tui --claude=no --openai=no --gemini=no --copilot=no
   $ npx oh-my-crew install --no-tui --axrai=trial
   $ npx oh-my-crew install --no-tui --axrai=pro
+  $ npx oh-my-crew install --no-tui --axrai=owner
 `)
   .action(async (options) => {
     const args: InstallArgs = {

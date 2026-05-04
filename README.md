@@ -89,7 +89,7 @@ Install and configure oh-my-crew by following the instructions here:
 https://raw.githubusercontent.com/michaelxer/oh-my-crew/refs/heads/oh-my-crew/docs/guide/installation.md
 ```
 
-LLM agents should fetch the guide with:
+LLM agents should fetch the guide with `curl.exe` on Windows PowerShell or `curl` in POSIX shells:
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/michaelxer/oh-my-crew/refs/heads/oh-my-crew/docs/guide/installation.md
@@ -113,7 +113,7 @@ The npm package runs the JS installer directly, so normal `npx`/`bunx` installs 
 
 For scripted setup and full LLM-agent instructions, see [docs/guide/installation.md](docs/guide/installation.md). In this project, `--no-tui` means "no terminal menu"; it does not mean "no questions". The agent can still ask questions in chat and pass your answers as flags.
 
-The same installer works for AXR AI users and for public/self-managed provider setups. If you choose AXR AI Trial or Pro, OMC fetches the live catalog from `https://api.axrai.app/v1/models.json`, writes the AXR provider config, and assigns crew models from that plan only. If you do not use AXR AI, the wizard continues with Claude, OpenAI/ChatGPT, Gemini, Copilot, OpenCode Zen, Z.ai, Kimi, OpenCode Go, Vercel AI Gateway, and custom OpenAI-compatible provider questions.
+The installer supports Claude, OpenAI/ChatGPT, Gemini, GitHub Copilot, OpenCode Zen, Z.ai, Kimi, OpenCode Go, Vercel AI Gateway, and custom OpenAI-compatible providers. It asks only the setup questions needed for the provider path you choose.
 
 At the end, the installer writes the OpenCode plugin config, writes `oh-my-crew.json`, and shows the generated model assignments for the crew plus the verification commands.
 

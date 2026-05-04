@@ -52,7 +52,7 @@ program
   .option("--kimi-for-coding <value>", "Kimi For Coding subscription: no, yes (default: no)")
   .option("--opencode-go <value>", "OpenCode Go subscription: no, yes (default: no)")
   .option("--vercel-ai-gateway <value>", "Vercel AI Gateway: no, yes (default: no)")
-  .option("--axrai <value>", "AXR AI plan: no, trial, pro (default: no)")
+  .option("--axrai <value>", "AXR AI plan: no, trial, pro, owner (default: no)")
   .option("--custom-provider <value>", "Custom OpenAI-compatible provider: no, yes (default: no)")
   .option("--custom-provider-id <id>", "Custom provider id, e.g. openrouter or axrai")
   .option("--custom-base-url <url>", "Custom OpenAI-compatible base URL")
@@ -72,6 +72,7 @@ Examples:
   $ bunx oh-my-crew install --no-tui --claude=max20 --openai=yes --gemini=yes --copilot=no
   $ bunx oh-my-crew install --non-interactive --claude=max20 --openai=yes --gemini=yes --copilot=no
   $ bunx oh-my-crew install --no-tui --claude=no --gemini=no --copilot=yes --opencode-zen=yes
+  $ bunx oh-my-crew install --no-tui --axrai=owner
   $ bunx oh-my-crew install --no-tui --claude=no --openai=no --gemini=no --copilot=no --custom-provider=yes --custom-provider-id=openrouter --custom-base-url=https://openrouter.ai/api/v1 --captain-model=openrouter/anthropic/claude-sonnet-4.6
 
 Model Providers:

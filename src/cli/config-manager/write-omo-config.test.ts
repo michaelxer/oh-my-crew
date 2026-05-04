@@ -81,6 +81,54 @@ describe("writeOmoConfig", () => {
     }
   })
 
+  it("refreshes generated AXR model assignments while preserving custom fields", () => {
+    // given
+    const existingConfig = {
+      agents: {
+        sisyphus: {
+          model: "axrai/kimi-k2.5",
+          prompt_append: "keep this user note",
+        },
+        atlas: {
+          model: "axrai/kimi-k2.5",
+        },
+      },
+      disabled_hooks: ["comment-checker"],
+    }
+    writeFileSync(testConfigPath, JSON.stringify(existingConfig, null, 2) + "\n", "utf-8")
+
+    const axraiConfig: InstallConfig = {
+      hasClaude: false,
+      isMax20: false,
+      hasOpenAI: false,
+      hasGemini: false,
+      hasCopilot: false,
+      hasOpencodeZen: false,
+      hasZaiCodingPlan: false,
+      hasKimiForCoding: false,
+      hasOpencodeGo: false,
+      hasVercelAiGateway: false,
+      axraiTier: "pro",
+      axraiModelIds: ["claude-opus-4.6", "gpt-5.5", "gpt-5-mini", "kimi-k2.5"],
+      axraiPrimaryModel: "axrai/gpt-5.5",
+      axraiSmallModel: "axrai/gpt-5-mini",
+    }
+
+    // when
+    const result = writeOmoConfig(axraiConfig)
+
+    // then
+    expect(result.success).toBe(true)
+    const savedConfig = parseJsonc<Record<string, unknown>>(readFileSync(testConfigPath, "utf-8"))
+    const savedAgents = getRecord(savedConfig.agents)
+    const savedSisyphus = getRecord(savedAgents.sisyphus)
+    const savedAtlas = getRecord(savedAgents.atlas)
+    expect(savedSisyphus.model).toBe("axrai/claude-opus-4.6")
+    expect(savedSisyphus.prompt_append).toBe("keep this user note")
+    expect(savedAtlas.model).toBe("axrai/claude-opus-4.6")
+    expect(savedConfig.disabled_hooks).toEqual(["comment-checker"])
+  })
+
   it("migrates a legacy config file to the canonical basename before writing", () => {
     // given
     const legacyConfigPath = join(testConfigDir, `${LEGACY_CONFIG_BASENAME}.json`)

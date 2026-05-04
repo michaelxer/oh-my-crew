@@ -16,6 +16,22 @@ function isEmptyOrWhitespace(content: string): boolean {
   return content.trim().length === 0
 }
 
+function hasExplicitModelOverrides(installConfig: InstallConfig): boolean {
+  return Object.values(installConfig.modelOverrides ?? {}).some((value) => value !== undefined)
+}
+
+function mergeGeneratedConfig(
+  newConfig: Record<string, unknown>,
+  existing: Record<string, unknown>,
+  installConfig: InstallConfig,
+): Record<string, unknown> {
+  if (installConfig.axraiTier || hasExplicitModelOverrides(installConfig)) {
+    return deepMergeRecord(existing, newConfig)
+  }
+
+  return deepMergeRecord(newConfig, existing)
+}
+
 export function writeOmoConfig(installConfig: InstallConfig): ConfigMergeResult {
   try {
     ensureConfigDirectoryExists()
@@ -66,7 +82,7 @@ export function writeOmoConfig(installConfig: InstallConfig): ConfigMergeResult 
           return { success: true, configPath: omoConfigPath }
         }
 
-        const merged = deepMergeRecord(newConfig, existing)
+        const merged = mergeGeneratedConfig(newConfig, existing, installConfig)
         writeFileSync(omoConfigPath, JSON.stringify(merged, null, 2) + "\n")
       } catch (parseErr) {
         if (parseErr instanceof SyntaxError) {

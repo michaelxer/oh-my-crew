@@ -1,6 +1,6 @@
 export type ClaudeSubscription = "no" | "yes" | "max20"
 export type BooleanArg = "no" | "yes"
-export type AxraiTier = "trial" | "pro"
+export type AxraiTier = "trial" | "pro" | "owner"
 
 export interface InstallArgs {
   tui: boolean

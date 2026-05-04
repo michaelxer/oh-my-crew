@@ -8,7 +8,7 @@ import type {
   InstallConfig,
 } from "./types"
 import { detectedToInitialValues } from "./install-validators"
-import { fetchAxraiCatalog, getAxraiOpenCodeConfig } from "./axrai-catalog"
+import { fetchAxraiCatalog, fetchAxraiOwnerCatalog, getAxraiOpenCodeConfig } from "./axrai-catalog"
 
 async function selectOrCancel<TValue extends Readonly<string | boolean | number>>(params: {
   message: string
@@ -46,6 +46,21 @@ async function textOrCancel(params: {
   return String(value).trim()
 }
 
+async function passwordOrCancel(params: {
+  message: string
+}): Promise<string | null> {
+  if (!process.stdin.isTTY || !process.stdout.isTTY) return null
+
+  const value = await p.password({
+    message: params.message,
+  })
+  if (p.isCancel(value)) {
+    p.cancel("Installation cancelled.")
+    return null
+  }
+  return String(value).trim()
+}
+
 export async function promptInstallConfig(detected: DetectedConfig): Promise<InstallConfig | null> {
   const initial = detectedToInitialValues(detected)
 
@@ -69,6 +84,7 @@ export async function promptInstallConfig(detected: DetectedConfig): Promise<Ins
       options: [
         { value: "trial", label: "Trial", hint: "Use only models currently listed for the AXR AI Trial tier" },
         { value: "pro", label: "Pro", hint: "Use only models currently listed for the AXR AI Pro tier" },
+        { value: "owner", label: "Owner / Full Access", hint: "Use authenticated owner catalog from AXRAI_API_KEY" },
         { value: "none", label: "Sorry, I don't have an AXR AI plan", hint: "Continue normal provider setup" },
       ],
       initialValue: "trial",
@@ -77,7 +93,15 @@ export async function promptInstallConfig(detected: DetectedConfig): Promise<Ins
 
     if (axraiTier !== "none") {
       try {
-        const catalog = await fetchAxraiCatalog()
+        let ownerKey = process.env.AXRAI_API_KEY
+        if (axraiTier === "owner" && !ownerKey) {
+          ownerKey = await passwordOrCancel({
+            message: "AXR owner API key (not saved; used once to fetch catalog)",
+          }) ?? undefined
+        }
+        const catalog = axraiTier === "owner"
+          ? await fetchAxraiOwnerCatalog(ownerKey)
+          : await fetchAxraiCatalog()
         const axrai = getAxraiOpenCodeConfig(catalog, axraiTier)
         return {
           hasClaude: false,
