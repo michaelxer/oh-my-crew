@@ -5,7 +5,10 @@ describe("spawnWithTimeout", () => {
   describe("#given a command that completes quickly", () => {
     it("returns stdout and exit code", async () => {
       // when
-      const result = await spawnWithTimeout(["echo", "hello"], { stdout: "pipe", stderr: "pipe" })
+      const result = await spawnWithTimeout(
+        [process.execPath, "-e", "process.stdout.write('hello\\n')"],
+        { stdout: "pipe", stderr: "pipe" }
+      )
 
       // then
       expect(result.timedOut).toBe(false)
@@ -19,7 +22,7 @@ describe("spawnWithTimeout", () => {
     it("captures stderr output", async () => {
       // when
       const result = await spawnWithTimeout(
-        ["bash", "-c", "echo err >&2"],
+        [process.execPath, "-e", "process.stderr.write('err\\n')"],
         { stdout: "pipe", stderr: "pipe" }
       )
 
@@ -32,7 +35,10 @@ describe("spawnWithTimeout", () => {
   describe("#given a command that fails", () => {
     it("returns non-zero exit code without timing out", async () => {
       // when
-      const result = await spawnWithTimeout(["false"], { stdout: "pipe", stderr: "pipe" })
+      const result = await spawnWithTimeout(
+        [process.execPath, "-e", "process.exit(42)"],
+        { stdout: "pipe", stderr: "pipe" }
+      )
 
       // then
       expect(result.timedOut).toBe(false)
@@ -44,7 +50,7 @@ describe("spawnWithTimeout", () => {
     it("returns timedOut true and kills the process", async () => {
       // when
       const result = await spawnWithTimeout(
-        ["bash", "-c", "while true; do :; done"],
+        [process.execPath, "-e", "setInterval(() => {}, 1000)"],
         { stdout: "pipe", stderr: "pipe" },
         200
       )

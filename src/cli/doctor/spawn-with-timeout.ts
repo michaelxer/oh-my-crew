@@ -10,6 +10,18 @@ export interface SpawnWithTimeoutResult {
   timedOut: boolean
 }
 
+async function readSpawnOutput(stream: ReadableStream<Uint8Array> | undefined): Promise<string> {
+  if (!stream) {
+    return ""
+  }
+
+  try {
+    return await new Response(stream).text()
+  } catch {
+    return ""
+  }
+}
+
 export async function spawnWithTimeout(
   command: string[],
   options: SpawnOptions,
@@ -41,7 +53,7 @@ export async function spawnWithTimeout(
   }
 
   clearTimeout(timer)
-  const stdout = proc.stdout ? await new Response(proc.stdout).text() : ""
-  const stderr = proc.stderr ? await new Response(proc.stderr).text() : ""
+  const stdout = await readSpawnOutput(proc.stdout)
+  const stderr = await readSpawnOutput(proc.stderr)
   return { stdout, stderr, exitCode: proc.exitCode ?? 1, timedOut: false }
 }
