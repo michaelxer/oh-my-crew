@@ -262,6 +262,10 @@ Run `opencode models` to see available models, `opencode auth login` to authenti
 
 Each agent has a fallback chain. The system tries models in priority order until it finds one available through your connected providers. You don't need to configure providers per model. Just authenticate (`opencode auth login`) and the system figures out which models are available and where.
 
+Provider ids are routing labels, not the source of model quality. When a provider or gateway exposes a catalog with familiar model families, OMC matches by model name and family first: Claude Opus/Sonnet, GPT, Gemini, Kimi, GLM, MiniMax, and their newer compatible versions. This keeps AXR AI, OpenCode, Vercel AI Gateway, custom gateways, and future providers on the same mental model: choose the best fitting model for the agent, then prefix it with the provider that can serve it.
+
+Catalog-driven providers use the same provider-neutral ranking rule. For example, if a gateway offers `claude-opus-4.6`, `gpt-5.5`, `gpt-5-mini`, and `kimi-k2.5`, Captain/Foreman-style agents should prefer Opus, GPT-specialist agents should prefer GPT, and Scout/Scribe-style utility agents should prefer the smaller fast model. Kimi or GLM remain useful fallbacks, but they should not outrank a stronger matching Opus/GPT model just because they appeared earlier from one provider's catalog.
+
 Core-agent tab cycling is deterministic via injected runtime order field. The fixed priority order is Sisyphus (order: 1), Hephaestus (order: 2), Prometheus (order: 3), and Atlas (order: 4), then the remaining agents follow.
 
 Your explicit configuration always wins. If you set a specific model for an agent, that choice takes precedence even when resolution data is cold.
