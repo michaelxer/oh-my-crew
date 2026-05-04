@@ -45,7 +45,7 @@ If you explicitly choose AXR AI Owner / Full Access, the installer fetches the a
 https://api.axrai.app/v1/catalog
 ```
 
-It then writes the selected AXR provider config into `opencode.json`/`opencode.jsonc` and maps OMC agents to models from that catalog only. It keeps the catalog's `{env:AXRAI_API_KEY}` placeholder, so set `AXRAI_API_KEY` in your environment before using AXR AI models. OMC never writes raw API keys into OpenCode config.
+It then writes the selected AXR provider config into `opencode.json`/`opencode.jsonc` and maps OMC agents to models from that catalog only. OMC does not write API keys into OpenCode config; authenticate through OpenCode auth or set `AXRAI_API_KEY` in your environment before using AXR AI models.
 
 Anonymous telemetry is enabled by default to track active installations (DAU/WAU/MAU). A single event is sent at most once per UTC day per machine using a hashed installation identifier, never the raw hostname, and PostHog person profiles are not created. Disable with `--disable-telemetry`, `OMO_SEND_ANONYMOUS_TELEMETRY=0`, or `OMO_DISABLE_POSTHOG=1`. See [Privacy Policy](../legal/privacy-policy.md) and [Terms of Service](../legal/terms-of-service.md).
 
@@ -102,7 +102,7 @@ bunx oh-my-crew@latest install --no-tui --axrai=pro
 bunx oh-my-crew@latest install --no-tui --axrai=owner
 ```
 
-AXR Trial/Pro mode fetches the public model catalog. AXR Owner / Full Access mode requires `AXRAI_API_KEY` in the environment and fetches the authenticated owner catalog. AXR mode ignores older provider/model override flags so the generated config stays tied to the selected AXR catalog. Do not invent AXR model IDs. Do not write raw API keys into config.
+AXR Trial/Pro mode fetches the public model catalog. AXR Owner / Full Access mode requires `AXRAI_API_KEY` in the environment and fetches the authenticated owner catalog. AXR mode ignores older provider/model override flags so the generated config stays tied to the selected AXR catalog. Do not invent AXR model IDs. Do not write API keys into config.
 
 ### Step 1: Ask Normal Provider Questions
 

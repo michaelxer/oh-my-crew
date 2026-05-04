@@ -16,7 +16,6 @@ const sampleCatalog = {
             axrai: {
               options: {
                 baseURL: "https://api.axrai.app/v1",
-                apiKey: "{env:AXRAI_API_KEY}",
               },
               models: {
                 "gpt-5.4": { name: "gpt-5.4" },
@@ -41,7 +40,6 @@ const sampleCatalog = {
             axrai: {
               options: {
                 baseURL: "https://api.axrai.app/v1",
-                apiKey: "{env:AXRAI_API_KEY}",
               },
               models: {
                 "gpt-5.5": { name: "gpt-5.5" },
@@ -157,7 +155,7 @@ describe("axrAI catalog", () => {
     expect(authorization).toBe("Bearer owner-secret")
   })
 
-  it("maps Owner / Full Access catalog to safe OpenCode config", () => {
+  it("maps Owner / Full Access catalog without persisting API key options", () => {
     // when
     const result = getAxraiOpenCodeConfig(sampleOwnerCatalog, "owner")
 
@@ -166,7 +164,7 @@ describe("axrAI catalog", () => {
     expect(result.modelIds).toEqual(["claude-opus-4.6", "gpt-5.5", "gpt-5-mini"])
     expect(result.primaryModel).toBe("axrai/gpt-5.5")
     expect(result.smallModel).toBe("axrai/gpt-5-mini")
-    expect(result.openCodeConfig.provider.axrai.options.apiKey).toBe("{env:AXRAI_API_KEY}")
+    expect(result.openCodeConfig.provider.axrai.options.apiKey).toBeUndefined()
   })
 
   it("can derive Owner model ids from OpenCode config model keys", () => {

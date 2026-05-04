@@ -421,7 +421,7 @@ function generateAxraiModelConfig(installConfig: InstallConfig): GeneratedOmoCon
     custom_provider: {
       id: AXRAI_PROVIDER,
       base_url: "https://api.axrai.app/v1",
-      key: "Set AXRAI_API_KEY in your environment. oh-my-crew does not write raw API keys.",
+      key: "Authenticate axrai through OpenCode auth or set AXRAI_API_KEY in your environment. oh-my-crew does not write API keys.",
       tier: installConfig.axraiTier,
     },
   }

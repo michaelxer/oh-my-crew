@@ -43,15 +43,15 @@ function getModelIdsFromConfig(config: UnknownRecord): string[] {
   return Object.keys(models).filter((id) => id.length > 0)
 }
 
-function ensureSafeAxraiApiKeyPlaceholder(config: UnknownRecord): UnknownRecord {
+function removeAxraiApiKeyOption(config: UnknownRecord): UnknownRecord {
   const cloned = cloneRecord(config)
   const provider = cloned.provider
   if (!isRecord(provider)) return cloned
   const axraiProvider = provider.axrai
   if (!isRecord(axraiProvider)) return cloned
-  const options = isRecord(axraiProvider.options) ? axraiProvider.options : {}
-  options.apiKey = "{env:AXRAI_API_KEY}"
-  axraiProvider.options = options
+  if (isRecord(axraiProvider.options)) {
+    delete axraiProvider.options.apiKey
+  }
   return cloned
 }
 
@@ -171,7 +171,7 @@ export function getAxraiOpenCodeConfig(catalog: UnknownRecord, tier: AxraiTier):
     providerId,
     primaryModel: selected.primaryModel,
     smallModel: selected.smallModel,
-    openCodeConfig: ensureSafeAxraiApiKeyPlaceholder(config),
+    openCodeConfig: removeAxraiApiKeyOption(config),
   }
 }
 
@@ -224,6 +224,6 @@ export function getAxraiOwnerOpenCodeConfig(catalog: UnknownRecord): AxraiTierCo
     providerId,
     primaryModel: selected.primaryModel,
     smallModel: selected.smallModel,
-    openCodeConfig: ensureSafeAxraiApiKeyPlaceholder(config),
+    openCodeConfig: removeAxraiApiKeyOption(config),
   }
 }

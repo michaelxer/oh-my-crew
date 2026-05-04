@@ -97,7 +97,7 @@ export async function runTuiInstaller(args: InstallArgs, version: string): Promi
       : "Anonymous telemetry is enabled by default. Disable it with --disable-telemetry, OMO_SEND_ANONYMOUS_TELEMETRY=0, or OMO_DISABLE_POSTHOG=1."
   )
   if (config.axraiTier) {
-    p.log.info("AXR AI uses AXRAI_API_KEY from your environment; oh-my-crew does not write raw API keys.")
+    p.log.info("AXR AI auth stays in OpenCode auth or AXRAI_API_KEY; oh-my-crew does not write API keys.")
   }
   p.log.info("Docs: docs/legal/privacy-policy.md and docs/legal/terms-of-service.md")
 

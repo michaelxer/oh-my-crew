@@ -114,7 +114,6 @@ describe("addPluginToOpenCodeConfig - single package writes", () => {
           name: "axrAI Gateway",
           options: {
             baseURL: "https://api.axrai.app/v1",
-            apiKey: "{env:AXRAI_API_KEY}",
           },
           models: {
             "gpt-5.5": { name: "gpt-5.5" },
