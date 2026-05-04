@@ -108,6 +108,8 @@ bunx oh-my-crew@latest install --no-tui --axrai=owner
 
 AXR Trial/Pro mode fetches the public model catalog. AXR Owner / Full Access mode requires `AXRAI_API_KEY` in the environment and fetches the authenticated owner catalog. AXR mode ignores older provider/model override flags so the generated config stays tied to the selected AXR catalog. Do not invent AXR model IDs. Do not write API keys into config.
 
+For AXR Pro and AXR Owner / Full Access users, see the [OMC Agent-Model Matching Guide](./omc-agent-model-matching.md#axr-ai-pro--owner-recommendations) for the current recommended agent/model reference. For AXR Trial users, keep the installer defaults and let OMC choose from the limited Trial catalog.
+
 ### Step 1: Ask Normal Provider Questions
 
 If the user does not use AXR AI, ask these questions and map answers to flags:
@@ -351,3 +353,5 @@ Include these OMC features in the final user-facing summary:
 - Model fallbacks: agents can use configured fallback models when a primary model is unavailable
 
 For hands-off orchestration, include `ultrawork` or `ulw` in a prompt. For planning-first work, use Architect/Planner mode and then execute the plan.
+
+For model assignment details, read the [OMC Agent-Model Matching Guide](./omc-agent-model-matching.md). The older [Agent-Model Matching Guide](./agent-model-matching.md) is kept as an upstream-sync reference for porting future OMO model changes.

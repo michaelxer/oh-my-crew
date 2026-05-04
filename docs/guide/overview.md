@@ -234,7 +234,7 @@ You can override specific agents or categories in your config:
 - MiniMax M2.7 / M2.7-highspeed — fast and smart for utility tasks
 - Grok Code Fast 1 — optimized for code grep/search
 
-See the [Agent-Model Matching Guide](./agent-model-matching.md) for complete details on which models work best for each agent, safe vs dangerous overrides, and provider priority chains.
+See the [OMC Agent-Model Matching Guide](./omc-agent-model-matching.md) for complete details on which models work best for each crew agent, safe vs dangerous overrides, and provider priority chains. The older [Agent-Model Matching Guide](./agent-model-matching.md) is kept as an upstream-sync reference for porting future OMO model changes.
 
 ---
 
@@ -274,7 +274,8 @@ Claude Code doesn't have this. It takes your prompt and runs. Oh My OpenAgent th
 
 - **[Installation Guide](./installation.md)** — Complete setup instructions, provider authentication, and troubleshooting
 - **[Orchestration Guide](./orchestration.md)** — Deep dive into agent collaboration, planning with Prometheus, and execution with Atlas
-- **[Agent-Model Matching Guide](./agent-model-matching.md)** — Which models work best for each agent and how to customize
+- **[OMC Agent-Model Matching Guide](./omc-agent-model-matching.md)** — Which models work best for each crew agent and how to customize
+- **[Upstream Model Matching Reference](./agent-model-matching.md)** — Kept for comparing and porting future OMO model-doc updates
 - **[Configuration Reference](../reference/configuration.md)** — Full config options with examples
 - **[Features Reference](../reference/features.md)** — Complete feature documentation
 - **[Manifesto](../manifesto.md)** — Philosophy behind the project
