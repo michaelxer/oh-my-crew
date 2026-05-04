@@ -235,13 +235,13 @@ export function generateModelConfig(config: InstallConfig): GeneratedOmoConfig {
   return applyInstallerSelections(configWithOpenAiCatalog, config)
 }
 
-function stripProvider(model: string | undefined): string | undefined {
+function stripCatalogProvider(model: string | undefined, providerId: string): string | undefined {
   if (!model) return undefined
-  return model.startsWith(`${AXRAI_PROVIDER}/`) ? model.slice(`${AXRAI_PROVIDER}/`.length) : model
+  return model.startsWith(`${providerId}/`) ? model.slice(`${providerId}/`.length) : model
 }
 
-function withAxraiProvider(modelId: string): string {
-  return `${AXRAI_PROVIDER}/${modelId}`
+function withCatalogProvider(providerId: string, modelId: string): string {
+  return `${providerId}/${modelId}`
 }
 
 function versionScore(modelId: string): number {
@@ -262,7 +262,7 @@ function modelFamily(modelId: string): string {
   return modelId
 }
 
-function axraiModelStrengthScore(modelId: string): number {
+function modelStrengthScore(modelId: string): number {
   let base = 0
   if (modelId.startsWith("claude-opus-")) base = 100_000
   else if (modelId.startsWith("gpt-")) base = 90_000
@@ -278,12 +278,12 @@ function axraiModelStrengthScore(modelId: string): number {
   return base + versionScore(modelId) - smallPenalty
 }
 
-function isHighCapabilityAxraiModel(modelId: string): boolean {
-  return axraiModelStrengthScore(modelId) >= 75_000
+function isHighCapabilityModel(modelId: string): boolean {
+  return modelStrengthScore(modelId) >= 75_000
 }
 
-function isMidCapabilityAxraiModel(modelId: string): boolean {
-  return axraiModelStrengthScore(modelId) > 0 && axraiModelStrengthScore(modelId) < 75_000
+function isMidCapabilityModel(modelId: string): boolean {
+  return modelStrengthScore(modelId) > 0 && modelStrengthScore(modelId) < 75_000
 }
 
 function findBestAllowedModel(
@@ -294,14 +294,14 @@ function findBestAllowedModel(
   let best: string | undefined
   for (const modelId of allowedModelIds) {
     if (!allowlist.has(modelId) || !predicate(modelId)) continue
-    if (!best || axraiModelStrengthScore(modelId) > axraiModelStrengthScore(best)) {
+    if (!best || modelStrengthScore(modelId) > modelStrengthScore(best)) {
       best = modelId
     }
   }
   return best
 }
 
-function findAxraiModelMatch(
+function findCatalogModelMatch(
   requestedModel: string,
   allowedModelIds: string[],
   allowlist: Set<string>,
@@ -328,14 +328,19 @@ function findAxraiModelMatch(
   return undefined
 }
 
-function createAxraiModelSelector(installConfig: InstallConfig): {
+export function createCatalogModelSelector(input: {
+  providerId: string
+  modelIds: string[]
+  primaryModel?: string
+  smallModel?: string
+}): {
   selectForChain: (fallbackChain: FallbackEntry[], preferSmall?: boolean) => AgentConfig
 } {
-  const allowedModelIds = installConfig.axraiModelIds?.length ? installConfig.axraiModelIds : [stripProvider(installConfig.axraiPrimaryModel) ?? "gpt-5.4"]
+  const allowedModelIds = input.modelIds.length ? input.modelIds : [stripCatalogProvider(input.primaryModel, input.providerId) ?? "gpt-5.4"]
   const allowlist = new Set(allowedModelIds)
   const firstModelId = allowedModelIds[0]
-  const primaryId = stripProvider(installConfig.axraiPrimaryModel) ?? firstModelId
-  const smallId = stripProvider(installConfig.axraiSmallModel) ?? primaryId
+  const primaryId = stripCatalogProvider(input.primaryModel, input.providerId) ?? firstModelId
+  const smallId = stripCatalogProvider(input.smallModel, input.providerId) ?? primaryId
   const secondaryId =
     [...allowlist].find((modelId) => modelId !== primaryId && modelId !== smallId) ??
     [...allowlist].find((modelId) => modelId !== primaryId) ??
@@ -345,12 +350,12 @@ function createAxraiModelSelector(installConfig: InstallConfig): {
   const safeSmallId = allowlist.has(smallId) ? smallId : safePrimaryId
   const safeSecondaryId = secondaryId && allowlist.has(secondaryId) ? secondaryId : safePrimaryId
   const highCapabilityFallbackId =
-    findBestAllowedModel(allowedModelIds, allowlist, (modelId) => modelId !== safePrimaryId && isHighCapabilityAxraiModel(modelId)) ??
+    findBestAllowedModel(allowedModelIds, allowlist, (modelId) => modelId !== safePrimaryId && isHighCapabilityModel(modelId)) ??
     safeSecondaryId
 
   const toConfig = (modelId: string, fallbackId: string): AgentConfig => {
-    const model = withAxraiProvider(modelId)
-    const fallbackModel = withAxraiProvider(fallbackId)
+    const model = withCatalogProvider(input.providerId, modelId)
+    const fallbackModel = withCatalogProvider(input.providerId, fallbackId)
     if (fallbackModel === model) return { model }
     return {
       model,
@@ -373,14 +378,14 @@ function createAxraiModelSelector(installConfig: InstallConfig): {
   return {
     selectForChain: (fallbackChain, preferSmall = false) => {
       const chainMatch = fallbackChain
-        .map((entry) => findAxraiModelMatch(entry.model, allowedModelIds, allowlist))
+        .map((entry) => findCatalogModelMatch(entry.model, allowedModelIds, allowlist))
         .find((modelId): modelId is string => !!modelId)
       const shouldPreferPrimary =
         chainMatch &&
         safePrimaryId !== chainMatch &&
-        ((isMidCapabilityAxraiModel(chainMatch) && isHighCapabilityAxraiModel(safePrimaryId)) ||
+        ((isMidCapabilityModel(chainMatch) && isHighCapabilityModel(safePrimaryId)) ||
           (modelFamily(chainMatch) === modelFamily(safePrimaryId) &&
-            axraiModelStrengthScore(safePrimaryId) > axraiModelStrengthScore(chainMatch)))
+            modelStrengthScore(safePrimaryId) > modelStrengthScore(chainMatch)))
       const modelId = preferSmall ? safeSmallId : shouldPreferPrimary ? safePrimaryId : chainMatch ?? safePrimaryId
       const fallbackId = chooseFallbackId(modelId, preferSmall)
       return toConfig(modelId, fallbackId)
@@ -389,7 +394,12 @@ function createAxraiModelSelector(installConfig: InstallConfig): {
 }
 
 function generateAxraiModelConfig(installConfig: InstallConfig): GeneratedOmoConfig {
-  const selector = createAxraiModelSelector(installConfig)
+  const selector = createCatalogModelSelector({
+    providerId: AXRAI_PROVIDER,
+    modelIds: installConfig.axraiModelIds ?? [],
+    primaryModel: installConfig.axraiPrimaryModel,
+    smallModel: installConfig.axraiSmallModel,
+  })
   const agents: Record<string, AgentConfig> = {}
   const categories: Record<string, CategoryConfig> = {}
 

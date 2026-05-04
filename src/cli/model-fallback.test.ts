@@ -2,7 +2,7 @@
 
 import { describe, expect, test } from "bun:test"
 
-import { generateModelConfig } from "./model-fallback"
+import { createCatalogModelSelector, generateModelConfig } from "./model-fallback"
 import type { InstallConfig } from "./types"
 
 function createConfig(overrides: Partial<InstallConfig> = {}): InstallConfig {
@@ -137,6 +137,35 @@ describe("generateModelConfig", () => {
       expect(result.agents?.momus?.model).toBe("axrai/gpt-5.6")
       expect(result.agents?.sisyphus?.model).toBe("axrai/claude-opus-4.7")
       expect(result.agents?.atlas?.model).toBe("axrai/claude-opus-4.7")
+    })
+  })
+
+  describe("catalog-driven provider selection", () => {
+    test("model quality ranking is independent of the provider id", () => {
+      // given
+      const selector = createCatalogModelSelector({
+        providerId: "custom-gateway",
+        modelIds: ["claude-opus-4.6", "gpt-5.5", "gpt-5-mini", "kimi-k2.5"],
+        primaryModel: "custom-gateway/gpt-5.5",
+        smallModel: "custom-gateway/gpt-5-mini",
+      })
+
+      // when
+      const captain = selector.selectForChain([
+        { providers: ["custom-gateway"], model: "claude-opus-4-7" },
+        { providers: ["custom-gateway"], model: "kimi-k2.5" },
+        { providers: ["custom-gateway"], model: "gpt-5.5" },
+      ])
+      const fast = selector.selectForChain([
+        { providers: ["custom-gateway"], model: "gpt-5.4-mini-fast" },
+        { providers: ["custom-gateway"], model: "gpt-5.4-nano" },
+      ], true)
+
+      // then
+      expect(captain.model).toBe("custom-gateway/claude-opus-4.6")
+      expect(captain.fallback_models?.[0]?.model).toBe("custom-gateway/gpt-5.5")
+      expect(fast.model).toBe("custom-gateway/gpt-5-mini")
+      expect(fast.fallback_models?.[0]?.model).toBe("custom-gateway/gpt-5.5")
     })
   })
 
