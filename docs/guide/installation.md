@@ -232,8 +232,9 @@ Run:
 opencode debug config
 opencode agent list
 opencode mcp list
-npx oh-my-crew@latest doctor
 ```
+
+The published npm package is a lightweight installer CLI. For normal `npx`/`bunx` installs, use OpenCode's own diagnostics above instead of `oh-my-crew doctor`.
 
 Confirm:
 

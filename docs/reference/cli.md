@@ -83,6 +83,8 @@ Anonymous telemetry uses PostHog with a hashed installation identifier. Disable 
 
 ## doctor
 
+> Legacy/native full CLI only. The published npm package now ships the lightweight JS installer CLI, so `npx oh-my-crew doctor` and `bunx oh-my-crew doctor` are not available for normal installs. Use `opencode debug config`, `opencode agent list`, and `opencode mcp list` for the current npm install path.
+
 Diagnoses your environment to ensure Oh My Crew is functioning correctly. The current checks are grouped into system, config, tools, and models.
 
 The doctor command detects common issues including:
@@ -93,7 +95,7 @@ The doctor command detects common issues including:
 ### Usage
 
 ```bash
-bunx oh-my-crew doctor
+oh-my-crew doctor
 ```
 
 ### Diagnostic Categories
@@ -306,14 +308,17 @@ bunx oh-my-crew install
 ### Doctor Check Failures
 
 ```bash
-# Diagnose with detailed information
-bunx oh-my-crew doctor --verbose
+# For normal npm installs, use OpenCode diagnostics
+opencode debug config
+opencode agent list
+opencode mcp list
 
-# Show compact system dashboard
-bunx oh-my-crew doctor --status
+# Legacy/native full CLI only:
+oh-my-crew doctor --verbose
+oh-my-crew doctor --status
 
-# JSON output for scripting
-bunx oh-my-crew doctor --json
+# Legacy/native JSON output for scripting:
+oh-my-crew doctor --json
 ```
 
 ### "Using legacy package name" Warning
@@ -368,10 +373,10 @@ Use JSON output for CI or scripted diagnostics.
 
 ```bash
 # Run doctor in CI environment
-bunx oh-my-crew doctor --json
+oh-my-crew doctor --json
 
 # Save results to file
-bunx oh-my-crew doctor --json > doctor-report.json
+oh-my-crew doctor --json > doctor-report.json
 ```
 
 ---
