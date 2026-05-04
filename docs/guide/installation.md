@@ -11,11 +11,13 @@ Install and configure oh-my-crew by following the instructions here:
 https://raw.githubusercontent.com/michaelxer/oh-my-crew/refs/heads/oh-my-crew/docs/guide/installation.md
 ```
 
-The agent should fetch this file with `curl.exe` on Windows PowerShell or `curl` in POSIX shells, ask about your subscriptions in chat, run the installer with `--no-tui`, verify the setup, and guide provider authentication.
+The agent should fetch this file with `curl.exe` on Windows PowerShell or `curl` in POSIX shells, ask about your subscriptions in chat, run the installer with `--no-tui`, verify the setup, and guide provider authentication. This URL is instructions for the agent, not the installer itself.
+
+If the user pasted this guide from inside OpenCode, they already have an OpenCode session running. Do not block the install just because the shell cannot run `opencode --version`; the OpenCode app can be available while the `opencode` CLI is not on that shell's PATH. Continue the OMC install and tell the user to restart OpenCode after configuration.
 
 ### Terminal wizard
 
-If you are installing yourself, run this in a real terminal. The terminal wizard will ask the setup questions there:
+If you are installing yourself, run this in a real terminal such as PowerShell, Windows Terminal, Terminal, iTerm, or your Linux shell. Do not run the interactive wizard inside an OpenCode agent/chat message, because agents usually cannot display terminal menus. The terminal wizard will ask the setup questions there:
 
 ```bash
 npx oh-my-crew@latest install
@@ -28,6 +30,8 @@ bunx oh-my-crew@latest install
 ```
 
 The npm package runs the JS installer directly. Normal `npx` and `bunx` installs no longer depend on separate native platform packages.
+
+If you want an OpenCode agent to install OMC for you, use the agent-guided prompt above instead. The agent will ask questions in chat and then run the non-interactive installer with your answers.
 
 In this guide, `--no-tui` means "no terminal menu". It does not mean "no questions". In agent-guided setup, the LLM asks the questions in chat and passes your answers as flags.
 
@@ -148,7 +152,11 @@ If the user has no Claude subscription, warn them that Captain works best with C
 opencode --version
 ```
 
-If OpenCode is missing, tell the user to install it from the official docs, then rerun this setup:
+If this command works, continue normally.
+
+If this command fails while the user is currently talking to you inside OpenCode, do not ask them to install OpenCode again. Treat it as "OpenCode CLI is not on PATH for this shell", continue the OMC install, and use file checks plus a restart as verification.
+
+If the user is not inside OpenCode and this command fails, tell the user to install OpenCode from the official docs, then rerun this setup:
 
 ```text
 https://opencode.ai/docs
@@ -262,6 +270,7 @@ Confirm:
 
 - `opencode.json` contains `oh-my-crew` in the `plugin` array
 - The installer completion summary shows `Crew Models` with each agent's primary model and first fallback
+- If the installer summary is not visible, read `oh-my-crew.json` and summarize `agents.<name>.model` plus the first `fallback_models` entry for each core crew agent
 - The agent list includes Captain, Strategist, Foreman, Architect, Sage, Scout, Scribe, Cadet, and Lookout
 - `Foreman - Plan Executor` appears; internally it maps to `atlas`
 - Built-in MCPs are not disabled in `oh-my-crew.json`. Depending on your OpenCode version, `opencode mcp list` may show only user-configured MCP servers, so do not treat that command alone as proof that built-in OMC MCPs are missing.
@@ -295,10 +304,38 @@ Anonymous telemetry can be disabled with `--disable-telemetry`, `OMO_SEND_ANONYM
 
 ### Finish
 
-Tell the user: Congratulations, Oh My Crew is installed. Start OpenCode with:
+Tell the user: Congratulations, Oh My Crew is installed.
+
+If the user installed from inside an already-open OpenCode session, tell them to restart OpenCode before expecting the new crew agents to appear. Plugin changes are loaded on startup, so the current OpenCode window/session may not show the new agents until restart.
+
+If the user is in a normal terminal, tell them to start or restart OpenCode with:
 
 ```bash
 opencode
 ```
+
+In the final message, always include:
+
+- OpenCode config path and OMC config path
+- Install mode, such as normal providers, AXR Trial, AXR Pro, or AXR Owner / Full Access
+- Whether provider auth is configured or still needs user action
+- A `Crew Models` summary listing each core agent's primary model and first fallback
+- A clear `Restart OpenCode now` instruction when the install happened from an OpenCode agent/chat session
+
+Use these display names when summarizing `oh-my-crew.json`:
+
+| Config key | Display name |
+|------------|--------------|
+| `sisyphus` | Captain - Ultraworker |
+| `hephaestus` | Strategist - Deep Agent |
+| `prometheus` | Architect - Plan Builder |
+| `atlas` | Foreman - Plan Executor |
+| `metis` | Advisor - Plan Consultant |
+| `momus` | Auditor - Plan Critic |
+| `oracle` | Sage |
+| `librarian` | Scribe |
+| `explore` | Scout |
+| `sisyphus-junior` | Cadet |
+| `multimodal-looker` | Lookout |
 
 For hands-off orchestration, include `ultrawork` or `ulw` in a prompt. For planning-first work, use Architect/Planner mode and then execute the plan.

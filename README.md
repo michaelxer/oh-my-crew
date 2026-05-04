@@ -89,15 +89,19 @@ Install and configure oh-my-crew by following the instructions here:
 https://raw.githubusercontent.com/michaelxer/oh-my-crew/refs/heads/oh-my-crew/docs/guide/installation.md
 ```
 
-LLM agents should fetch the guide with `curl.exe` on Windows PowerShell or `curl` in POSIX shells:
+This URL is instructions for the agent, not the installer itself. LLM agents should fetch/read the guide with `curl.exe` on Windows PowerShell or `curl` in POSIX shells:
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/michaelxer/oh-my-crew/refs/heads/oh-my-crew/docs/guide/installation.md
 ```
 
+If you are installing directly as a human, skip the `curl` step and run the terminal wizard below.
+
+If you paste the guide into OpenCode and the agent says the `opencode` command is missing, that usually only means the CLI is not on the agent shell's PATH. Since you are already inside OpenCode, the agent should continue the OMC setup and ask you to restart OpenCode after configuration.
+
 #### Terminal wizard
 
-If you are installing yourself, run this in a real terminal. The terminal wizard will ask the same setup questions there:
+If you are installing yourself, run this in a real terminal such as PowerShell, Windows Terminal, Terminal, iTerm, or your Linux shell. Do not run the interactive wizard inside an OpenCode agent/chat message, because agents usually cannot display terminal menus. The terminal wizard will ask the setup questions there:
 
 ```bash
 npx oh-my-crew@latest install
@@ -108,6 +112,8 @@ or:
 ```bash
 bunx oh-my-crew@latest install
 ```
+
+If you want an OpenCode agent to install OMC for you, use the agent-guided prompt above instead. The agent will ask questions in chat and then run the non-interactive installer with your answers.
 
 The npm package runs the JS installer directly, so normal `npx`/`bunx` installs do not require any separate Windows, Linux, or macOS binary package.
 
