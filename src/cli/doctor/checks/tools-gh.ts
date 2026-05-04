@@ -1,4 +1,5 @@
 import { spawnWithTimeout } from "../spawn-with-timeout"
+import { findBinaryPath } from "./binary-path"
 
 export interface GhCliInfo {
   installed: boolean
@@ -11,12 +12,8 @@ export interface GhCliInfo {
 }
 
 async function checkBinaryExists(binary: string): Promise<{ exists: boolean; path: string | null }> {
-  try {
-    const binaryPath = Bun.which(binary)
-    return { exists: Boolean(binaryPath), path: binaryPath ?? null }
-  } catch {
-    return { exists: false, path: null }
-  }
+  const binaryPath = await findBinaryPath(binary)
+  return { exists: Boolean(binaryPath), path: binaryPath }
 }
 
 async function getGhVersion(): Promise<string | null> {

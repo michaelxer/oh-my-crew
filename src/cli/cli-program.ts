@@ -1,10 +1,4 @@
 import { Command } from "commander"
-import { install } from "./install"
-import { run } from "./run"
-import { getLocalVersion } from "./get-local-version"
-import { doctor } from "./doctor"
-import { refreshModelCapabilities } from "./refresh-model-capabilities"
-import { createMcpOAuthCommand } from "./mcp-oauth"
 import type { InstallArgs } from "./types"
 import type { RunOptions } from "./run"
 import type { GetLocalVersionOptions } from "./get-local-version/types"
@@ -14,6 +8,29 @@ import packageJson from "../../package.json" with { type: "json" }
 const VERSION = packageJson.version
 
 const program = new Command()
+
+function isMissingBunRuntime(error: unknown): boolean {
+  if (!(error instanceof Error)) {
+    return false
+  }
+
+  return error.message.includes("Cannot find package 'bun'")
+    || error.message.includes('Cannot find package "bun"')
+}
+
+async function loadRuntimeCommand<T>(commandName: string, loader: () => Promise<T>): Promise<T> {
+  try {
+    return await loader()
+  } catch (error) {
+    if (isMissingBunRuntime(error)) {
+      console.error(`oh-my-crew: "${commandName}" currently requires the Bun runtime in this JS CLI transition build.`)
+      console.error(`Run it with: bunx oh-my-crew ${commandName}`)
+      process.exit(1)
+    }
+
+    throw error
+  }
+}
 
 program
   .name("oh-my-crew")
@@ -94,6 +111,7 @@ Model Providers:
       disableTelemetry: options.disableTelemetry ?? false,
       skipAuth: options.skipAuth ?? false,
     }
+    const { install } = await import("./install")
     const exitCode = await install(args)
     process.exit(exitCode)
   })
@@ -156,6 +174,7 @@ Unlike 'opencode run', this command waits until:
       verbose: options.verbose ?? false,
       sessionId: options.sessionId,
     }
+    const { run } = await loadRuntimeCommand("run", () => import("./run"))
     const exitCode = await run(runOptions)
     process.exit(exitCode)
   })
@@ -182,6 +201,7 @@ This command shows:
       directory: options.directory,
       json: options.json ?? false,
     }
+    const { getLocalVersion } = await loadRuntimeCommand("get-local-version", () => import("./get-local-version"))
     const exitCode = await getLocalVersion(versionOptions)
     process.exit(exitCode)
   })
@@ -205,6 +225,7 @@ Examples:
       mode,
       json: options.json ?? false,
     }
+    const { doctor } = await loadRuntimeCommand("doctor", () => import("./doctor"))
     const exitCode = await doctor(doctorOptions)
     process.exit(exitCode)
   })
@@ -216,6 +237,10 @@ program
   .option("--source-url <url>", "Override the models.dev source URL")
   .option("--json", "Output refresh summary as JSON")
   .action(async (options) => {
+    const { refreshModelCapabilities } = await loadRuntimeCommand(
+      "refresh-model-capabilities",
+      () => import("./refresh-model-capabilities")
+    )
     const exitCode = await refreshModelCapabilities({
       directory: options.directory,
       sourceUrl: options.sourceUrl,
@@ -228,11 +253,14 @@ program
   .command("version")
   .description("Show version information")
   .action(() => {
-    console.log(`oh-my-opencode v${VERSION}`)
+    console.log(`oh-my-crew v${VERSION}`)
   })
 
-program.addCommand(createMcpOAuthCommand())
+export async function runCli(): Promise<void> {
+  if (process.argv.includes("mcp")) {
+    const { createMcpOAuthCommand } = await loadRuntimeCommand("mcp oauth", () => import("./mcp-oauth"))
+    program.addCommand(createMcpOAuthCommand())
+  }
 
-export function runCli(): void {
   program.parse()
 }

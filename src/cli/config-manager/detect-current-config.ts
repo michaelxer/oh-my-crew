@@ -1,5 +1,6 @@
 import { existsSync, readFileSync } from "node:fs"
-import { ACCEPTED_PACKAGE_NAMES, parseJsonc } from "../../shared"
+import { parseJsonc } from "../../shared/jsonc-parser"
+import { ACCEPTED_PACKAGE_NAMES } from "../../shared/plugin-identity"
 import type { DetectedConfig } from "../types"
 import { getOmoConfigPath } from "./config-context"
 import { detectConfigFormat } from "./opencode-config-format"

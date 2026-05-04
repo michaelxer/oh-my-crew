@@ -5,17 +5,11 @@ import { dirname, join } from "node:path"
 import type { DependencyInfo } from "../types"
 import { spawnWithTimeout } from "../spawn-with-timeout"
 import { getCachedBinaryPath } from "../../../hooks/comment-checker/downloader"
+import { findBinaryPath } from "./binary-path"
 
 async function checkBinaryExists(binary: string): Promise<{ exists: boolean; path: string | null }> {
-  try {
-    const path = Bun.which(binary)
-    if (path) {
-      return { exists: true, path }
-    }
-  } catch {
-    // intentionally empty - binary not found
-  }
-  return { exists: false, path: null }
+  const path = await findBinaryPath(binary)
+  return { exists: Boolean(path), path }
 }
 
 async function getBinaryVersion(binary: string): Promise<string | null> {

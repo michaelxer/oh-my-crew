@@ -1,5 +1,4 @@
 import { existsSync } from "node:fs"
-import { join } from "node:path"
 
 import { getOpenCodeCacheDir } from "../../shared/data-path"
 import { log } from "../../shared/logger"
@@ -21,14 +20,7 @@ interface BunInstallOutput {
   stderr: string
 }
 
-declare function setTimeout(callback: () => void, delay?: number): number
-declare function clearTimeout(timeout: number): void
-
 type ProcessOutputStream = ReturnType<typeof spawnWithWindowsHide>["stdout"]
-
-declare const Bun: {
-  readableStreamToText(stream: NonNullable<ProcessOutputStream>): Promise<string>
-}
 
 export interface BunInstallResult {
   success: boolean
@@ -42,7 +34,7 @@ export async function runBunInstall(): Promise<boolean> {
 }
 
 function getDefaultWorkspaceDir(): string {
-  return join(getOpenCodeCacheDir(), "packages")
+  return `${getOpenCodeCacheDir()}/packages`
 }
 
 function readProcessOutput(stream: ProcessOutputStream): Promise<string> {
@@ -50,7 +42,7 @@ function readProcessOutput(stream: ProcessOutputStream): Promise<string> {
     return Promise.resolve("")
   }
 
-  return Bun.readableStreamToText(stream)
+  return new Response(stream).text()
 }
 
 function logCapturedOutputOnFailure(outputMode: BunInstallOutputMode, output: BunInstallOutput): void {

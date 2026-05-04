@@ -1,13 +1,10 @@
 import color from "picocolors"
-import { PLUGIN_NAME, PUBLISHED_PACKAGE_NAME } from "../shared"
+import { PLUGIN_NAME, PUBLISHED_PACKAGE_NAME } from "../shared/plugin-identity"
 import type { InstallArgs } from "./types"
-import {
-  addPluginToOpenCodeConfig,
-  detectCurrentConfig,
-  getOpenCodeVersion,
-  isOpenCodeInstalled,
-  writeOmoConfig,
-} from "./config-manager"
+import { addPluginToOpenCodeConfig } from "./config-manager/add-plugin-to-opencode-config"
+import { detectCurrentConfig } from "./config-manager/detect-current-config"
+import { getOpenCodeVersion, isOpenCodeInstalled } from "./config-manager/opencode-binary"
+import { writeOmoConfig } from "./config-manager/write-omo-config"
 import {
   SYMBOLS,
   argsToConfig,

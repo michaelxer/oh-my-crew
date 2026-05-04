@@ -24,7 +24,7 @@ const PLATFORM_PACKAGES = [
   "windows-x64-baseline",
 ]
 
-console.log("=== Publishing oh-my-crew (multi-package) ===\n")
+console.log("=== Publishing oh-my-crew ===\n")
 
 async function fetchPreviousVersion(): Promise<string> {
   try {
@@ -67,24 +67,14 @@ async function updateAllPackageVersions(newVersion: string): Promise<void> {
   const mainPkgPath = new URL("../package.json", import.meta.url).pathname
   await updatePackageVersion(mainPkgPath, newVersion)
   
-  // Update optionalDependencies versions in main package.json
-  let mainPkg = await Bun.file(mainPkgPath).text()
-  for (const platform of PLATFORM_PACKAGES) {
-    const pkgName = `oh-my-crew-${platform}`
-    mainPkg = mainPkg.replace(
-      new RegExp(`"${pkgName}": "[^"]+"`),
-      `"${pkgName}": "${newVersion}"`
-    )
-  }
-  await Bun.write(mainPkgPath, mainPkg)
-  
-  // Update each platform package.json
-  for (const platform of PLATFORM_PACKAGES) {
-    const pkgPath = new URL(`../packages/${platform}/package.json`, import.meta.url).pathname
-    if (existsSync(pkgPath)) {
-      await updatePackageVersion(pkgPath, newVersion)
-    } else {
-      console.warn(`Warning: ${pkgPath} not found`)
+  if (process.env.PUBLISH_PLATFORM_PACKAGES === "true") {
+    for (const platform of PLATFORM_PACKAGES) {
+      const pkgPath = new URL(`../packages/${platform}/package.json`, import.meta.url).pathname
+      if (existsSync(pkgPath)) {
+        await updatePackageVersion(pkgPath, newVersion)
+      } else {
+        console.warn(`Warning: ${pkgPath} not found`)
+      }
     }
   }
 }
@@ -252,10 +242,10 @@ async function publishPackage(cwd: string, distTag: string | null, useProvenance
 
 async function publishAllPackages(version: string): Promise<void> {
   const distTag = getDistTag(version)
-  const skipPlatform = process.env.SKIP_PLATFORM_PACKAGES === "true"
+  const skipPlatform = process.env.PUBLISH_PLATFORM_PACKAGES !== "true"
   
   if (skipPlatform) {
-    console.log("\n⏭️  Skipping platform packages (SKIP_PLATFORM_PACKAGES=true)")
+    console.log("\nSkipping legacy platform packages (set PUBLISH_PLATFORM_PACKAGES=true to publish them)")
   } else {
     console.log("\n📦 Publishing platform packages in batches (to avoid OIDC token expiration)...")
     
@@ -320,13 +310,13 @@ async function publishAllPackages(version: string): Promise<void> {
 }
 
 async function buildPackages(): Promise<void> {
-  const skipPlatform = process.env.SKIP_PLATFORM_PACKAGES === "true"
+  const skipPlatform = process.env.PUBLISH_PLATFORM_PACKAGES !== "true"
   
   console.log("\nBuilding packages...")
   await $`bun run clean && bun run build`
   
   if (skipPlatform) {
-    console.log("⏭️  Skipping platform binaries (SKIP_PLATFORM_PACKAGES=true)")
+    console.log("Skipping legacy platform binaries (set PUBLISH_PLATFORM_PACKAGES=true to build them)")
   } else {
     console.log("Building platform binaries...")
     await $`bun run build:binaries`
@@ -342,8 +332,10 @@ async function gitTagAndRelease(newVersion: string, notes: string[]): Promise<vo
   
   // Add all package.json files
   await $`git add package.json assets/oh-my-opencode.schema.json`
-  for (const platform of PLATFORM_PACKAGES) {
-    await $`git add packages/${platform}/package.json`.nothrow()
+  if (process.env.PUBLISH_PLATFORM_PACKAGES === "true") {
+    for (const platform of PLATFORM_PACKAGES) {
+      await $`git add packages/${platform}/package.json`.nothrow()
+    }
   }
 
   const hasStagedChanges = await $`git diff --cached --quiet`.nothrow()
@@ -404,10 +396,10 @@ async function main() {
 
   if (await checkVersionExists(newVersion)) {
     if (republishMode) {
-      console.log(`Version ${newVersion} exists on npm. REPUBLISH mode: checking for missing platform packages...`)
+      console.log(`Version ${newVersion} exists on npm. REPUBLISH mode: checking for missing legacy platform packages...`)
     } else {
       console.log(`Version ${newVersion} already exists on npm. Skipping publish.`)
-      console.log(`(Use REPUBLISH=true to publish missing platform packages)`)
+      console.log(`(Use REPUBLISH=true PUBLISH_PLATFORM_PACKAGES=true to publish missing legacy platform packages)`)
       process.exit(0)
     }
   }
@@ -421,7 +413,8 @@ async function main() {
   await publishAllPackages(newVersion)
   await gitTagAndRelease(newVersion, notes)
 
-  console.log(`\n=== Successfully published ${PACKAGE_NAME}@${newVersion} (${PLATFORM_PACKAGES.length + 1} packages) ===`)
+  const packageCount = process.env.PUBLISH_PLATFORM_PACKAGES === "true" ? PLATFORM_PACKAGES.length + 1 : 1
+  console.log(`\n=== Successfully published ${PACKAGE_NAME}@${newVersion} (${packageCount} package${packageCount === 1 ? "" : "s"}) ===`)
 }
 
 main()

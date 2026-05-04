@@ -1,4 +1,4 @@
-import { spawn, spawnSync } from "bun"
+import { spawn, spawnSync } from "./bun-compat"
 import { release } from "os"
 
 import { validateArchiveEntries } from "./archive-entry-validator"

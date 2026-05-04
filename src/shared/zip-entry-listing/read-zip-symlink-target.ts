@@ -1,4 +1,4 @@
-import { spawn } from "bun"
+import { spawn } from "../bun-compat"
 
 export async function readZipSymlinkTarget(
 	archivePath: string,

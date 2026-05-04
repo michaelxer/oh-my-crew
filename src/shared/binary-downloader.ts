@@ -1,6 +1,6 @@
-import { chmodSync, existsSync, mkdirSync, unlinkSync } from "node:fs";
+import { chmodSync, existsSync, mkdirSync, unlinkSync, writeFileSync } from "node:fs";
 import * as path from "node:path";
-import { spawn } from "bun";
+import { spawn } from "./bun-compat";
 import { validateArchiveEntries, type ArchiveEntry } from "./archive-entry-validator";
 import { extractZip } from "./zip-extractor";
 
@@ -26,7 +26,7 @@ export async function downloadArchive(downloadUrl: string, archivePath: string):
   }
 
   const arrayBuffer = await response.arrayBuffer();
-  await Bun.write(archivePath, arrayBuffer);
+  writeFileSync(archivePath, Buffer.from(arrayBuffer));
 }
 
 export async function extractTarGz(

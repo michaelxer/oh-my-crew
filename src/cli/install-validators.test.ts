@@ -74,6 +74,6 @@ describe("formatConfigSummary", () => {
     expect(result).toContain("Captain - Ultraworker: opencode/gpt-5-nano")
     expect(result).toContain("Useful Commands")
     expect(result).toContain("opencode agent list")
-    expect(result).toContain("npx oh-my-crew@latest doctor")
+    expect(result).toContain("opencode debug config")
   })
 })

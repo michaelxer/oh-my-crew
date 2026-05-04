@@ -118,7 +118,6 @@ export function formatConfigSummary(config: InstallConfig): string {
   lines.push(`  ${SYMBOLS.bullet} ${color.cyan("opencode")} - start OpenCode with OMC loaded`)
   lines.push(`  ${SYMBOLS.bullet} ${color.cyan("opencode agent list")} - inspect available crew agents`)
   lines.push(`  ${SYMBOLS.bullet} ${color.cyan("opencode debug config")} - verify merged OpenCode config`)
-  lines.push(`  ${SYMBOLS.bullet} ${color.cyan("npx oh-my-crew@latest doctor")} - run OMC diagnostics`)
 
   if (config.enabledMcps) {
     lines.push("")

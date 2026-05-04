@@ -109,6 +109,8 @@ atau:
 bunx oh-my-crew@latest install
 ```
 
+Package npm menjalankan installer JS secara langsung, jadi instalasi normal lewat `npx`/`bunx` tidak membutuhkan package binary Windows, Linux, atau macOS terpisah.
+
 Untuk setup scripted dan instruksi lengkap untuk LLM agent, lihat [docs/guide/installation.md](docs/guide/installation.md). Di project ini, `--no-tui` berarti "tanpa menu terminal"; bukan berarti "tanpa pertanyaan". Agent tetap bisa bertanya di chat lalu mengirim jawaban Anda sebagai flag.
 
 Installer yang sama bisa dipakai untuk pengguna AXR AI maupun setup publik dengan provider sendiri. Jika Anda memilih AXR AI Trial atau Pro, OMC mengambil katalog model live dari `https://api.axrai.app/v1/models.json`, menulis konfigurasi provider AXR, dan memasang model kru hanya dari plan tersebut. Jika Anda tidak memakai AXR AI, wizard akan lanjut bertanya tentang Claude, OpenAI/ChatGPT, Gemini, Copilot, OpenCode Zen, Z.ai, Kimi, OpenCode Go, Vercel AI Gateway, dan custom provider OpenAI-compatible.

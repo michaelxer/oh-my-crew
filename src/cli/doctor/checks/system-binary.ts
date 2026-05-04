@@ -96,7 +96,14 @@ export function findDesktopBinary(
 
 export async function findOpenCodeBinary(): Promise<OpenCodeBinaryInfo | null> {
   for (const binary of OPENCODE_BINARIES) {
-    const path = Bun.which(binary)
+    const result = await spawnWithTimeout(
+      [getBinaryLookupCommand(process.platform), binary],
+      { stdout: "pipe", stderr: "pipe" },
+      5_000
+    )
+    const path = result.exitCode === 0
+      ? selectBinaryPath(parseBinaryPaths(result.stdout), process.platform)
+      : null
     if (path) {
       return { binary, path }
     }

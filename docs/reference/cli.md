@@ -1,6 +1,6 @@
 # CLI Reference
 
-Complete reference for the published `oh-my-crew` CLI. OpenCode plugin registration should use `oh-my-crew` inside `opencode.json`.
+Reference for the published `oh-my-crew` npm CLI. OpenCode plugin registration should use `oh-my-crew` inside `opencode.json`.
 
 ## Basic Usage
 
@@ -12,17 +12,19 @@ bunx oh-my-crew
 npx oh-my-crew
 ```
 
+The published npm package runs the installer through the JS CLI directly. Native platform packages are legacy distribution artifacts and are not required for normal `npx`/`bunx` installation.
+
 ## Commands
 
 | Command                       | Description                                            |
 | ----------------------------- | ------------------------------------------------------ |
 | `install`                     | Interactive setup wizard                               |
-| `doctor`                      | Environment diagnostics and health checks              |
-| `run`                         | OpenCode session runner with task completion enforcement |
-| `get-local-version`           | Display local version information and update check     |
-| `refresh-model-capabilities`  | Refresh the cached models.dev-based model capabilities |
+| `doctor`                      | Legacy/native CLI command, not included in the lightweight npm installer CLI |
+| `run`                         | Legacy/native CLI command, not included in the lightweight npm installer CLI |
+| `get-local-version`           | Legacy/native CLI command, not included in the lightweight npm installer CLI |
+| `refresh-model-capabilities`  | Legacy/native CLI command, not included in the lightweight npm installer CLI |
 | `version`                     | Show version information                               |
-| `mcp oauth`                   | MCP OAuth authentication management                    |
+| `mcp oauth`                   | Legacy/native CLI command, not included in the lightweight npm installer CLI |
 
 ---
 

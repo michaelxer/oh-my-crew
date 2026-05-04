@@ -27,6 +27,8 @@ or, with Bun:
 bunx oh-my-crew@latest install
 ```
 
+The npm package runs the JS installer directly. Normal `npx` and `bunx` installs no longer depend on separate native platform packages.
+
 In this guide, `--no-tui` means "no terminal menu". It does not mean "no questions". In agent-guided setup, the LLM asks the questions in chat and passes your answers as flags.
 
 The wizard checks for OpenCode, asks first whether you have an active AXR AI subscription plan, adds `oh-my-crew` to the OpenCode `plugin` array, writes `oh-my-crew.json`, preserves existing provider settings, and backs up files before writing.

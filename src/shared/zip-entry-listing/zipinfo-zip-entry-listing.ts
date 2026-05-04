@@ -1,4 +1,4 @@
-import { spawn, spawnSync } from "bun"
+import { spawn, spawnSync } from "../bun-compat"
 
 import type { ArchiveEntry } from "../archive-entry-validator"
 import { readZipSymlinkTarget } from "./read-zip-symlink-target"
