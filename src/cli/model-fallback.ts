@@ -244,6 +244,90 @@ function withAxraiProvider(modelId: string): string {
   return `${AXRAI_PROVIDER}/${modelId}`
 }
 
+function versionScore(modelId: string): number {
+  const version = modelId.match(/(\d+)(?:[.-](\d+))?/)
+  if (!version) return 0
+  return Number(version[1]) * 1_000 + Number(version[2] ?? 0)
+}
+
+function modelFamily(modelId: string): string {
+  if (modelId.startsWith("claude-opus-")) return "claude-opus"
+  if (modelId.startsWith("claude-sonnet-")) return "claude-sonnet"
+  if (modelId.startsWith("gpt-")) return "gpt"
+  if (modelId.startsWith("gemini-")) return "gemini"
+  if (/^o\d/.test(modelId)) return "openai-reasoning"
+  if (modelId.startsWith("kimi-")) return "kimi"
+  if (modelId.startsWith("glm-")) return "glm"
+  if (modelId.startsWith("minimax-")) return "minimax"
+  return modelId
+}
+
+function axraiModelStrengthScore(modelId: string): number {
+  let base = 0
+  if (modelId.startsWith("claude-opus-")) base = 100_000
+  else if (modelId.startsWith("gpt-")) base = 90_000
+  else if (modelId === "gemini-3.1-pro" || modelId === "gemini-2.5-pro") base = 85_000
+  else if (/^o\d/.test(modelId)) base = 82_000
+  else if (modelId.startsWith("claude-sonnet-")) base = 78_000
+  else if (modelId.startsWith("kimi-")) base = 60_000
+  else if (modelId.startsWith("glm-")) base = 55_000
+  else if (modelId.startsWith("minimax-")) base = 45_000
+  else if (modelId.startsWith("default-model")) base = 40_000
+
+  const smallPenalty = /(mini|nano|flash|lite|haiku|highspeed)/.test(modelId) ? 30_000 : 0
+  return base + versionScore(modelId) - smallPenalty
+}
+
+function isHighCapabilityAxraiModel(modelId: string): boolean {
+  return axraiModelStrengthScore(modelId) >= 75_000
+}
+
+function isMidCapabilityAxraiModel(modelId: string): boolean {
+  return axraiModelStrengthScore(modelId) > 0 && axraiModelStrengthScore(modelId) < 75_000
+}
+
+function findBestAllowedModel(
+  allowedModelIds: string[],
+  allowlist: Set<string>,
+  predicate: (modelId: string) => boolean,
+): string | undefined {
+  let best: string | undefined
+  for (const modelId of allowedModelIds) {
+    if (!allowlist.has(modelId) || !predicate(modelId)) continue
+    if (!best || axraiModelStrengthScore(modelId) > axraiModelStrengthScore(best)) {
+      best = modelId
+    }
+  }
+  return best
+}
+
+function findAxraiModelMatch(
+  requestedModel: string,
+  allowedModelIds: string[],
+  allowlist: Set<string>,
+): string | undefined {
+  if (allowlist.has(requestedModel)) {
+    return requestedModel
+  }
+
+  if (/^claude-opus-4(?:[.-]\d+)?/.test(requestedModel)) {
+    return findBestAllowedModel(allowedModelIds, allowlist, (modelId) => /^claude-opus-\d+[.-]\d+/.test(modelId))
+  }
+
+  if (/^claude-sonnet-4(?:[.-]\d+)?/.test(requestedModel)) {
+    return (
+      findBestAllowedModel(allowedModelIds, allowlist, (modelId) => /^claude-sonnet-\d+[.-]\d+/.test(modelId)) ??
+      findBestAllowedModel(allowedModelIds, allowlist, (modelId) => /^claude-opus-\d+[.-]\d+/.test(modelId))
+    )
+  }
+
+  if (/^gpt-\d+(?:\.|-|$)/.test(requestedModel)) {
+    return findBestAllowedModel(allowedModelIds, allowlist, (modelId) => /^gpt-\d+(?:\.|-|$)/.test(modelId))
+  }
+
+  return undefined
+}
+
 function createAxraiModelSelector(installConfig: InstallConfig): {
   selectForChain: (fallbackChain: FallbackEntry[], preferSmall?: boolean) => AgentConfig
 } {
@@ -260,6 +344,9 @@ function createAxraiModelSelector(installConfig: InstallConfig): {
   const safePrimaryId = allowlist.has(primaryId) ? primaryId : firstModelId
   const safeSmallId = allowlist.has(smallId) ? smallId : safePrimaryId
   const safeSecondaryId = secondaryId && allowlist.has(secondaryId) ? secondaryId : safePrimaryId
+  const highCapabilityFallbackId =
+    findBestAllowedModel(allowedModelIds, allowlist, (modelId) => modelId !== safePrimaryId && isHighCapabilityAxraiModel(modelId)) ??
+    safeSecondaryId
 
   const toConfig = (modelId: string, fallbackId: string): AgentConfig => {
     const model = withAxraiProvider(modelId)
@@ -271,11 +358,31 @@ function createAxraiModelSelector(installConfig: InstallConfig): {
     }
   }
 
+  const chooseFallbackId = (modelId: string, preferSmall: boolean): string => {
+    if (preferSmall && safePrimaryId !== modelId) {
+      return safePrimaryId
+    }
+
+    if (modelId !== safePrimaryId) {
+      return safePrimaryId
+    }
+
+    return highCapabilityFallbackId !== modelId ? highCapabilityFallbackId : safeSmallId
+  }
+
   return {
     selectForChain: (fallbackChain, preferSmall = false) => {
-      const chainMatch = fallbackChain.map((entry) => entry.model).find((modelId) => allowlist.has(modelId))
-      const modelId = chainMatch ?? (preferSmall ? safeSmallId : safePrimaryId)
-      const fallbackId = modelId === safeSecondaryId ? safePrimaryId : safeSecondaryId
+      const chainMatch = fallbackChain
+        .map((entry) => findAxraiModelMatch(entry.model, allowedModelIds, allowlist))
+        .find((modelId): modelId is string => !!modelId)
+      const shouldPreferPrimary =
+        chainMatch &&
+        safePrimaryId !== chainMatch &&
+        ((isMidCapabilityAxraiModel(chainMatch) && isHighCapabilityAxraiModel(safePrimaryId)) ||
+          (modelFamily(chainMatch) === modelFamily(safePrimaryId) &&
+            axraiModelStrengthScore(safePrimaryId) > axraiModelStrengthScore(chainMatch)))
+      const modelId = preferSmall ? safeSmallId : shouldPreferPrimary ? safePrimaryId : chainMatch ?? safePrimaryId
+      const fallbackId = chooseFallbackId(modelId, preferSmall)
       return toConfig(modelId, fallbackId)
     },
   }

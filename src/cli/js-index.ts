@@ -77,7 +77,7 @@ Examples:
       skipAuth: options.skipAuth ?? false,
     }
     const exitCode = await install(args)
-    process.exit(exitCode)
+    process.exitCode = exitCode
   })
 
 for (const commandName of ["doctor", "run", "get-local-version", "refresh-model-capabilities", "mcp"]) {
@@ -88,7 +88,7 @@ for (const commandName of ["doctor", "run", "get-local-version", "refresh-model-
     .action(() => {
       console.error(`oh-my-crew: "${commandName}" is not included in the lightweight npm installer CLI.`)
       console.error("Use the OpenCode plugin runtime for agent features, or use a legacy/native CLI build if needed.")
-      process.exit(1)
+      process.exitCode = 1
     })
 }
 
@@ -99,4 +99,4 @@ program
     console.log(`oh-my-crew v${VERSION}`)
   })
 
-program.parse()
+await program.parseAsync()

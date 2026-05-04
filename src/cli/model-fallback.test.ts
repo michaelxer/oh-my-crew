@@ -82,6 +82,62 @@ describe("generateModelConfig", () => {
         }
       }
     })
+
+    test("Pro output does not let Kimi outrank Opus or GPT for orchestration agents", () => {
+      // given
+      const result = generateModelConfig({
+        hasClaude: false,
+        isMax20: false,
+        hasOpenAI: false,
+        hasGemini: false,
+        hasCopilot: false,
+        hasOpencodeZen: false,
+        hasZaiCodingPlan: false,
+        hasKimiForCoding: false,
+        hasOpencodeGo: false,
+        hasVercelAiGateway: false,
+        axraiTier: "pro",
+        axraiModelIds: ["claude-opus-4.6", "gpt-5.5", "gpt-5-mini", "kimi-k2.5"],
+        axraiPrimaryModel: "axrai/gpt-5.5",
+        axraiSmallModel: "axrai/gpt-5-mini",
+      })
+
+      // then
+      expect(result.agents?.sisyphus?.model).toBe("axrai/claude-opus-4.6")
+      expect(result.agents?.sisyphus?.fallback_models?.[0]?.model).toBe("axrai/gpt-5.5")
+      expect(result.agents?.atlas?.model).toBe("axrai/claude-opus-4.6")
+      expect(result.agents?.["sisyphus-junior"]?.model).toBe("axrai/claude-opus-4.6")
+      expect(result.agents?.hephaestus?.model).toBe("axrai/gpt-5.5")
+      expect(result.agents?.hephaestus?.fallback_models?.[0]?.model).toBe("axrai/claude-opus-4.6")
+      expect(result.agents?.librarian?.model).toBe("axrai/gpt-5-mini")
+      expect(result.agents?.librarian?.fallback_models?.[0]?.model).toBe("axrai/gpt-5.5")
+    })
+
+    test("future stronger AXR primary models can outrank older same-family chain matches", () => {
+      // given
+      const result = generateModelConfig({
+        hasClaude: false,
+        isMax20: false,
+        hasOpenAI: false,
+        hasGemini: false,
+        hasCopilot: false,
+        hasOpencodeZen: false,
+        hasZaiCodingPlan: false,
+        hasKimiForCoding: false,
+        hasOpencodeGo: false,
+        hasVercelAiGateway: false,
+        axraiTier: "pro",
+        axraiModelIds: ["claude-opus-4.7", "gpt-5.6", "gpt-5.5", "gpt-5-mini", "kimi-k2.5"],
+        axraiPrimaryModel: "axrai/gpt-5.6",
+        axraiSmallModel: "axrai/gpt-5-mini",
+      })
+
+      // then
+      expect(result.agents?.hephaestus?.model).toBe("axrai/gpt-5.6")
+      expect(result.agents?.momus?.model).toBe("axrai/gpt-5.6")
+      expect(result.agents?.sisyphus?.model).toBe("axrai/claude-opus-4.7")
+      expect(result.agents?.atlas?.model).toBe("axrai/claude-opus-4.7")
+    })
   })
 
   describe("no providers available", () => {
