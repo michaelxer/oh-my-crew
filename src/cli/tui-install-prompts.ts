@@ -65,7 +65,7 @@ export async function promptInstallConfig(detected: DetectedConfig): Promise<Ins
   const initial = detectedToInitialValues(detected)
 
   const usesAxrai = await selectOrCancel<BooleanArg>({
-    message: "Do you have an active AXR AI subscription plan?",
+    message: "Do you have an active AXR AI subscription plan? AXR AI is optional.",
     options: [
       { value: "no", label: "No", hint: "Continue normal provider setup" },
       {

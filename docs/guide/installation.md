@@ -35,7 +35,7 @@ If you want an OpenCode agent to install OMC for you, use the agent-guided promp
 
 In this guide, `--no-tui` means "no terminal menu". It does not mean "no questions". In agent-guided setup, the LLM asks the questions in chat and passes your answers as flags.
 
-The wizard checks for OpenCode, asks first whether you have an active AXR AI subscription plan, adds `oh-my-crew` to the OpenCode `plugin` array, writes `oh-my-crew.json`, preserves existing provider settings, and backs up files before writing.
+The wizard checks for OpenCode, then asks whether you have an active AXR AI subscription plan. AXR AI is optional; if you are not an AXR AI user, choose No and continue the normal Claude, OpenAI/ChatGPT, Gemini, Copilot, OpenCode Zen, Z.ai, Kimi, OpenCode Go, Vercel AI Gateway, or custom-provider setup. The installer adds `oh-my-crew` to the OpenCode `plugin` array, writes visible crew agent/MCP entries, writes `oh-my-crew.json`, preserves existing provider settings, and backs up files before writing.
 
 If you choose AXR AI Trial or Pro, the installer fetches the public live catalog from:
 
@@ -96,7 +96,7 @@ Then offer simple choices:
 Ask first:
 
 ```text
-Do you have an active AXR AI subscription plan?
+Do you have an active AXR AI subscription plan? AXR AI is optional. If not, choose No and continue normal provider setup.
 ```
 
 If yes, ask which plan:
