@@ -75,6 +75,20 @@ Anonymous telemetry is enabled by default to track active installations (DAU/WAU
 
 You are helping the user install Oh My Crew. Ask the questions below in chat, then run `npx oh-my-crew@latest install --no-tui ...` or `bunx oh-my-crew@latest install --no-tui ...`. Do not use the terminal TUI unless you have a real interactive terminal. `--no-tui` only disables the terminal menu; it does not remove the need to ask the user setup questions.
 
+Keep setup questions friendly for non-programmers. Do not ask technical config-location questions such as "Are you using OpenCode CLI config, not desktop config?" during normal setup. Use the normal OpenCode terminal config by default. Only ask about OpenCode Desktop if the install finishes but OMC does not appear where the user expects it.
+
+If you need to clarify that troubleshooting point, ask:
+
+```text
+Where do you use OpenCode?
+```
+
+Then offer simple choices:
+
+- Terminal / command line
+- OpenCode Desktop app
+- I am not sure
+
 ### Step 0: Ask About AXR AI
 
 Ask first:
