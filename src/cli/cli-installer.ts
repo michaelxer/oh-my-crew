@@ -3,6 +3,7 @@ import { PLUGIN_NAME, PUBLISHED_PACKAGE_NAME } from "../shared/plugin-identity"
 import type { InstallArgs } from "./types"
 import { addPluginToOpenCodeConfig } from "./config-manager/add-plugin-to-opencode-config"
 import { detectCurrentConfig } from "./config-manager/detect-current-config"
+import { generateOpenCodeInstallConfig } from "./config-manager/generate-opencode-install-config"
 import { getOpenCodeVersion, isOpenCodeInstalled } from "./config-manager/opencode-binary"
 import { writeOmoConfig } from "./config-manager/write-omo-config"
 import {
@@ -86,8 +87,10 @@ export async function runCliInstaller(args: InstallArgs, version: string): Promi
     }
   }
 
-  printStep(step++, totalSteps, `Adding ${PLUGIN_NAME} plugin...`)
-  const pluginResult = await addPluginToOpenCodeConfig(version, config.axraiOpenCodeConfig)
+  const generatedOpenCodeConfig = await generateOpenCodeInstallConfig(config)
+
+  printStep(step++, totalSteps, `Adding ${PLUGIN_NAME} plugin and visible crew entries...`)
+  const pluginResult = await addPluginToOpenCodeConfig(version, generatedOpenCodeConfig)
   if (!pluginResult.success) {
     printError(`Failed: ${pluginResult.error}`)
     return 1

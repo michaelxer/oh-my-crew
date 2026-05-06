@@ -26,6 +26,29 @@ const ULTIMATE_FALLBACK = "opencode/gpt-5-nano"
 const SCHEMA_URL = "https://raw.githubusercontent.com/code-yeongyu/oh-my-openagent/dev/assets/oh-my-opencode.schema.json"
 const BUILTIN_MCPS = ["websearch", "context7", "grep_app"] as const
 const AXRAI_PROVIDER = "axrai"
+const AXRAI_RECOMMENDED_AGENT_MODELS: Record<string, { primary: string; fallback: string }> = {
+  sisyphus: { primary: "gpt-5.5", fallback: "claude-opus-4.6" },
+  metis: { primary: "gpt-5.5", fallback: "claude-opus-4.6" },
+  prometheus: { primary: "gpt-5.5", fallback: "claude-opus-4.6" },
+  atlas: { primary: "gpt-5.4", fallback: "kimi-k2.5" },
+  hephaestus: { primary: "gpt-5.4", fallback: "claude-opus-4.6" },
+  oracle: { primary: "gemini-3.1-pro", fallback: "gpt-5.4" },
+  momus: { primary: "gpt-5.4", fallback: "claude-opus-4.6" },
+  explore: { primary: "claude-haiku-4.5", fallback: "gemini-3.0-flash" },
+  librarian: { primary: "claude-haiku-4.5", fallback: "gemini-3.0-flash" },
+  "multimodal-looker": { primary: "gpt-5.4", fallback: "kimi-k2.5" },
+  "sisyphus-junior": { primary: "kimi-k2.5", fallback: "gpt-5.4" },
+}
+const AXRAI_RECOMMENDED_CATEGORY_MODELS: Record<string, { primary: string; fallback: string }> = {
+  "visual-engineering": { primary: "gemini-3.1-pro", fallback: "gpt-5.4" },
+  artistry: { primary: "gemini-3.1-pro", fallback: "claude-opus-4.6" },
+  ultrabrain: { primary: "gpt-5.5", fallback: "claude-opus-4.6" },
+  deep: { primary: "gpt-5.4", fallback: "claude-opus-4.6" },
+  quick: { primary: "claude-haiku-4.5", fallback: "gemini-3.0-flash" },
+  "unspecified-high": { primary: "gpt-5.5", fallback: "claude-opus-4.6" },
+  "unspecified-low": { primary: "kimi-k2.5", fallback: "gpt-5.4" },
+  writing: { primary: "claude-haiku-4.5", fallback: "gemini-3.0-flash" },
+}
 
 function toFallbackModelObject(entry: FallbackEntry, provider: string): FallbackModelObject {
   return {
@@ -244,6 +267,23 @@ function withCatalogProvider(providerId: string, modelId: string): string {
   return `${providerId}/${modelId}`
 }
 
+function recommendedAxraiConfig(
+  recommendation: { primary: string; fallback: string } | undefined,
+  allowedModelIds: Set<string>,
+): AgentConfig | undefined {
+  if (!recommendation || !allowedModelIds.has(recommendation.primary)) return undefined
+
+  const model = withCatalogProvider(AXRAI_PROVIDER, recommendation.primary)
+  if (!allowedModelIds.has(recommendation.fallback) || recommendation.fallback === recommendation.primary) {
+    return { model }
+  }
+
+  return {
+    model,
+    fallback_models: [{ model: withCatalogProvider(AXRAI_PROVIDER, recommendation.fallback) }],
+  }
+}
+
 function versionScore(modelId: string): number {
   const version = modelId.match(/(\d+)(?:[.-](\d+))?/)
   if (!version) return 0
@@ -394,6 +434,8 @@ export function createCatalogModelSelector(input: {
 }
 
 function generateAxraiModelConfig(installConfig: InstallConfig): GeneratedOmoConfig {
+  const allowedModelIds = new Set(installConfig.axraiModelIds ?? [])
+  const useRecommendedModels = installConfig.axraiTier === "pro" || installConfig.axraiTier === "owner"
   const selector = createCatalogModelSelector({
     providerId: AXRAI_PROVIDER,
     modelIds: installConfig.axraiModelIds ?? [],
@@ -404,14 +446,21 @@ function generateAxraiModelConfig(installConfig: InstallConfig): GeneratedOmoCon
   const categories: Record<string, CategoryConfig> = {}
 
   for (const [role, req] of Object.entries(CLI_AGENT_MODEL_REQUIREMENTS)) {
-    agents[role] = selector.selectForChain(
-      role === "sisyphus" ? getSisyphusFallbackChain() : req.fallbackChain,
-      role === "explore" || role === "librarian",
-    )
+    const recommended = useRecommendedModels
+      ? recommendedAxraiConfig(AXRAI_RECOMMENDED_AGENT_MODELS[role], allowedModelIds)
+      : undefined
+    agents[role] = recommended ?? selector.selectForChain(
+        role === "sisyphus" ? getSisyphusFallbackChain() : req.fallbackChain,
+        role === "explore" || role === "librarian",
+      )
   }
 
   for (const [category, req] of Object.entries(CLI_CATEGORY_MODEL_REQUIREMENTS)) {
-    categories[category] = selector.selectForChain(req.fallbackChain, category === "quick" || category === "writing")
+    const recommended = useRecommendedModels
+      ? recommendedAxraiConfig(AXRAI_RECOMMENDED_CATEGORY_MODELS[category], allowedModelIds)
+      : undefined
+    categories[category] =
+      recommended ?? selector.selectForChain(req.fallbackChain, category === "quick" || category === "writing")
   }
 
   return {

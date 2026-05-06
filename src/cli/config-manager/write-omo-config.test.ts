@@ -109,9 +109,9 @@ describe("writeOmoConfig", () => {
       hasOpencodeGo: false,
       hasVercelAiGateway: false,
       axraiTier: "pro",
-      axraiModelIds: ["claude-opus-4.6", "gpt-5.5", "gpt-5-mini", "kimi-k2.5"],
+      axraiModelIds: ["claude-opus-4.6", "gpt-5.5", "gpt-5.4", "kimi-k2.5"],
       axraiPrimaryModel: "axrai/gpt-5.5",
-      axraiSmallModel: "axrai/gpt-5-mini",
+      axraiSmallModel: "axrai/gpt-5.4",
     }
 
     // when
@@ -123,9 +123,9 @@ describe("writeOmoConfig", () => {
     const savedAgents = getRecord(savedConfig.agents)
     const savedSisyphus = getRecord(savedAgents.sisyphus)
     const savedAtlas = getRecord(savedAgents.atlas)
-    expect(savedSisyphus.model).toBe("axrai/claude-opus-4.6")
+    expect(savedSisyphus.model).toBe("axrai/gpt-5.5")
     expect(savedSisyphus.prompt_append).toBe("keep this user note")
-    expect(savedAtlas.model).toBe("axrai/claude-opus-4.6")
+    expect(savedAtlas.model).toBe("axrai/gpt-5.4")
     expect(savedConfig.disabled_hooks).toEqual(["comment-checker"])
   })
 

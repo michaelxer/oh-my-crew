@@ -319,6 +319,23 @@ opencode mcp list
 
 The published npm package is a lightweight installer CLI. For normal `npx`/`bunx` installs, use OpenCode's own diagnostics above instead of `oh-my-crew doctor`.
 
+Before writing the final report, wait for the installer command to finish, then read the OMC config file from disk again. Treat earlier chat history and earlier failed install checks as stale.
+
+On Windows PowerShell:
+
+```powershell
+Test-Path "$env:USERPROFILE\.config\opencode\oh-my-crew.json"
+Get-Content -Raw "$env:USERPROFILE\.config\opencode\oh-my-crew.json"
+```
+
+On macOS / Linux:
+
+```bash
+test -f "$HOME/.config/opencode/oh-my-crew.json" && cat "$HOME/.config/opencode/oh-my-crew.json"
+```
+
+Do not show an empty or placeholder `Crew Models and Roles` table. If `oh-my-crew.json` is missing or cannot be parsed after the installer exits, say verification failed, show the exact path you checked, and continue troubleshooting instead of inventing model rows.
+
 Confirm:
 
 - `opencode.json` contains `oh-my-crew` in the `plugin` array
@@ -372,10 +389,18 @@ In the final message, always include:
 - OpenCode config path and OMC config path
 - Install mode, such as normal providers, AXR Trial, AXR Pro, or AXR Owner / Full Access
 - Whether provider auth is configured or still needs user action
-- A `Crew Models` summary listing each core agent's primary model and first fallback
-- A `Crew Roles` summary listing what each core agent is for
+- A `Crew Models and Roles` Markdown table for every core agent. Do not replace this table with prose or bullets.
 - An `OMC Features` summary with the most useful capabilities the user can try next
 - A clear `Restart OpenCode now` instruction when the install happened from an OpenCode agent/chat session
+
+Only produce the `Crew Models and Roles` table after you have read and parsed the current `oh-my-crew.json` from disk after the installer completed. If the file is missing, unreadable, or has no agent model assignments, the install is not fully verified yet. Do not fill the table with `Not available`, `missing`, or guessed values; report the verification failure and help the user fix the install first.
+
+The `Crew Models and Roles` table must have these columns:
+
+| Agent | Config key | Role | Primary model | First fallback |
+|-------|------------|------|---------------|----------------|
+
+Fill `Primary model` from `oh-my-crew.json` at `agents.<config key>.model`. Fill `First fallback` from the first entry in `agents.<config key>.fallback_models`; if no fallback exists, write `none`.
 
 Use these display names when summarizing `oh-my-crew.json`:
 

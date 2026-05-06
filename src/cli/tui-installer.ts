@@ -4,6 +4,7 @@ import { PLUGIN_NAME } from "../shared/plugin-identity"
 import type { InstallArgs } from "./types"
 import { addPluginToOpenCodeConfig } from "./config-manager/add-plugin-to-opencode-config"
 import { detectCurrentConfig } from "./config-manager/detect-current-config"
+import { generateOpenCodeInstallConfig } from "./config-manager/generate-opencode-install-config"
 import { getOpenCodeVersion, isOpenCodeInstalled } from "./config-manager/opencode-binary"
 import { writeOmoConfig } from "./config-manager/write-omo-config"
 import { detectedToInitialValues, formatConfigSummary, SYMBOLS } from "./install-validators"
@@ -49,8 +50,10 @@ export async function runTuiInstaller(args: InstallArgs, version: string): Promi
   const config = await promptInstallConfig(detected)
   if (!config) return 1
 
+  const generatedOpenCodeConfig = await generateOpenCodeInstallConfig(config)
+
   spinner.start(`Adding ${PLUGIN_NAME} to OpenCode config`)
-  const pluginResult = await addPluginToOpenCodeConfig(version, config.axraiOpenCodeConfig)
+  const pluginResult = await addPluginToOpenCodeConfig(version, generatedOpenCodeConfig)
   if (!pluginResult.success) {
     spinner.stop(`Failed to add plugin: ${pluginResult.error}`)
     p.outro(color.red("Installation failed."))
