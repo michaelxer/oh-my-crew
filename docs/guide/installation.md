@@ -120,7 +120,32 @@ bunx oh-my-crew@latest install --no-tui --axrai=pro
 bunx oh-my-crew@latest install --no-tui --axrai=owner
 ```
 
-AXR Trial/Pro mode fetches the public model catalog. AXR Owner / Full Access mode requires `AXRAI_API_KEY` in the environment and fetches the authenticated owner catalog. AXR mode ignores older provider/model override flags so the generated config stays tied to the selected AXR catalog. Do not invent AXR model IDs. Do not write API keys into config.
+AXR Trial/Pro mode fetches the public model catalog. Do not ask Trial or Pro users for `AXRAI_API_KEY`.
+
+AXR Owner / Full Access mode requires `AXRAI_API_KEY` in the environment and fetches the authenticated owner catalog. If the user chooses Owner / Full Access and `AXRAI_API_KEY` is missing, do not repeatedly ask whether they have a key. Tell them not to paste the key into chat, then give copy-paste terminal commands with a placeholder.
+
+PowerShell:
+
+```powershell
+$env:AXRAI_API_KEY="paste-your-axr-owner-key-here"
+npx oh-my-crew@latest install --no-tui --axrai=owner
+```
+
+Windows Command Prompt:
+
+```bat
+set AXRAI_API_KEY=paste-your-axr-owner-key-here
+npx oh-my-crew@latest install --no-tui --axrai=owner
+```
+
+macOS / Linux shell:
+
+```bash
+export AXRAI_API_KEY="paste-your-axr-owner-key-here"
+npx oh-my-crew@latest install --no-tui --axrai=owner
+```
+
+Only after giving these commands should you ask the user to run the matching command in their real terminal and report any error text. AXR mode ignores older provider/model override flags so the generated config stays tied to the selected AXR catalog. Do not invent AXR model IDs. Do not write API keys into config.
 
 For AXR Pro and AXR Owner / Full Access users, see the [OMC Agent-Model Matching Guide](./omc-agent-model-matching.md#axr-ai-pro--owner-recommendations) for the current recommended agent/model reference. For AXR Trial users, keep the installer defaults and let OMC choose from the limited Trial catalog.
 
