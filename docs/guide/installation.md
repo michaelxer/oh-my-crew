@@ -96,10 +96,41 @@ Then offer simple choices:
 Ask first:
 
 ```text
-Do you have an active AXR AI subscription plan? AXR AI is optional. If not, choose No and continue normal provider setup.
+Are you a Mettle community member with an active AXR AI subscription plan? AXR AI is optional.
 ```
 
-If yes, ask which plan:
+Offer these answers:
+
+- Yes, I have an AXR AI plan
+- No, but I am interested in getting one
+- No, continue normal provider setup
+
+If the user is interested in getting an AXR AI plan, give them this link:
+
+```text
+https://axrai.app/
+```
+
+Then say:
+
+```text
+Take a look at the AXR AI plans. When you are ready, tell me which option fits you.
+```
+
+After they have had time to check the link, ask:
+
+```text
+Did you get an AXR AI plan?
+```
+
+Use these follow-up answers:
+
+- Trial -> `--axrai=trial`
+- Pro -> `--axrai=pro`
+- Owner / Full Access -> `--axrai=owner`
+- No, continue normal provider setup -> continue normal provider questions
+
+If the user already has an AXR AI plan, ask which plan:
 
 - Trial -> `--axrai=trial`
 - Pro -> `--axrai=pro`
