@@ -755,8 +755,8 @@ describe("sisyphus-task", () => {
       expect(result).toBeNull()
     })
 
-    test("blocks requiresModel when availability is known and missing the required model", () => {
-      // given - artistry has requiresModel: gemini-3.1-pro
+    test("allows artistry to use its fallback chain when gemini is missing", () => {
+      // given - artistry can fall back from gemini to another capable model
       const categoryName = "artistry"
       const availableModels = new Set<string>(["anthropic/claude-opus-4-7"])
 
@@ -767,11 +767,12 @@ describe("sisyphus-task", () => {
       })
 
       // then
-      expect(result).toBeNull()
+      expect(result).not.toBeNull()
+      expect(result?.model).toBe("google/gemini-3.1-pro")
     })
 
-    test("blocks requiresModel when availability is empty", () => {
-      // given - artistry has requiresModel: gemini-3.1-pro
+    test("allows artistry when availability is empty", () => {
+      // given - empty availability should not disable fallback-capable categories
       const categoryName = "artistry"
       const availableModels = new Set<string>()
 
@@ -782,7 +783,8 @@ describe("sisyphus-task", () => {
       })
 
       // then
-      expect(result).toBeNull()
+      expect(result).not.toBeNull()
+      expect(result?.model).toBe("google/gemini-3.1-pro")
     })
 
     test("bypasses requiresModel when explicit user config provided", () => {

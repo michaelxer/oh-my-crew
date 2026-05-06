@@ -2,6 +2,8 @@ import { log } from "./logger"
 import * as dataPath from "./data-path"
 import { createJsonFileCacheStore } from "./json-file-cache-store"
 
+let providerModelsCacheWrittenInCurrentProcess = false
+
 const CONNECTED_PROVIDERS_CACHE_FILE = "connected-providers.json"
 const PROVIDER_MODELS_CACHE_FILE = "provider-models.json"
 
@@ -84,6 +86,9 @@ export function createConnectedProvidersCacheStore(
 	}
 
 	function hasProviderModelsCache(): boolean {
+		if (providerModelsCacheWrittenInCurrentProcess) {
+			return true
+		}
 		return providerModelsCacheStore.has()
 	}
 
@@ -92,6 +97,7 @@ export function createConnectedProvidersCacheStore(
 			...data,
 			updatedAt: new Date().toISOString(),
 		})
+		providerModelsCacheWrittenInCurrentProcess = true
 	}
 
 	async function updateConnectedProvidersCache(client: {
@@ -161,6 +167,7 @@ export function createConnectedProvidersCacheStore(
 	function _resetMemCacheForTesting(): void {
 		connectedProvidersCacheStore.resetMemory()
 		providerModelsCacheStore.resetMemory()
+		providerModelsCacheWrittenInCurrentProcess = false
 	}
 
 	return {

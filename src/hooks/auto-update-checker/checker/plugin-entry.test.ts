@@ -22,11 +22,16 @@ function runFindPluginEntry(
     `const result = findPluginEntry(${JSON.stringify(directory)});`,
     "console.log(JSON.stringify(result));",
   ].join("")
+  const isolatedProfileRoot = path.join(directory, ".isolated-home")
 
   const execution = spawnSync(process.execPath, ["-e", command], {
     cwd: process.cwd(),
     env: {
       ...process.env,
+      APPDATA: path.join(isolatedProfileRoot, "AppData", "Roaming"),
+      HOME: isolatedProfileRoot,
+      OPENCODE_CONFIG_DIR: path.join(isolatedProfileRoot, ".config", "opencode"),
+      USERPROFILE: isolatedProfileRoot,
       ...envOverrides,
     },
     encoding: "utf-8",
@@ -197,7 +202,7 @@ describe("findPluginEntry", () => {
     expect(execution.status).toBe(0)
     const pluginInfo = JSON.parse(execution.stdout.trim()) as PluginEntryResult
     expect(pluginInfo).not.toBeNull()
-    expect(pluginInfo?.configPath).toEndWith("/profiles/today/opencode.json")
+    expect(path.normalize(pluginInfo?.configPath ?? "")).toBe(path.join(profileConfigDir, "opencode.json"))
     expect(pluginInfo?.pinnedVersion).toBe("beta")
   })
 })

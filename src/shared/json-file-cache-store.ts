@@ -27,6 +27,7 @@ export function createJsonFileCacheStore<TValue>(
 	options: JsonFileCacheStoreOptions<TValue>,
 ): JsonFileCacheStore<TValue> {
 	let memoryValue: TValue | null | undefined
+	let writtenInCurrentProcess = false
 
 	function getCacheFilePath(): string {
 		return join(options.getCacheDir(), options.filename)
@@ -67,6 +68,12 @@ export function createJsonFileCacheStore<TValue>(
 	}
 
 	function has(): boolean {
+		if (memoryValue !== undefined && memoryValue !== null) {
+			return true
+		}
+		if (writtenInCurrentProcess) {
+			return true
+		}
 		return existsSync(getCacheFilePath())
 	}
 
@@ -77,6 +84,7 @@ export function createJsonFileCacheStore<TValue>(
 		try {
 			writeFileSync(cacheFile, options.serialize?.(value) ?? JSON.stringify(value, null, 2))
 			memoryValue = value
+			writtenInCurrentProcess = true
 			log(`[${options.logPrefix}] ${options.cacheLabel} written`, options.describe(value))
 		} catch (error) {
 			log(`[${options.logPrefix}] Error writing ${toLogLabel(options.cacheLabel)}`, {
@@ -87,6 +95,7 @@ export function createJsonFileCacheStore<TValue>(
 
 	function resetMemory(): void {
 		memoryValue = undefined
+		writtenInCurrentProcess = false
 	}
 
 	return {
