@@ -106,7 +106,7 @@ If yes, ask which plan:
 - Owner / Full Access -> `--axrai=owner`
 - No active AXR plan -> continue normal provider questions
 
-Tell the user to choose the plan they actually have. Trial and Pro users should choose Trial or Pro, not Owner. Only choose Owner / Full Access if the user has owner/full-access permission and can set `AXRAI_API_KEY`; otherwise the owner catalog check will fail and OMC should not silently downgrade them to another tier.
+Tell the user to choose the plan they actually have. Trial and Pro users should choose Trial or Pro, not Owner. Only choose Owner / Full Access if the user has owner/full-access permission and can set `AXRAI_API_KEY`; otherwise the owner catalog check will fail and OMC should not silently downgrade them to another tier. If the wrong tier is chosen, OMC may not be able to load and configure the correct agent models, so crew agents can be missing, mismatched, or unable to run as intended.
 
 If the user chooses AXR AI Trial, Pro, or Owner / Full Access, run one of these and skip the normal provider flags:
 
