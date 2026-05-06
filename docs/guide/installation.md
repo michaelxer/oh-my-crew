@@ -122,7 +122,17 @@ bunx oh-my-crew@latest install --no-tui --axrai=owner
 
 AXR Trial/Pro mode fetches the public model catalog. Do not ask Trial or Pro users for `AXRAI_API_KEY`.
 
-AXR Owner / Full Access mode requires `AXRAI_API_KEY` in the environment and fetches the authenticated owner catalog. If the user chooses Owner / Full Access and `AXRAI_API_KEY` is missing, do not repeatedly ask whether they have a key. Tell them not to paste the key into chat, then give copy-paste terminal commands with a placeholder.
+AXR Owner / Full Access mode requires `AXRAI_API_KEY` in the environment and fetches the authenticated owner catalog. If the user chooses Owner / Full Access and `AXRAI_API_KEY` is missing, do not repeatedly ask whether they have a key. Tell them not to paste the key into chat, then detect the user's OS yourself before showing commands.
+
+Use:
+
+```bash
+node -p "process.platform"
+```
+
+If it returns `win32`, show the PowerShell command first. If it returns `darwin` or `linux`, show the macOS/Linux shell command. Only ask "Are you using Windows, macOS, or Linux?" if OS detection fails.
+
+Show only the matching command when possible. If you are unsure which shell the Windows user has, show PowerShell first because it is the recommended Windows terminal.
 
 PowerShell:
 
