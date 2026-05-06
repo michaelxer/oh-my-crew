@@ -125,19 +125,19 @@ Did you get an AXR AI plan?
 
 Use these follow-up answers:
 
-- Trial -> `--axrai=trial`
-- Pro -> `--axrai=pro`
+- Trial (Pilot) -> `--axrai=trial`
+- Pro (Core / Builder / Scale) -> `--axrai=pro`
 - Owner / Full Access -> `--axrai=owner`
 - No, continue normal provider setup -> continue normal provider questions
 
 If the user already has an AXR AI plan, ask which plan:
 
-- Trial -> `--axrai=trial`
-- Pro -> `--axrai=pro`
+- Trial (Pilot) -> `--axrai=trial`
+- Pro (Core / Builder / Scale) -> `--axrai=pro`
 - Owner / Full Access -> `--axrai=owner`
 - No active AXR plan -> continue normal provider questions
 
-Tell the user to choose the plan they actually have. Trial and Pro users should choose Trial or Pro, not Owner. Only choose Owner / Full Access if the user has owner/full-access permission and can set `AXRAI_API_KEY`; otherwise the owner catalog check will fail and OMC should not silently downgrade them to another tier. If the wrong tier is chosen, OMC may not be able to load and configure the correct agent models, so crew agents can be missing, mismatched, or unable to run as intended.
+Tell the user to choose the plan they actually have. Trial/Pilot and Pro/Core/Builder/Scale users should choose their matching Trial or Pro option, not Owner. Only choose Owner / Full Access if the user has owner/full-access permission and can set `AXRAI_API_KEY`; otherwise the owner catalog check will fail and OMC should not silently downgrade them to another tier. If the wrong tier is chosen, OMC may not be able to load and configure the correct agent models, so crew agents can be missing, mismatched, or unable to run as intended.
 
 If the user chooses AXR AI Trial, Pro, or Owner / Full Access, run one of these and skip the normal provider flags:
 
@@ -192,7 +192,7 @@ npx oh-my-crew@latest install --no-tui --axrai=owner
 
 Only after giving these commands should you ask the user to run the matching command in their real terminal and report any error text. AXR mode ignores older provider/model override flags so the generated config stays tied to the selected AXR catalog. Do not invent AXR model IDs. Do not write API keys into config.
 
-For AXR Pro and AXR Owner / Full Access users, see the [OMC Agent-Model Matching Guide](./omc-agent-model-matching.md#axr-ai-pro--owner-recommendations) for the current recommended agent/model reference. For AXR Trial users, keep the installer defaults and let OMC choose from the limited Trial catalog.
+For AXR Pro (Core / Builder / Scale) and AXR Owner / Full Access users, see the [OMC Agent-Model Matching Guide](./omc-agent-model-matching.md#axr-ai-pro--owner-recommendations) for the current recommended agent/model reference. For AXR Trial (Pilot) users, keep the installer defaults and let OMC choose from the limited Trial catalog.
 
 ### Step 1: Ask Normal Provider Questions
 
@@ -274,8 +274,8 @@ npx oh-my-crew@latest install --non-interactive --claude=no --openai=no --gemini
 
 Examples:
 
-- AXR Trial: `npx oh-my-crew@latest install --no-tui --axrai=trial`
-- AXR Pro: `npx oh-my-crew@latest install --no-tui --axrai=pro`
+- AXR Trial (Pilot): `npx oh-my-crew@latest install --no-tui --axrai=trial`
+- AXR Pro (Core / Builder / Scale): `npx oh-my-crew@latest install --no-tui --axrai=pro`
 - AXR Owner / Full Access: `npx oh-my-crew@latest install --no-tui --axrai=owner`
 - Claude + OpenAI: `npx oh-my-crew@latest install --no-tui --claude=yes --openai=yes --gemini=no --copilot=no`
 - Claude max20 + Gemini: `npx oh-my-crew@latest install --no-tui --claude=max20 --openai=no --gemini=yes --copilot=no`
