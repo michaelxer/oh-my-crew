@@ -10,16 +10,19 @@ import {
   devBrowserSkill,
   reviewWorkSkill,
   aiSlopRemoverSkill,
+  teamModeSkill,
+  hyperplanSkill,
   sessionGuardianSkill,
 } from "./skills/index"
 
 export interface CreateBuiltinSkillsOptions {
   browserProvider?: BrowserAutomationProvider
   disabledSkills?: Set<string>
+  teamModeEnabled?: boolean
 }
 
 export function createBuiltinSkills(options: CreateBuiltinSkillsOptions = {}): BuiltinSkill[] {
-  const { browserProvider = "playwright", disabledSkills } = options
+  const { browserProvider = "playwright", disabledSkills, teamModeEnabled = false } = options
 
   let browserSkill: BuiltinSkill
 	if (browserProvider === "agent-browser") {
@@ -33,6 +36,14 @@ export function createBuiltinSkills(options: CreateBuiltinSkillsOptions = {}): B
 	}
 
 	const skills = [browserSkill, frontendUiUxSkill, gitMasterSkill, reviewWorkSkill, aiSlopRemoverSkill, sessionGuardianSkill]
+
+  if (teamModeEnabled && !disabledSkills?.has("team-mode")) {
+    skills.push(teamModeSkill)
+  }
+
+  if (teamModeEnabled && !disabledSkills?.has("hyperplan")) {
+    skills.push(hyperplanSkill)
+  }
 
   if (!disabledSkills) {
     return skills

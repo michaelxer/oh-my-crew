@@ -33,7 +33,7 @@ export function stripInvisibleAgentCharacters(agentName: string): string {
 }
 
 export function stripAgentListSortPrefix(agentName: string): string {
-  return stripInvisibleAgentCharacters(agentName)
+  return stripInvisibleAgentCharacters(agentName).replace(/^\d+\|/, "")
 }
 
 /**

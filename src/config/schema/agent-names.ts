@@ -23,6 +23,9 @@ export const BuiltinSkillNameSchema = z.enum([
   "git-master",
   "review-work",
   "ai-slop-remover",
+  "team-mode",
+  "hyperplan",
+  "session-guardian",
 ])
 
 export const OverridableAgentNameSchema = z.enum([

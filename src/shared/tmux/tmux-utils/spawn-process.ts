@@ -1,1 +1,1 @@
-export { spawn } from "../../bun-compat"
+export { spawn } from "../../bun-spawn-shim"

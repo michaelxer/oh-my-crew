@@ -190,6 +190,7 @@ export function mergeConfigs(
       ]),
     ],
     claude_code: deepMerge(base.claude_code, override.claude_code),
+    team_mode: deepMerge(base.team_mode, override.team_mode),
   };
 }
 

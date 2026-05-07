@@ -40,6 +40,10 @@ import { dispatchOpenClawEvent } from "../openclaw/runtime-dispatch";
 
 import type { CreatedHooks } from "../create-hooks";
 import type { Managers } from "../create-managers";
+import { createTeamIdleWakeHint } from "../hooks/team-session-events/team-idle-wake-hint";
+import { createTeamLeadOrphanHandler } from "../hooks/team-session-events/team-lead-orphan-handler";
+import { createTeamMemberErrorHandler } from "../hooks/team-session-events/team-member-error-handler";
+import { createTeamMemberStatusHandler } from "../hooks/team-session-events/team-member-status-handler";
 import { pruneRecentSyntheticIdles } from "./recent-synthetic-idles";
 import { normalizeSessionStatusToIdle } from "./session-status-normalizer";
 
@@ -281,6 +285,19 @@ export function createEventHandler(args: {
     "message.part.removed",
     "message.removed",
   ]);
+  const teamModeConfig = pluginConfig.team_mode?.enabled ? pluginConfig.team_mode : undefined;
+  const teamLeadOrphanHandler = teamModeConfig
+    ? createTeamLeadOrphanHandler(teamModeConfig, managers.tmuxSessionManager, managers.backgroundManager)
+    : null;
+  const teamMemberErrorHandler = teamModeConfig
+    ? createTeamMemberErrorHandler(teamModeConfig)
+    : null;
+  const teamMemberStatusHandler = teamModeConfig
+    ? createTeamMemberStatusHandler(teamModeConfig)
+    : null;
+  const teamIdleWakeHint = teamModeConfig && pluginContext.client.session?.promptAsync
+    ? createTeamIdleWakeHint(pluginContext, teamModeConfig)
+    : null;
 
   const shouldAutoRetrySession = (sessionID: string): boolean => {
     if (syncSubagentSessions.has(sessionID)) return true;
@@ -449,6 +466,9 @@ export function createEventHandler(args: {
           });
         }
       }
+
+      await runEventHookSafely("teamLeadOrphanHandler", teamLeadOrphanHandler, input);
+      await runEventHookSafely("teamMemberStatusHandler", teamMemberStatusHandler, input);
     }
 
     if (event.type === "message.removed") {
@@ -470,6 +490,12 @@ export function createEventHandler(args: {
           },
         });
       }
+    }
+
+    if (event.type === "session.idle") {
+      managers.tmuxSessionManager?.onEvent?.(event);
+      await runEventHookSafely("teamIdleWakeHint", teamIdleWakeHint, input);
+      await runEventHookSafely("teamMemberStatusHandler", teamMemberStatusHandler, input);
     }
 
     if (event.type === "message.updated") {
@@ -701,6 +727,7 @@ export function createEventHandler(args: {
         const sessionID = props?.sessionID as string | undefined;
         log("[event] model-fallback error in session.error:", { sessionID, error: err });
       }
+      await runEventHookSafely("teamMemberErrorHandler", teamMemberErrorHandler, input);
     }
   };
 }

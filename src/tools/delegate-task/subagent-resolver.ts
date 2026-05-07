@@ -30,7 +30,8 @@ export async function resolveSubagentExecution(
   args: DelegateTaskArgs,
   executorCtx: ExecutorContext,
   parentAgent: string | undefined,
-  categoryExamples: string
+  categoryExamples: string,
+  options: { allowSisyphusJuniorDirect?: boolean; allowPrimaryAgentDelegation?: boolean } = {},
 ): Promise<{ agentToUse: string; categoryModel: DelegatedModelConfig | undefined; fallbackChain?: FallbackEntry[]; error?: string }> {
   const { client, agentOverrides, userCategories } = executorCtx
 
@@ -40,7 +41,7 @@ export async function resolveSubagentExecution(
 
   const agentName = sanitizeSubagentType(args.subagent_type)
 
-  if (agentName.toLowerCase() === SISYPHUS_JUNIOR_AGENT.toLowerCase()) {
+  if (agentName.toLowerCase() === SISYPHUS_JUNIOR_AGENT.toLowerCase() && !options.allowSisyphusJuniorDirect) {
     return {
       agentToUse: "",
       categoryModel: undefined,
@@ -73,7 +74,7 @@ Create the work plan directly - that's your job as the planning agent.`,
     const mergedAgents = mergeWithClaudeCodeAgents(agents, executorCtx.directory)
     const matchedPrimaryAgent = findPrimaryAgentMatch(mergedAgents, agentToUse)
 
-    if (matchedPrimaryAgent) {
+    if (matchedPrimaryAgent && !options.allowPrimaryAgentDelegation) {
       return {
         agentToUse: "",
         categoryModel: undefined,

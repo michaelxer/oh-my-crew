@@ -5,6 +5,8 @@ import type { RalphLoopHook } from "../../hooks/ralph-loop"
 import {
   createClaudeCodeHooksHook,
   createKeywordDetectorHook,
+  createTeamMailboxInjector,
+  createTeamModeStatusInjector,
   createThinkingBlockValidatorHook,
   createToolPairValidatorHook,
 } from "../../hooks"
@@ -17,6 +19,8 @@ import { safeCreateHook } from "../../shared/safe-create-hook"
 export type TransformHooks = {
   claudeCodeHooks: ReturnType<typeof createClaudeCodeHooksHook> | null
   keywordDetector: ReturnType<typeof createKeywordDetectorHook> | null
+  teamModeStatusInjector: ReturnType<typeof createTeamModeStatusInjector> | null
+  teamMailboxInjector: ReturnType<typeof createTeamMailboxInjector> | null
   contextInjectorMessagesTransform: ReturnType<typeof createContextInjectorMessagesTransformHook>
   thinkingBlockValidator: ReturnType<typeof createThinkingBlockValidatorHook> | null
   toolPairValidator: ReturnType<typeof createToolPairValidatorHook> | null
@@ -51,13 +55,30 @@ export function createTransformHooks(args: {
   const keywordDetector = isHookEnabled("keyword-detector")
     ? safeCreateHook(
         "keyword-detector",
-        () => createKeywordDetectorHook(ctx, contextCollector, ralphLoop ?? undefined),
+        () => createKeywordDetectorHook(ctx, contextCollector, ralphLoop ?? undefined, pluginConfig.keyword_detector),
         { enabled: safeHookEnabled },
       )
     : null
 
   const contextInjectorMessagesTransform =
     createContextInjectorMessagesTransformHook(contextCollector)
+  const teamModeConfig = pluginConfig.team_mode
+
+  const teamModeStatusInjector = teamModeConfig?.enabled
+    ? safeCreateHook(
+        "team-mode-status-injector",
+        () => createTeamModeStatusInjector(teamModeConfig),
+        { enabled: safeHookEnabled },
+      )
+    : null
+
+  const teamMailboxInjector = teamModeConfig?.enabled
+    ? safeCreateHook(
+        "team-mailbox-injector",
+        () => createTeamMailboxInjector(ctx, teamModeConfig),
+        { enabled: safeHookEnabled },
+      )
+    : null
 
   const thinkingBlockValidator = isHookEnabled("thinking-block-validator")
     ? safeCreateHook(
@@ -78,6 +99,8 @@ export function createTransformHooks(args: {
   return {
     claudeCodeHooks,
     keywordDetector,
+    teamModeStatusInjector,
+    teamMailboxInjector,
     contextInjectorMessagesTransform,
     thinkingBlockValidator,
     toolPairValidator,

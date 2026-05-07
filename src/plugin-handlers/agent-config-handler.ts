@@ -192,6 +192,7 @@ export async function applyAgentConfig(params: {
     disabledSkills,
     useTaskSystem,
     disableOmoEnv,
+    params.pluginConfig.team_mode?.enabled ?? false,
   );
 
   const disabledAgentNames = new Set(

@@ -5,5 +5,7 @@ export { gitMasterSkill } from "./git-master"
 export { devBrowserSkill } from "./dev-browser"
 export { reviewWorkSkill } from "./review-work"
 export { aiSlopRemoverSkill } from "./ai-slop-remover"
+export * from "./team-mode"
+export * from "./hyperplan"
 
 export { sessionGuardianSkill } from "./session-guardian"
