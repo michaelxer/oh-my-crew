@@ -9,9 +9,15 @@ type TruncateToolResult = {
 
 const findToolResultsBySize = mock<(_: string) => ToolResultInfo[]>(() => [])
 const truncateToolResult = mock<(_: string) => TruncateToolResult>(() => ({ success: false }))
+const getTotalToolOutputSize = mock<(_: string) => number>(() => 0)
+const countTruncatedResults = mock<(_: string) => number>(() => 0)
+const findLargestToolResult = mock<(_: string) => ToolResultInfo | null>(() => null)
 
 mock.module("./tool-result-storage", () => ({
+  countTruncatedResults,
+  findLargestToolResult,
   findToolResultsBySize,
+  getTotalToolOutputSize,
   truncateToolResult,
 }))
 
@@ -27,9 +33,15 @@ describe("truncateUntilTargetTokens", () => {
   const sessionID = "test-session"
 
   beforeEach(() => {
+    countTruncatedResults.mockReset()
+    findLargestToolResult.mockReset()
     findToolResultsBySize.mockReset()
+    getTotalToolOutputSize.mockReset()
     truncateToolResult.mockReset()
+    countTruncatedResults.mockReturnValue(0)
+    findLargestToolResult.mockReturnValue(null)
     findToolResultsBySize.mockReturnValue([])
+    getTotalToolOutputSize.mockReturnValue(0)
     truncateToolResult.mockReturnValue({ success: false })
   })
 

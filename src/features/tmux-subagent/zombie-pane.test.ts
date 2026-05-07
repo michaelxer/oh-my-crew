@@ -28,6 +28,9 @@ const mockExecuteActions = mock<(
 
 const mockSpawnTmuxWindow = mock(async () => ({ success: true, paneId: "%window" }))
 const mockSpawnTmuxSession = mock(async () => ({ success: true, paneId: "%session" }))
+const mockKillTmuxSessionIfExists = mock(async () => true)
+const mockSweepStaleOmoAgentSessions = mock(async () => 0)
+const mockGetIsolatedSessionName = mock(() => "omo-agents-test")
 
 const mockIsInsideTmux = mock<() => boolean>(() => true)
 const mockGetCurrentPaneId = mock<() => string | undefined>(() => "%0")
@@ -47,6 +50,9 @@ function registerModuleMocks(): void {
     SESSION_MISSING_GRACE_MS: 1_000,
     spawnTmuxWindow: mockSpawnTmuxWindow,
     spawnTmuxSession: mockSpawnTmuxSession,
+    killTmuxSessionIfExists: mockKillTmuxSessionIfExists,
+    sweepStaleOmoAgentSessions: mockSweepStaleOmoAgentSessions,
+    getIsolatedSessionName: mockGetIsolatedSessionName,
     SESSION_TIMEOUT_MS: 600_000,
   }))
 }
@@ -167,6 +173,9 @@ describe("TmuxSessionManager zombie pane handling", () => {
     mockExecuteActions.mockClear()
     mockSpawnTmuxWindow.mockClear()
     mockSpawnTmuxSession.mockClear()
+    mockKillTmuxSessionIfExists.mockClear()
+    mockSweepStaleOmoAgentSessions.mockClear()
+    mockGetIsolatedSessionName.mockClear()
     mockIsInsideTmux.mockClear()
     mockGetCurrentPaneId.mockClear()
 
@@ -184,6 +193,9 @@ describe("TmuxSessionManager zombie pane handling", () => {
     }))
     mockSpawnTmuxWindow.mockImplementation(async () => ({ success: true, paneId: "%window" }))
     mockSpawnTmuxSession.mockImplementation(async () => ({ success: true, paneId: "%session" }))
+    mockKillTmuxSessionIfExists.mockImplementation(async () => true)
+    mockSweepStaleOmoAgentSessions.mockImplementation(async () => 0)
+    mockGetIsolatedSessionName.mockImplementation(() => "omo-agents-test")
     mockIsInsideTmux.mockReturnValue(true)
     mockGetCurrentPaneId.mockReturnValue("%0")
   })

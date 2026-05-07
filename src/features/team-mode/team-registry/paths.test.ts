@@ -2,7 +2,7 @@
 
 import { afterEach, describe, expect, mock, test } from "bun:test"
 import { mkdtemp, mkdir, rm, stat, writeFile } from "node:fs/promises"
-import { homedir, tmpdir } from "node:os"
+import { homedir, platform, tmpdir } from "node:os"
 import path from "node:path"
 import { randomUUID } from "node:crypto"
 
@@ -32,7 +32,7 @@ describe("paths", () => {
     }))
   })
 
-  test("resolveBaseDir defaults to ~/.omo", () => {
+  test("resolveBaseDir defaults to ~/.omc", () => {
     // given
     const config = TeamModeConfigSchema.parse({ base_dir: undefined })
 
@@ -40,7 +40,7 @@ describe("paths", () => {
     const resolvedBaseDir = resolveBaseDir(config)
 
     // then
-    expect(resolvedBaseDir).toBe(path.join(homedir(), ".omo"))
+    expect(resolvedBaseDir).toBe(path.join(homedir(), ".omc"))
   })
 
   test("resolveBaseDir honors override", () => {
@@ -60,8 +60,8 @@ describe("paths", () => {
     temporaryDirectories.push(rootDirectory)
 
     const projectRoot = path.join(rootDirectory, "project")
-    const userBaseDir = path.join(rootDirectory, "home", ".omo")
-    const projectTeamDir = path.join(projectRoot, ".omo", "teams", "foo")
+    const userBaseDir = path.join(rootDirectory, "home", ".omc")
+    const projectTeamDir = path.join(projectRoot, ".omc", "teams", "foo")
     const userTeamDir = path.join(userBaseDir, "teams", "foo")
 
     await mkdir(projectTeamDir, { recursive: true })
@@ -95,9 +95,9 @@ describe("paths", () => {
     ])
   })
 
-  test("ensureBaseDirs creates all dirs with mode 0700", async () => {
+  test("ensureBaseDirs creates all dirs with private mode where supported", async () => {
     // given
-    const baseDir = path.join(tmpdir(), `omo-test-${randomUUID()}`)
+    const baseDir = path.join(tmpdir(), `omc-test-${randomUUID()}`)
 
     // when
     await ensureBaseDirs(baseDir)
@@ -114,7 +114,9 @@ describe("paths", () => {
     for (const directoryPath of directoryPaths) {
       const directoryStat = await stat(directoryPath)
       expect(directoryStat.isDirectory()).toBe(true)
-      expect(directoryStat.mode & 0o777).toBe(0o700)
+      if (platform() !== "win32") {
+        expect(directoryStat.mode & 0o777).toBe(0o700)
+      }
     }
   })
 })

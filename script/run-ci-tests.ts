@@ -9,6 +9,7 @@ type CiTestPlan = {
 const TEST_ROOTS = ["bin", "script", "src"] as const
 const MODULE_MOCK_PATTERN = "mock.module("
 const ALWAYS_ISOLATED_TEST_FILES = ["src/openclaw/__tests__/reply-listener-discord.test.ts"] as const
+const MAX_BUN_TEST_COMMAND_LENGTH = 8_000
 
 async function collectTestFiles(rootDirectory: string): Promise<string[]> {
   const testFiles: string[] = []
@@ -80,7 +81,7 @@ async function runBunTest(testFiles: string[], label: string): Promise<void> {
   }
 
   console.log(`::group::${label}`)
-  
+
   // For directory paths, exclude _auc* directories which are separate isolated targets
   const args = testFiles.map(tf => {
     if (tf.includes('/') && !tf.endsWith('.test.ts')) {
@@ -105,6 +106,39 @@ async function runBunTest(testFiles: string[], label: string): Promise<void> {
   }
 }
 
+function chunkBunTestFiles(testFiles: string[]): string[][] {
+  const chunks: string[][] = []
+  let currentChunk: string[] = []
+  let currentLength = "bun test".length
+
+  for (const testFile of testFiles) {
+    const nextLength = currentLength + testFile.length + 1
+    if (currentChunk.length > 0 && nextLength > MAX_BUN_TEST_COMMAND_LENGTH) {
+      chunks.push(currentChunk)
+      currentChunk = []
+      currentLength = "bun test".length
+    }
+
+    currentChunk.push(testFile)
+    currentLength += testFile.length + 1
+  }
+
+  if (currentChunk.length > 0) {
+    chunks.push(currentChunk)
+  }
+
+  return chunks
+}
+
+async function runBunTestBatched(testFiles: string[], label: string): Promise<void> {
+  const chunks = chunkBunTestFiles(testFiles)
+
+  for (const [index, chunk] of chunks.entries()) {
+    const chunkLabel = chunks.length === 1 ? label : `${label} ${index + 1}/${chunks.length}`
+    await runBunTest(chunk, chunkLabel)
+  }
+}
+
 async function main(): Promise<void> {
   const ciTestPlan = await createCiTestPlan()
 
@@ -116,7 +150,7 @@ async function main(): Promise<void> {
     await runBunTest([isolatedTestTarget], `Isolated ${isolatedTestTarget}`)
   }
 
-  await runBunTest(ciTestPlan.sharedTestFiles, "Shared Bun test suite")
+  await runBunTestBatched(ciTestPlan.sharedTestFiles, "Shared Bun test suite")
 }
 
 export const moduleMockPattern = MODULE_MOCK_PATTERN
