@@ -16,6 +16,13 @@ Clean, role-descriptive agent names with content-filter-safe system prompts for 
 
 ---
 
+## User Documentation
+
+- **Start here:** [Beginner-friendly OMC User Guide](docs/guide/user-guide.md)
+- **Bahasa Indonesia:** [Panduan Pengguna OMC](docs/guide/user-guide.id.md)
+- **Install:** [Installation Guide](docs/guide/installation.md)
+- **Advanced reference:** [Complete Features Reference](docs/reference/features.md)
+
 ## What is this?
 
 **Oh My Crew** is a fork of [oh-my-openagent](https://github.com/code-yeongyu/oh-my-openagent) (by [@code-yeongyu](https://github.com/code-yeongyu)), based on [oh-my-china](https://github.com/enowdev/oh-my-china) (by [@enowdev](https://github.com/enowdev)), with the following modifications:
@@ -191,25 +198,26 @@ Then add `"oh-my-crew"` to your `opencode.json` plugin array.
 
 ---
 
-## Upstream Features
+## Features In Short
 
-This fork inherits all features from oh-my-openagent:
+Oh My Crew keeps the upstream orchestration power and adds OMC-specific naming, install, and session-continuity improvements. Short version:
 
 | Feature | Description |
 |---------|-------------|
-| **Discipline Agents** | Captain orchestrates Strategist, Sage, Scribe, Scout in parallel |
-| **`ultrawork` / `ulw`** | One word activates every agent. Runs until done |
-| **IntentGate** | Analyzes true user intent before acting |
-| **Hash-Anchored Edits** | `LINE#ID` content hash validates every change. Zero stale-line errors |
-| **LSP + AST-Grep** | IDE-precision refactoring for agents |
-| **Background Agents** | 5+ specialists running in parallel |
-| **Built-in MCPs** | Exa (web search), Context7 (docs), Grep.app (GitHub search) |
-| **Ralph Loop** | Self-referential loop until 100% done |
-| **Architect Planner** | Interview-mode strategic planning before execution |
-| **Claude Code Compatible** | All hooks, commands, skills, MCPs work unchanged |
-| **Session Guardian** | Auto git checkpoints, context monitoring, structured handoff docs for seamless multi-session work |
+| **Crew Agents** | Clear role names like Captain, Strategist, Architect, Foreman, Sage, Scout, Scribe, and Lookout. |
+| **`ultrawork` / `ulw`** | One keyword tells OMC to understand the task, coordinate agents, execute, and verify until done. |
+| **Architect / Planner Mode** | Planning-first workflow for risky or unclear work before files are changed. |
+| **Team Mode** | Creates a temporary multi-agent team with shared messages, tasks, and status tracking. |
+| **Hyperplan** | Adversarial planning mode where multiple agents challenge assumptions before a final plan is produced. |
+| **Background Agents** | Specialists can research, implement, or review in parallel while the main agent continues. |
+| **Session Guardian** | Git checkpoints, context monitoring, handoff docs, resume prompts, and credentials protection. |
+| **Built-in MCPs** | Web search, Context7 documentation lookup, and grep.app/GitHub code search when available. |
+| **LSP + AST-Grep** | IDE-like navigation and structure-aware code search/refactoring for safer edits. |
+| **Model Fallbacks** | Agents can continue with configured backup models when a provider or model is unavailable. |
+| **Claude Code Compatibility** | Many Claude Code-style hooks, commands, skills, agents, and MCP configs can be reused. |
+| **Installer** | Guided setup for OpenCode, model assignments, provider choices, AXR AI, and config backups. |
 
-For full documentation, see the [upstream project](https://github.com/code-yeongyu/oh-my-openagent).
+For a non-technical walkthrough with examples and use cases, read the [OMC User Guide](docs/guide/user-guide.md). For Indonesian users, read [Panduan Pengguna OMC](docs/guide/user-guide.id.md). For exhaustive technical detail, see the [Features Reference](docs/reference/features.md) and the [upstream project](https://github.com/code-yeongyu/oh-my-openagent).
 
 ---
 

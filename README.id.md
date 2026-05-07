@@ -16,6 +16,13 @@ Nama agen yang bersih dan deskriptif dengan system prompt yang aman dari content
 
 ---
 
+## Dokumentasi Pengguna
+
+- **Mulai di sini:** [Panduan Pengguna OMC yang ramah pemula](docs/guide/user-guide.id.md)
+- **English:** [OMC User Guide](docs/guide/user-guide.md)
+- **Instalasi:** [Panduan Instalasi](docs/guide/installation.md)
+- **Referensi lanjutan:** [Referensi Fitur Lengkap](docs/reference/features.md)
+
 ## Apa ini?
 
 **Oh My Crew** adalah fork dari [oh-my-openagent](https://github.com/code-yeongyu/oh-my-openagent) (oleh [@code-yeongyu](https://github.com/code-yeongyu)), berbasis [oh-my-china](https://github.com/enowdev/oh-my-china) (oleh [@enowdev](https://github.com/enowdev)), dengan modifikasi berikut:
@@ -183,25 +190,26 @@ Kemudian tambahkan `"oh-my-crew"` ke array plugin di `opencode.json` Anda.
 
 ---
 
-## Fitur dari Upstream
+## Ringkasan Fitur
 
-Fork ini mewarisi semua fitur dari oh-my-openagent:
+Oh My Crew mempertahankan kekuatan orkestrasi dari upstream dan menambahkan penamaan, instalasi, serta kontinuitas sesi khas OMC. Versi singkatnya:
 
 | Fitur | Deskripsi |
 |-------|-----------|
-| **Discipline Agents** | Captain mengorkestrasi Strategist, Sage, Scribe, Scout secara paralel |
-| **`ultrawork` / `ulw`** | Satu kata mengaktifkan semua agen. Berjalan sampai selesai |
-| **IntentGate** | Menganalisis niat sebenarnya dari pengguna sebelum bertindak |
-| **Hash-Anchored Edits** | Hash konten `LINE#ID` memvalidasi setiap perubahan. Nol error baris basi |
-| **LSP + AST-Grep** | Refactoring presisi setara IDE untuk agen |
-| **Background Agents** | 5+ spesialis berjalan secara paralel |
-| **Built-in MCPs** | Exa (pencarian web), Context7 (dokumentasi), Grep.app (pencarian GitHub) |
-| **Ralph Loop** | Loop self-referential sampai 100% selesai |
-| **Architect Planner** | Perencanaan strategis mode wawancara sebelum eksekusi |
-| **Claude Code Compatible** | Semua hook, command, skill, dan MCP berfungsi tanpa perubahan |
-| **Session Guardian** | Auto git checkpoint, pemantauan konteks, dokumen handoff terstruktur untuk kerja multi-sesi yang mulus |
+| **Agen Kru** | Nama peran yang jelas seperti Captain, Strategist, Architect, Foreman, Sage, Scout, Scribe, dan Lookout. |
+| **`ultrawork` / `ulw`** | Satu keyword membuat OMC memahami tugas, mengoordinasi agen, mengeksekusi, dan memverifikasi sampai selesai. |
+| **Architect / Planner Mode** | Workflow planning-first untuk pekerjaan berisiko atau belum jelas sebelum file diubah. |
+| **Team Mode** | Membuat tim multi-agent sementara dengan pesan, task, dan status bersama. |
+| **Hyperplan** | Mode planning adversarial: beberapa agen menantang asumsi sebelum rencana final dibuat. |
+| **Background Agents** | Spesialis bisa riset, implementasi, atau review secara paralel saat agen utama tetap berjalan. |
+| **Session Guardian** | Git checkpoint, pemantauan konteks, dokumen handoff, prompt resume, dan perlindungan credentials. |
+| **Built-in MCPs** | Web search, pencarian dokumentasi Context7, dan pencarian kode grep.app/GitHub jika tersedia. |
+| **LSP + AST-Grep** | Navigasi seperti IDE dan pencarian/refactor berbasis struktur agar edit lebih aman. |
+| **Model Fallbacks** | Agen bisa lanjut memakai model cadangan saat provider atau model utama tidak tersedia. |
+| **Claude Code Compatibility** | Banyak hook, command, skill, agent, dan config MCP bergaya Claude Code bisa digunakan ulang. |
+| **Installer** | Setup terpandu untuk OpenCode, assignment model, pilihan provider, AXR AI, dan backup config. |
 
-Untuk dokumentasi lengkap, lihat [proyek upstream](https://github.com/code-yeongyu/oh-my-openagent).
+Untuk panduan non-teknis dengan contoh dan use case, baca [Panduan Pengguna OMC](docs/guide/user-guide.id.md). Untuk pengguna Inggris, baca [OMC User Guide](docs/guide/user-guide.md). Untuk detail teknis lengkap, lihat [Referensi Fitur](docs/reference/features.md) dan [proyek upstream](https://github.com/code-yeongyu/oh-my-openagent).
 
 ---
 
