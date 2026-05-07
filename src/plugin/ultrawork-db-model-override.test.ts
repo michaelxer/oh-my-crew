@@ -25,12 +25,27 @@ function flushMicrotasks(depth: number): Promise<void> {
 }
 
 function flushWithTimeout(): Promise<void> {
-  return new Promise<void>((resolve) => setTimeout(resolve, 10))
+  return new Promise<void>((resolve) => setTimeout(resolve, 100))
 }
 
 async function settleDeferredModelOverrideWork(): Promise<void> {
-  await flushMicrotasks(12)
+  await flushMicrotasks(30)
   await flushWithTimeout()
+  await flushMicrotasks(5)
+}
+
+async function removeTempDirWithRetry(path: string): Promise<void> {
+  for (let attempt = 0; attempt < 20; attempt++) {
+    try {
+      rmSync(path, { recursive: true, force: true })
+      return
+    } catch (error) {
+      if ((error as NodeJS.ErrnoException).code !== "EBUSY" || attempt === 19) {
+        throw error
+      }
+      await flushWithTimeout()
+    }
+  }
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -72,7 +87,7 @@ describe("scheduleDeferredModelOverride", () => {
     await settleDeferredModelOverrideWork()
     getDataDirSpy?.mockRestore()
     logSpy?.mockRestore()
-    rmSync(tempDir, { recursive: true, force: true })
+    await removeTempDirWithRetry(tempDir)
   })
 
   function insertMessage(id: string, model: { providerID: string; modelID: string }) {

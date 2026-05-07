@@ -1,4 +1,5 @@
 import { describe, expect, test } from "bun:test"
+import type { PluginInput } from "@opencode-ai/plugin"
 import { createKeywordDetectorHook } from "./index"
 import { _resetForTesting, setMainSession } from "../../features/claude-code-session-state"
 
@@ -15,6 +16,25 @@ function createMockPluginInput(toastMessages: string[]) {
 }
 
 describe("keyword-detector ultrawork runtime variant gating", () => {
+  test("#given OpenCode client without tui toast #when ultrawork activates #then prompt injection still succeeds", async () => {
+    // given
+    _resetForTesting()
+    setMainSession("main-session")
+    const hook = createKeywordDetectorHook({ client: { app: {} } } as unknown as PluginInput)
+    const output = {
+      message: {} as Record<string, unknown>,
+      parts: [{ type: "text", text: "ultrawork do it" }],
+    }
+
+    // when
+    await hook["chat.message"]({ sessionID: "main-session" }, output)
+
+    // then
+    expect(output.parts[0]?.text).toContain("ULTRAWORK MODE ENABLED!")
+    expect(output.parts[0]?.text).toContain("ultrawork do it")
+    _resetForTesting()
+  })
+
   test("#given runtime max variant #when ultrawork activates #then maximum precision toast is preserved", async () => {
     // given
     _resetForTesting()
