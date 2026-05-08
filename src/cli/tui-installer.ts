@@ -93,7 +93,13 @@ export async function runTuiInstaller(args: InstallArgs, version: string): Promi
   p.note(formatConfigSummary(config), isUpdate ? "Updated Configuration" : "Installation Complete")
 
   p.log.success(color.bold(isUpdate ? "Configuration updated!" : "Installation complete!"))
+  p.log.message(`Fully restart OpenCode so it reloads ${color.cyan(PLUGIN_NAME)} from npm/cache.`)
   p.log.message(`Run ${color.cyan("opencode")} to start!`)
+  if (isUpdate) {
+    p.log.info(
+      "Update repair applied: legacy plugin entries were normalized to oh-my-crew, visible crew agent/MCP entries were refreshed, and oh-my-crew.json was rewritten. If OpenCode still shows stale agents after restart, clear only the OMC package cache and rerun the installer.",
+    )
+  }
   p.log.info(
     config.telemetryEnabled === false
       ? "Anonymous telemetry disabled in oh-my-crew config."

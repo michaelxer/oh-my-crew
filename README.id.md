@@ -116,6 +116,16 @@ atau:
 bunx oh-my-crew@latest install
 ```
 
+#### Update instalasi yang sudah ada
+
+Sudah terinstal? Jalankan command yang sama lagi, lalu restart OpenCode sepenuhnya:
+
+```bash
+npx oh-my-crew@latest install
+```
+
+Installer menjaga provider setting, menghapus entri plugin legacy yang duplikat, menulis ulang visible crew agent/MCP entries, dan me-refresh `oh-my-crew.json`. Jika OpenCode masih menampilkan agen lama atau agen hilang setelah restart, lihat langkah clean update di [Panduan Pengguna OMC](docs/guide/user-guide.id.md#update-omc).
+
 Package npm menjalankan installer JS secara langsung, jadi instalasi normal lewat `npx`/`bunx` tidak membutuhkan package binary Windows, Linux, atau macOS terpisah.
 
 Untuk setup scripted dan instruksi lengkap untuk LLM agent, lihat [docs/guide/installation.md](docs/guide/installation.md). Di project ini, `--no-tui` berarti "tanpa menu terminal"; bukan berarti "tanpa pertanyaan". Agent tetap bisa bertanya di chat lalu mengirim jawaban Anda sebagai flag.

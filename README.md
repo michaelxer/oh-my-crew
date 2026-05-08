@@ -122,6 +122,16 @@ bunx oh-my-crew@latest install
 
 If you want an OpenCode agent to install OMC for you, use the agent-guided prompt above instead. The agent will ask questions in chat and then run the non-interactive installer with your answers.
 
+#### Updating existing installs
+
+Already installed? Run the same command again, then fully restart OpenCode:
+
+```bash
+npx oh-my-crew@latest install
+```
+
+The installer preserves provider settings, removes duplicate legacy plugin entries, rewrites visible crew agent/MCP entries, and refreshes `oh-my-crew.json`. If OpenCode still shows old or missing agents after restart, see the clean update steps in the [OMC User Guide](docs/guide/user-guide.md#updating-omc).
+
 The npm package runs the JS installer directly, so normal `npx`/`bunx` installs do not require any separate Windows, Linux, or macOS binary package.
 
 For scripted setup and full LLM-agent instructions, see [docs/guide/installation.md](docs/guide/installation.md). In this project, `--no-tui` means "no terminal menu"; it does not mean "no questions". The agent can still ask questions in chat and pass your answers as flags.

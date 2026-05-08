@@ -300,6 +300,41 @@ Gunakan:
 npx oh-my-crew@latest install
 ```
 
+### Update OMC
+
+Jika OMC sudah terinstal, update dengan menjalankan installer yang sama:
+
+```bash
+npx oh-my-crew@latest install
+```
+
+Lalu restart OpenCode sepenuhnya.
+
+Alur update ini menjaga provider setting Anda, membuat backup config, menghapus entri plugin lama yang duplikat, menulis ulang visible crew agent/MCP entries, dan me-refresh `oh-my-crew.json`.
+
+Jika setelah restart OpenCode masih menampilkan agen lama atau agen hilang, tutup OpenCode sepenuhnya lalu bersihkan hanya cache package OMC:
+
+Windows PowerShell:
+
+```powershell
+$pkg = Join-Path $env:USERPROFILE ".cache\opencode\packages\node_modules"
+Remove-Item -LiteralPath (Join-Path $pkg "oh-my-crew") -Recurse -Force -ErrorAction SilentlyContinue
+Remove-Item -LiteralPath (Join-Path $pkg "oh-my-opencode") -Recurse -Force -ErrorAction SilentlyContinue
+Remove-Item -LiteralPath (Join-Path $pkg "oh-my-openagent") -Recurse -Force -ErrorAction SilentlyContinue
+npx oh-my-crew@latest install
+```
+
+macOS / Linux:
+
+```bash
+rm -rf "$HOME/.cache/opencode/packages/node_modules/oh-my-crew" \
+       "$HOME/.cache/opencode/packages/node_modules/oh-my-opencode" \
+       "$HOME/.cache/opencode/packages/node_modules/oh-my-openagent"
+npx oh-my-crew@latest install
+```
+
+Jangan hapus seluruh folder config OpenCode untuk update normal.
+
 Untuk setup dipandu agen, tempel:
 
 ```text
@@ -426,6 +461,8 @@ Jika masih tidak muncul, jalankan:
 ```bash
 npx oh-my-crew@latest install
 ```
+
+Jika masih hilang setelah restart penuh, gunakan langkah cleanup cache di [Update OMC](#update-omc).
 
 ### Team Mode atau Hyperplan bilang tools hilang
 

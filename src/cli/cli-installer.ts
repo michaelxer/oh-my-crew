@@ -130,8 +130,15 @@ export async function runCliInstaller(args: InstallArgs, version: string): Promi
   }
 
   console.log(`${SYMBOLS.star} ${color.bold(color.green(isUpdate ? "Configuration updated!" : "Installation complete!"))}`)
+  console.log(`  Fully restart OpenCode so it reloads ${color.cyan(PLUGIN_NAME)} from npm/cache.`)
   console.log(`  Run ${color.cyan("opencode")} to start!`)
   console.log()
+
+  if (isUpdate) {
+    printInfo(
+      "Update repair applied: legacy plugin entries were normalized to oh-my-crew, visible crew agent/MCP entries were refreshed, and oh-my-crew.json was rewritten. If OpenCode still shows stale agents after restart, clear only the OMC package cache and rerun the installer.",
+    )
+  }
 
   printInfo(
     config.telemetryEnabled === false

@@ -300,6 +300,41 @@ Use:
 npx oh-my-crew@latest install
 ```
 
+### Updating OMC
+
+If OMC is already installed, update by running the same installer again:
+
+```bash
+npx oh-my-crew@latest install
+```
+
+Then fully restart OpenCode.
+
+This update path preserves your provider settings, backs up config files, removes duplicate old plugin entries, rewrites visible crew agent/MCP entries, and refreshes `oh-my-crew.json`.
+
+If OpenCode still shows old or missing agents after restart, close OpenCode completely and clear only the OMC package cache:
+
+Windows PowerShell:
+
+```powershell
+$pkg = Join-Path $env:USERPROFILE ".cache\opencode\packages\node_modules"
+Remove-Item -LiteralPath (Join-Path $pkg "oh-my-crew") -Recurse -Force -ErrorAction SilentlyContinue
+Remove-Item -LiteralPath (Join-Path $pkg "oh-my-opencode") -Recurse -Force -ErrorAction SilentlyContinue
+Remove-Item -LiteralPath (Join-Path $pkg "oh-my-openagent") -Recurse -Force -ErrorAction SilentlyContinue
+npx oh-my-crew@latest install
+```
+
+macOS / Linux:
+
+```bash
+rm -rf "$HOME/.cache/opencode/packages/node_modules/oh-my-crew" \
+       "$HOME/.cache/opencode/packages/node_modules/oh-my-opencode" \
+       "$HOME/.cache/opencode/packages/node_modules/oh-my-openagent"
+npx oh-my-crew@latest install
+```
+
+Do not delete your full OpenCode config folder for a normal update.
+
 For agent-guided setup, paste:
 
 ```text
@@ -426,6 +461,8 @@ If they still do not appear, run:
 ```bash
 npx oh-my-crew@latest install
 ```
+
+If they are still missing after a full restart, use the cache cleanup steps in [Updating OMC](#updating-omc).
 
 ### Team Mode or Hyperplan says tools are missing
 

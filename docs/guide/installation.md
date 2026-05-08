@@ -2,6 +2,47 @@
 
 ## For Humans
 
+### Updating an existing OMC install
+
+If you already installed Oh My Crew, update by running the installer again:
+
+```bash
+npx oh-my-crew@latest install
+```
+
+or:
+
+```bash
+bunx oh-my-crew@latest install
+```
+
+Then fully restart OpenCode. Plugin updates are loaded when OpenCode starts, so the current OpenCode window may keep using the old cached plugin until restart.
+
+The current installer also repairs the common old-install bug where OMC was present in config but crew agents or MCPs did not appear. It rewrites the OpenCode plugin entry to `oh-my-crew`, removes duplicate legacy plugin entries such as `oh-my-opencode`, `oh-my-openagent`, and `oh-my-china`, writes visible crew agent/MCP entries, and refreshes `oh-my-crew.json`.
+
+If agents still look stale after restart, close OpenCode completely and clear only the OpenCode package cache for OMC, then run the installer again.
+
+Windows PowerShell:
+
+```powershell
+$pkg = Join-Path $env:USERPROFILE ".cache\opencode\packages\node_modules"
+Remove-Item -LiteralPath (Join-Path $pkg "oh-my-crew") -Recurse -Force -ErrorAction SilentlyContinue
+Remove-Item -LiteralPath (Join-Path $pkg "oh-my-opencode") -Recurse -Force -ErrorAction SilentlyContinue
+Remove-Item -LiteralPath (Join-Path $pkg "oh-my-openagent") -Recurse -Force -ErrorAction SilentlyContinue
+npx oh-my-crew@latest install
+```
+
+macOS / Linux:
+
+```bash
+rm -rf "$HOME/.cache/opencode/packages/node_modules/oh-my-crew" \
+       "$HOME/.cache/opencode/packages/node_modules/oh-my-opencode" \
+       "$HOME/.cache/opencode/packages/node_modules/oh-my-openagent"
+npx oh-my-crew@latest install
+```
+
+Do not delete your whole OpenCode config folder unless you intentionally want a full reset. The update path above preserves provider settings and backs up config files before writing.
+
 ### Agent-guided install
 
 Paste this into your LLM agent session:
@@ -74,6 +115,8 @@ Anonymous telemetry is enabled by default to track active installations (DAU/WAU
 > ```
 
 You are helping the user install Oh My Crew. Ask the questions below in chat, then run `npx oh-my-crew@latest install --no-tui ...` or `bunx oh-my-crew@latest install --no-tui ...`. Do not use the terminal TUI unless you have a real interactive terminal. `--no-tui` only disables the terminal menu; it does not remove the need to ask the user setup questions.
+
+If the user says OMC is already installed and they only want to update, do not ask them to delete config. Run the same installer with their provider answers. Tell them that the installer preserves provider settings, removes duplicate legacy plugin entries, rewrites visible crew agent/MCP entries, and requires a full OpenCode restart. Only suggest clearing the package cache if the restarted OpenCode still shows old or missing agents.
 
 Keep setup questions friendly for non-programmers. Do not ask technical config-location questions such as "Are you using OpenCode CLI config, not desktop config?" during normal setup. Do not offer CLI/Desktop config as a normal first-install choice. Treat OpenCode as the user's OpenCode app/setup and use the normal OpenCode config.
 
@@ -412,6 +455,8 @@ npm install oh-my-crew@latest --save
 ```
 
 If duplicate agents appear, remove legacy plugin entries such as `oh-my-opencode`, `oh-my-openagent`, or `oh-my-china` from `opencode.json`. The installer removes those entries when it updates the plugin array.
+
+If an older OMC install keeps loading after an update, close OpenCode completely, clear only the OMC package cache under `~/.cache/opencode/packages/node_modules/`, rerun `npx oh-my-crew@latest install`, then restart OpenCode.
 
 If MCPs appear missing, check `disabled_mcps` in `oh-my-crew.json` first. `opencode mcp list` may only report user-configured MCP servers in some OpenCode versions, while OMC built-ins are supplied by the plugin runtime.
 
