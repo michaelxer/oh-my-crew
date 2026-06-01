@@ -38,12 +38,6 @@ const EXACT_ALIAS_RULES: ReadonlyArray<ExactAliasRule> = [
     canonicalModelID: "k2p5",
     rationale: "Kimi for Coding exposes k2pb while the bundled capabilities snapshot uses the canonical k2p5 ID.",
   },
-  {
-    aliasModelID: "claude-opus-4.7",
-    ruleID: "claude-opus-dotted-version-alias",
-    canonicalModelID: "claude-opus-4-7",
-    rationale: "GitHub Copilot exposes Claude Opus 4.7 with dotted version syntax while the snapshot uses dashed syntax.",
-  },
 ]
 
 const EXACT_ALIAS_RULES_BY_MODEL: ReadonlyMap<string, ExactAliasRule> = new Map(
@@ -53,8 +47,8 @@ const EXACT_ALIAS_RULES_BY_MODEL: ReadonlyMap<string, ExactAliasRule> = new Map(
 const PATTERN_ALIAS_RULES: ReadonlyArray<PatternAliasRule> = [
   {
     ruleID: "claude-thinking-legacy-alias",
-    description: "Normalizes legacy Claude Opus thinking suffixes (4-6, 4-7) to the canonical snapshot ID.",
-    match: (normalizedModelID) => /^claude-opus-4-(?:6|7)-thinking$/.test(normalizedModelID),
+    description: "Normalizes the legacy Claude Opus 4-7 thinking suffix to the canonical snapshot ID.",
+    match: (normalizedModelID) => /^claude-opus-4-7-thinking$/.test(normalizedModelID),
     canonicalize: () => "claude-opus-4-7",
   },
   {
