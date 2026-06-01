@@ -33,7 +33,16 @@ describe("startCallbackServer", () => {
 
   async function request(url: string): Promise<Response> {
     if (canBindRealSockets) {
-      return nativeFetch(url)
+      let lastError: unknown
+      for (let attempt = 0; attempt < 5; attempt++) {
+        try {
+          return await nativeFetch(url)
+        } catch (error) {
+          lastError = error
+          await Bun.sleep(20)
+        }
+      }
+      throw lastError
     }
 
     if (!activeServer || activeServer.stopped) {

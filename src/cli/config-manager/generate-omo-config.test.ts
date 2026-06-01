@@ -54,7 +54,7 @@ describe("generateOmoConfig - model fallback system", () => {
     expect((result.agents as Record<string, { model: string }>).sisyphus.model).toBe("opencode/gpt-5-nano")
   })
 
-  test("uses ZAI model for librarian when Z.ai is available", () => {
+  test("keeps librarian on its fallback chain when Z.ai is available", () => {
     //#given
     const config: InstallConfig = {
       hasClaude: true,
@@ -73,7 +73,7 @@ describe("generateOmoConfig - model fallback system", () => {
     const result = generateOmoConfig(config)
 
     //#then
-    expect((result.agents as Record<string, { model: string }>).librarian.model).toBe("zai-coding-plan/glm-4.7")
+    expect((result.agents as Record<string, { model: string }>).librarian.model).toBe("anthropic/claude-haiku-4-5")
     expect((result.agents as Record<string, { model: string }>).sisyphus.model).toBe("anthropic/claude-opus-4-7")
   })
 
