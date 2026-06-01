@@ -77,6 +77,9 @@ exports[`generateModelConfig single native provider uses Claude models when only
     "explore": {
       "model": "anthropic/claude-haiku-4-5",
     },
+    "librarian": {
+      "model": "anthropic/claude-haiku-4-5",
+    },
     "metis": {
       "model": "anthropic/claude-opus-4-7",
       "variant": "max",
@@ -145,6 +148,9 @@ exports[`generateModelConfig single native provider uses Claude models with isMa
       "model": "anthropic/claude-sonnet-4-6",
     },
     "explore": {
+      "model": "anthropic/claude-haiku-4-5",
+    },
+    "librarian": {
       "model": "anthropic/claude-haiku-4-5",
     },
     "metis": {
@@ -971,6 +977,14 @@ exports[`generateModelConfig fallback providers uses OpenCode Zen models when on
       "model": "opencode/gpt-5.5",
       "variant": "medium",
     },
+    "librarian": {
+      "fallback_models": [
+        {
+          "model": "opencode/gpt-5.4-nano",
+        },
+      ],
+      "model": "opencode/claude-haiku-4-5",
+    },
     "metis": {
       "fallback_models": [
         {
@@ -1192,6 +1206,14 @@ exports[`generateModelConfig fallback providers uses OpenCode Zen models with is
     "hephaestus": {
       "model": "opencode/gpt-5.5",
       "variant": "medium",
+    },
+    "librarian": {
+      "fallback_models": [
+        {
+          "model": "opencode/gpt-5.4-nano",
+        },
+      ],
+      "model": "opencode/claude-haiku-4-5",
     },
     "metis": {
       "fallback_models": [
@@ -1758,7 +1780,7 @@ exports[`generateModelConfig fallback providers uses GitHub Copilot models with 
 }
 `;
 
-exports[`generateModelConfig fallback providers uses ZAI model for librarian when only ZAI is available 1`] = `
+exports[`generateModelConfig fallback providers omits librarian when only ZAI is available 1`] = `
 {
   "$schema": "https://raw.githubusercontent.com/code-yeongyu/oh-my-openagent/dev/assets/oh-my-opencode.schema.json",
   "agents": {
@@ -1767,9 +1789,6 @@ exports[`generateModelConfig fallback providers uses ZAI model for librarian whe
     },
     "explore": {
       "model": "opencode/gpt-5-nano",
-    },
-    "librarian": {
-      "model": "zai-coding-plan/glm-4.7",
     },
     "metis": {
       "model": "opencode/gpt-5-nano",
@@ -1822,7 +1841,7 @@ exports[`generateModelConfig fallback providers uses ZAI model for librarian whe
 }
 `;
 
-exports[`generateModelConfig fallback providers uses ZAI model for librarian with isMax20 flag 1`] = `
+exports[`generateModelConfig fallback providers omits librarian with only ZAI and isMax20 flag 1`] = `
 {
   "$schema": "https://raw.githubusercontent.com/code-yeongyu/oh-my-openagent/dev/assets/oh-my-opencode.schema.json",
   "agents": {
@@ -1831,9 +1850,6 @@ exports[`generateModelConfig fallback providers uses ZAI model for librarian wit
     },
     "explore": {
       "model": "opencode/gpt-5-nano",
-    },
-    "librarian": {
-      "model": "zai-coding-plan/glm-4.7",
     },
     "metis": {
       "model": "opencode/gpt-5-nano",
@@ -1916,6 +1932,17 @@ exports[`generateModelConfig mixed provider scenarios uses Claude + OpenCode Zen
     "hephaestus": {
       "model": "opencode/gpt-5.5",
       "variant": "medium",
+    },
+    "librarian": {
+      "fallback_models": [
+        {
+          "model": "opencode/claude-haiku-4-5",
+        },
+        {
+          "model": "opencode/gpt-5.4-nano",
+        },
+      ],
+      "model": "anthropic/claude-haiku-4-5",
     },
     "metis": {
       "fallback_models": [
@@ -2424,7 +2451,7 @@ exports[`generateModelConfig mixed provider scenarios uses OpenAI + Copilot comb
 }
 `;
 
-exports[`generateModelConfig mixed provider scenarios uses Claude + ZAI combination (librarian uses ZAI) 1`] = `
+exports[`generateModelConfig mixed provider scenarios uses Claude + ZAI combination with librarian following fallback chain 1`] = `
 {
   "$schema": "https://raw.githubusercontent.com/code-yeongyu/oh-my-openagent/dev/assets/oh-my-opencode.schema.json",
   "agents": {
@@ -2435,12 +2462,7 @@ exports[`generateModelConfig mixed provider scenarios uses Claude + ZAI combinat
       "model": "anthropic/claude-haiku-4-5",
     },
     "librarian": {
-      "fallback_models": [
-        {
-          "model": "anthropic/claude-haiku-4-5",
-        },
-      ],
-      "model": "zai-coding-plan/glm-4.7",
+      "model": "anthropic/claude-haiku-4-5",
     },
     "metis": {
       "model": "anthropic/claude-opus-4-7",
@@ -2520,6 +2542,9 @@ exports[`generateModelConfig mixed provider scenarios uses Gemini + Claude combi
       "model": "anthropic/claude-sonnet-4-6",
     },
     "explore": {
+      "model": "anthropic/claude-haiku-4-5",
+    },
+    "librarian": {
       "model": "anthropic/claude-haiku-4-5",
     },
     "metis": {
@@ -2684,13 +2709,10 @@ exports[`generateModelConfig mixed provider scenarios uses all fallback provider
     "librarian": {
       "fallback_models": [
         {
-          "model": "opencode/claude-haiku-4-5",
-        },
-        {
           "model": "opencode/gpt-5.4-nano",
         },
       ],
-      "model": "zai-coding-plan/glm-4.7",
+      "model": "opencode/claude-haiku-4-5",
     },
     "metis": {
       "fallback_models": [
@@ -4174,7 +4196,7 @@ exports[`generateModelConfig Vercel AI Gateway provider uses vercel/ model strin
     "librarian": {
       "fallback_models": [
         {
-          "model": "vercel/minimax/minimax-m2.7-highspeed",
+          "model": "vercel/minimax/minimax-m2.7",
         },
         {
           "model": "vercel/anthropic/claude-haiku-4.5",
@@ -4183,7 +4205,7 @@ exports[`generateModelConfig Vercel AI Gateway provider uses vercel/ model strin
           "model": "vercel/openai/gpt-5.4-nano",
         },
       ],
-      "model": "vercel/minimax/minimax-m2.7",
+      "model": "vercel/minimax/minimax-m2.7-highspeed",
     },
     "metis": {
       "fallback_models": [
@@ -4464,7 +4486,7 @@ exports[`generateModelConfig Vercel AI Gateway provider uses vercel/ model strin
     "librarian": {
       "fallback_models": [
         {
-          "model": "vercel/minimax/minimax-m2.7-highspeed",
+          "model": "vercel/minimax/minimax-m2.7",
         },
         {
           "model": "vercel/anthropic/claude-haiku-4.5",
@@ -4473,7 +4495,7 @@ exports[`generateModelConfig Vercel AI Gateway provider uses vercel/ model strin
           "model": "vercel/openai/gpt-5.4-nano",
         },
       ],
-      "model": "vercel/minimax/minimax-m2.7",
+      "model": "vercel/minimax/minimax-m2.7-highspeed",
     },
     "metis": {
       "fallback_models": [

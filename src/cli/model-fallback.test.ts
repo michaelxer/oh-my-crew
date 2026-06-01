@@ -373,25 +373,25 @@ describe("generateModelConfig", () => {
       expect(result).toMatchSnapshot()
     })
 
-    test("uses ZAI model for librarian when only ZAI is available", () => {
+    test("omits librarian when only ZAI is available", () => {
       // #given only ZAI is available
       const config = createConfig({ hasZaiCodingPlan: true })
 
       // #when generateModelConfig is called
       const result = generateModelConfig(config)
 
-      // #then should use ZAI_MODEL for librarian
+      // #then should omit librarian because its fallback chain has no ZAI entry
       expect(result).toMatchSnapshot()
     })
 
-    test("uses ZAI model for librarian with isMax20 flag", () => {
+    test("omits librarian with only ZAI and isMax20 flag", () => {
       // #given ZAI is available with Max 20 plan
       const config = createConfig({ hasZaiCodingPlan: true, isMax20: true })
 
       // #when generateModelConfig is called
       const result = generateModelConfig(config)
 
-      // #then should use ZAI_MODEL for librarian
+      // #then should omit librarian because its fallback chain has no ZAI entry
       expect(result).toMatchSnapshot()
     })
   })
@@ -425,7 +425,7 @@ describe("generateModelConfig", () => {
       expect(result).toMatchSnapshot()
     })
 
-    test("uses Claude + ZAI combination (librarian uses ZAI)", () => {
+    test("uses Claude + ZAI combination with librarian following fallback chain", () => {
       // #given Claude and ZAI are available
       const config = createConfig({
         hasClaude: true,
@@ -435,7 +435,7 @@ describe("generateModelConfig", () => {
       // #when generateModelConfig is called
       const result = generateModelConfig(config)
 
-      // #then librarian should use ZAI, others use Claude
+      // #then librarian should follow the normal fallback chain
       expect(result).toMatchSnapshot()
     })
 
@@ -464,7 +464,7 @@ describe("generateModelConfig", () => {
       // #when generateModelConfig is called
       const result = generateModelConfig(config)
 
-      // #then should prefer OpenCode Zen, but librarian uses ZAI
+      // #then should prefer OpenCode Zen and keep librarian on its fallback chain
       expect(result).toMatchSnapshot()
     })
 
@@ -482,7 +482,7 @@ describe("generateModelConfig", () => {
       // #when generateModelConfig is called
       const result = generateModelConfig(config)
 
-      // #then should prefer native providers, librarian uses ZAI
+      // #then should prefer native providers
       expect(result).toMatchSnapshot()
     })
 
@@ -718,7 +718,7 @@ describe("generateModelConfig", () => {
   })
 
   describe("librarian agent special cases", () => {
-    test("librarian uses ZAI model when ZAI is available regardless of other providers", () => {
+    test("librarian follows fallback chain when ZAI is available with other providers", () => {
       // #given ZAI and Claude are available
       const config = createConfig({
         hasClaude: true,
@@ -728,19 +728,19 @@ describe("generateModelConfig", () => {
       // #when generateModelConfig is called
       const result = generateModelConfig(config)
 
-      // #then librarian should use ZAI_MODEL
-      expect(result.agents?.librarian?.model).toBe("zai-coding-plan/glm-4.7")
+      // #then librarian should use the best available fallback chain model
+      expect(result.agents?.librarian?.model).toBe("anthropic/claude-haiku-4-5")
     })
 
-    test("librarian is omitted when no librarian provider matches", () => {
-      // #given only Claude is available (no opencode-go or ZAI)
+    test("librarian uses Claude when only Claude matches its fallback chain", () => {
+      // #given only Claude is available
       const config = createConfig({ hasClaude: true })
 
       // #when generateModelConfig is called
       const result = generateModelConfig(config)
 
-      // #then librarian should be omitted when its dedicated providers are unavailable
-      expect(result.agents?.librarian).toBeUndefined()
+      // #then librarian should use Claude haiku from its fallback chain
+      expect(result.agents?.librarian?.model).toBe("anthropic/claude-haiku-4-5")
     })
   })
 
@@ -783,16 +783,15 @@ describe("generateModelConfig", () => {
       expect(result.agents?.librarian?.fallback_models?.length).toBeGreaterThan(0)
     })
 
-    test("librarian omits fallback_models when only ZAI is available", () => {
+    test("librarian is omitted when only ZAI is available", () => {
       // #given only ZAI is available
       const config = createConfig({ hasZaiCodingPlan: true })
 
       // #when generateModelConfig is called
       const result = generateModelConfig(config)
 
-      // #then librarian should not have fallback_models
-      expect(result.agents?.librarian?.model).toBe("zai-coding-plan/glm-4.7")
-      expect(result.agents?.librarian?.fallback_models).toBeUndefined()
+      // #then librarian should be omitted because its fallback chain has no ZAI entry
+      expect(result.agents?.librarian).toBeUndefined()
     })
   })
 
@@ -830,15 +829,15 @@ describe("generateModelConfig", () => {
       expect(result.agents?.explore?.model).toBe("vercel/minimax/minimax-m2.7-highspeed")
     })
 
-    test("librarian uses vercel/minimax/minimax-m2.7 when only gateway available", () => {
+    test("librarian uses vercel/minimax/minimax-m2.7-highspeed when only gateway available", () => {
       // #given only Vercel AI Gateway is available
       const config = createConfig({ hasVercelAiGateway: true })
 
       // #when generateModelConfig is called
       const result = generateModelConfig(config)
 
-      // #then librarian should use gateway-routed minimax (preferred over claude-haiku)
-      expect(result.agents?.librarian?.model).toBe("vercel/minimax/minimax-m2.7")
+      // #then librarian should use the first gateway-routed minimax fallback-chain match
+      expect(result.agents?.librarian?.model).toBe("vercel/minimax/minimax-m2.7-highspeed")
     })
 
     test("Hephaestus is created when only Vercel AI Gateway is available", () => {

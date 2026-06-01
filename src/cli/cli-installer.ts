@@ -158,11 +158,13 @@ export async function runCliInstaller(args: InstallArgs, version: string): Promi
     "The Magic Word",
   )
 
-  console.log(`${SYMBOLS.star} ${color.yellow("If you found this helpful, consider starring the repo!")}`)
-  console.log(
-    `  ${color.dim("gh api --silent --method PUT /user/starred/michaelxer/oh-my-crew >/dev/null 2>&1 || true")}`,
-  )
-  console.log()
+  if (args.tui) {
+    console.log(`${SYMBOLS.star} ${color.yellow("If you found this helpful, consider starring the repo!")}`)
+    console.log(
+      `  ${color.dim("gh api --silent --method PUT /user/starred/michaelxer/oh-my-crew >/dev/null 2>&1 || true")}`,
+    )
+    console.log()
+  }
   console.log(color.dim("oMoMoMoMo... Crew is ready."))
   console.log()
 
