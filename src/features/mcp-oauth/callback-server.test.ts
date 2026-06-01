@@ -5,6 +5,10 @@ const HOSTNAME = "127.0.0.1"
 const nativeFetch = Bun.fetch.bind(Bun)
 
 function supportsRealSocketBinding(): boolean {
+  if (Bun.env.CI) {
+    return false
+  }
+
   try {
     const server = Bun.serve({
       port: 0,
